@@ -48,7 +48,7 @@ class Enemigo {
 }
 
 class Proyectil {
-  var imagen = "pelota2.png"
+  var imagen = "balboa-45.png"
   var position = game.origin()
   
   method position() = position
