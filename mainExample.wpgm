@@ -5,8 +5,8 @@ import wollok.game.*
 program PepitaGame {
   game.title("Pepita")
   game.cellSize(10)
-  game.height(150)
-  game.width(100)
+  game.height(160)
+  game.width(120)
   game.boardGround("fondo2.jpg")
   
   game.addVisual(pepita)
@@ -19,12 +19,11 @@ program PepitaGame {
   pepita.spawnea()
   
   game.addVisual(enemigo)
-  game.say(pepita, "te voy a matar")
   enemigo.spawnea()
   
-  keyboard.right().onPressDo({pepita.position(pepita.position().right(5)) })
+  keyboard.right().onPressDo({pepita.position(pepita.position().right(4)) })
   
-  keyboard.left().onPressDo({ pepita.position(pepita.position().left(5)) })
+  keyboard.left().onPressDo({ pepita.position(pepita.position().left(4)) })
   
   keyboard.space().onPressDo(
     { if (yaColisiono) {
@@ -42,10 +41,14 @@ program PepitaGame {
         )
       } }
   )
+
+  game.onTick(4000, "movimientoEnemigo",{
+    enemigo.position(enemigo.position().right(2))
+  })
   
   game.onTick(300,"movimientoProyectil",{ 
       proyectil.lanzar()
-      if (proyectil.position().y() == game.height()) {
+      if (proyectil.position().y() > game.height()) {
         game.removeVisual(proyectil)
         yaColisiono = true
       }

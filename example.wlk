@@ -10,8 +10,8 @@ object pepita {
   }
   
   method spawnea() {
-    const x = (game.width() / 2) - 5
-    const y = 5
+    const x = (game.width() / 2) - 4
+    const y = 4
     position = game.at(x, y)
   }
   
@@ -34,8 +34,8 @@ class Enemigo {
   }
   
   method spawnea() {
-    const x = (game.width() / 2)
-    const y = (game.height() / 2)
+    const x = (40)
+    const y = (80)
     
     position = game.at(x,y)
   }
@@ -48,7 +48,7 @@ class Enemigo {
 }
 
 class Proyectil {
-  var imagen = "balboa-45.png"
+  var imagen = "balboa0.png"
   var position = game.origin()
   
   method position() = position
@@ -62,7 +62,7 @@ class Proyectil {
   }
   
   method lanzar() {
-    self.position(self.position().up(5))
+    self.position(self.position().up(4))
   }
   
   method image() = imagen
