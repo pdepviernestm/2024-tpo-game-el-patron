@@ -23,7 +23,7 @@ object pepita {
 
 
 class Proyectil {
-  var imagen = "balboa-45.png"
+  var imagen = "balboa0.png"
   var position = game.origin()
   
   method position() = position
@@ -37,7 +37,7 @@ class Proyectil {
   }
   
   method lanzar() {
-    self.position(self.position().up(5))
+    self.position(self.position().up(4))
   }
   
   method image() = imagen

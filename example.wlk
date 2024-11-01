@@ -10,8 +10,8 @@ object pepita {
   }
   
   method spawnea() {
-    const x = (game.width() / 2) - 5
-    const y = 5
+    const x = (game.width() / 2) - 4
+    const y = 4
     position = game.at(x, y)
   }
   
@@ -34,8 +34,8 @@ class Enemigo {
   }
   
   method spawnea() {
-    const x = (game.width() / 2)
-    const y = (game.height() / 2)
+    const x = (40)
+    const y = (80)
     
     position = game.at(x,y)
   }
@@ -54,31 +54,31 @@ class Hitbox_enemigo{
     var position = game.origin()
 
     method position(){
-    if(contador == 0){
-    const x = Enemigo.position().x() + 1
-    const y = Enemigo.position().y() 
-    position = game.at(x,y)
-    contador = contador + 1
-    }
-    if(contador == 1){
-    const x = Enemigo.position().x() - 1
-    const y = Enemigo.position().y() 
-    position = game.at(x,y)
-    contador = contador + 1
-    }
-    if(contador == 2){
-    const x = Enemigo.position().x()
-    const y = Enemigo.position().y() + 1 
-    position = game.at(x,y)
-    contador = contador + 1
-    }
+      if(contador == 0){
+        const x = Enemigo.position().x() + 1
+        const y = Enemigo.position().y() 
+        position = game.at(x,y)
+        contador = contador + 1
+      }
+      if(contador == 1){
+        const x = Enemigo.position().x() - 1
+        const y = Enemigo.position().y() 
+        position = game.at(x,y)
+        contador = contador + 1
+      }
+      if(contador == 2){
+        const x = Enemigo.position().x()
+        const y = Enemigo.position().y() + 1 
+        position = game.at(x,y)
+        contador = contador + 1
+      }
       if(contador == 3){
-    const x = Enemigo.position().x()
-    const y = Enemigo.position().y() - 1 
-    position = game.at(x,y)
-    contador = contador + 1
-    
-    } 
+        const x = Enemigo.position().x()
+        const y = Enemigo.position().y() - 1 
+        position = game.at(x,y)
+        contador = contador + 1
+      } 
     return position 
     }
 }
+
