@@ -33,8 +33,7 @@ object nivel {
           proyectil.spawnea()
           proyectil.lanzar()
           yaColisiono = false
-          game.onCollideDo(
-            proyectil,
+          game.onCollideDo(proyectil,
             { elemento =>
               game.say(pepita, "Le di al enemigo")
               game.removeVisual(proyectil)
@@ -45,34 +44,22 @@ object nivel {
         } }
     )
     
-    game.onTick(
-      4000,
-      "movimientoEnemigo",
-      { enemigo.position(enemigo.position().right(2)) }
-    )
+    game.onTick(4000,"movimientoEnemigo",{ enemigo.position(enemigo.position().right(2))})
     
-    game.onTick(
-      300,
-      "movimientoProyectil",
+    game.onTick(300,"movimientoProyectil",
       { 
         proyectil.lanzar()
         if (proyectil.position().y() > game.height()) {
           game.removeVisual(proyectil)
           yaColisiono = true
         }
-      }
-    )
+      })
     
-    game.onTick(
-      600,
-      "rotacionProyectil",
-      { 
-        proyectil.cambiarImagen(i)
+    game.onTick(600,"rotacionProyectil",{ proyectil.cambiarImagen(i)
         i += 1
         if (i > 7) {
           i = 0
         }
-      }
-    )
+      })
   }
 }
