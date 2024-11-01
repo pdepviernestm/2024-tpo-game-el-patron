@@ -40,8 +40,7 @@ object nivel {
           proyectil.spawnea()
           proyectil.lanzar()
           yaColisiono = false
-          game.onCollideDo(
-            proyectil,
+          game.onCollideDo(proyectil,
             { elemento =>
               game.say(pepita, "Le di al enemigo")
               game.removeVisual(proyectil)
@@ -67,8 +66,7 @@ object nivel {
           game.removeVisual(proyectil)
           yaColisiono = true
         }
-      }
-    )
+      })
     
     game.onTick(
       300,
@@ -79,7 +77,6 @@ object nivel {
         if (i > 7) {
           i = 0
         }
-      }
-    )
+      })
   }
 }
