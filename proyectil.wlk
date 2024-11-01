@@ -1,26 +1,4 @@
-object pepita {
-  var position = game.origin()
-  var imagen = "barra.png"
-  
-  method position() = position
-  
-  method position(newPos) {
-    position = newPos
-  }
-  
-  method spawnea() {
-    const x = (game.width() / 2) - 5
-    const y = 5
-    position = game.at(x, y)
-  }
-  
-  method image() = imagen
-  
-  method cambiarImagen(img) {
-    imagen = img
-  }
-}
-
+import example.*
 
 class Proyectil {
   var imagen = "balboa0.png"
