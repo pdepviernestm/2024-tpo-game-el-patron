@@ -1,0 +1,62 @@
+// juego.wpgm
+import example.*
+import wollok.game.*
+
+program PepitaGame {
+    game.title("Pepita")
+    game.cellSize(10)
+    game.height(150)
+    game.width(100)
+    game.boardGround("fondo2.jpg")
+
+    game.addVisual(pepita)
+    
+    var proyectil = new Proyectil()
+    var enemigo = new Enemigo()
+    var yaColisiono = true
+
+    var hitbox_1 = new Hitbox_enemigo()
+    var hitbox_2 = new Hitbox_enemigo()
+    var hitbox_3 = new Hitbox_enemigo()
+    var hitbox_4 = new Hitbox_enemigo()
+
+    pepita.spawnea()
+
+    game.addVisual(enemigo)
+    enemigo.spawnea()
+
+    keyboard.right().onPressDo({
+        pepita.position(pepita.position().right(5))
+    })
+
+    keyboard.left().onPressDo({
+        pepita.position(pepita.position().left(5))
+    })
+
+    keyboard.space().onPressDo({
+        if(yaColisiono){
+            proyectil = new Proyectil()
+            game.addVisual(proyectil)
+            proyectil.spawnea()
+            proyectil.lanzar()
+            yaColisiono = false
+        }
+    })
+
+    game.onTick(1,"movimientoProyectil" , {
+        proyectil.lanzar()
+        if(proyectil.position().y() == game.height()){
+            game.removeVisual(proyectil)
+            yaColisiono = true
+        }
+    })
+
+     game.whenCollideDo(proyectil, { elemento =>
+        game.say(pepita,"Le di al enemigo")
+        game.removeVisual(proyectil)
+        game.removeVisual(enemigo)
+        yaColisiono = true
+  })
+
+    game.start()
+}
