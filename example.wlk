@@ -33,10 +33,7 @@ class Enemigo {
     position = newPos
   }
   
-  method spawnea() {
-    const x = (40)
-    const y = (80)
-    
+  method spawnea(x,y) {
     position = game.at(x,y)
   }
   
@@ -46,39 +43,3 @@ class Enemigo {
     imagen = img
   }
 }
-
-
-class Hitbox_enemigo{
-    var contador = 0
-
-    var position = game.origin()
-
-    method position(){
-      if(contador == 0){
-        const x = Enemigo.position().x() + 1
-        const y = Enemigo.position().y() 
-        position = game.at(x,y)
-        contador = contador + 1
-      }
-      if(contador == 1){
-        const x = Enemigo.position().x() - 1
-        const y = Enemigo.position().y() 
-        position = game.at(x,y)
-        contador = contador + 1
-      }
-      if(contador == 2){
-        const x = Enemigo.position().x()
-        const y = Enemigo.position().y() + 1 
-        position = game.at(x,y)
-        contador = contador + 1
-      }
-      if(contador == 3){
-        const x = Enemigo.position().x()
-        const y = Enemigo.position().y() - 1 
-        position = game.at(x,y)
-        contador = contador + 1
-      } 
-    return position 
-    }
-}
-

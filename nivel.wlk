@@ -13,14 +13,21 @@ object nivel {
     game.addVisual(pepita)
     
     var proyectil = new Proyectil()
-    var enemigo = new Enemigo()
+    var enemigos = []
     var yaColisiono = true
     var i = 0
+
+
     
     pepita.spawnea()
+    6.times({x =>
+      var enemigo = new Enemigo()
+      enemigos.add(enemigo)
+      enemigo.spawnea(16*x,60)
+      game.addVisual(enemigo)
+      })
+    // enemigo.spawnea()
     
-    game.addVisual(enemigo)
-    enemigo.spawnea()
     
     keyboard.right().onPressDo({ pepita.position(pepita.position().right(4)) })
     
@@ -45,14 +52,14 @@ object nivel {
         } }
     )
     
-    game.onTick(
-      4000,
-      "movimientoEnemigo",
-      { enemigo.position(enemigo.position().right(2)) }
-    )
+    // game.onTick(
+    //   8000,
+    //   "movimientoEnemigo",
+    //   { enemigo.position(enemigo.position().right(4)) }
+    // )
     
     game.onTick(
-      300,
+      100,
       "movimientoProyectil",
       { 
         proyectil.lanzar()
@@ -64,7 +71,7 @@ object nivel {
     )
     
     game.onTick(
-      600,
+      300,
       "rotacionProyectil",
       { 
         proyectil.cambiarImagen(i)
