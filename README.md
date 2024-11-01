@@ -1,22 +1,13 @@
-# Nombre del juego (<- borrar y completar)
-
+# BARRA INVADERS
 ## Equipo de desarrollo
-
-- Alguien
-- Persona
-- etc.
-
+- Bertani, Lucca
+- De Simone, Josué Fabrizio
+- Ysrraelit, Franco
 ## Capturas
-
 (agregar)
-
 ## Reglas de Juego / Instrucciones
-
 (Escribirlas)
-
-
 ## Otros
-
-- Curso/Facultad
-- Versión de wollok
+- K2005 - UTN FRBA
+- Wollok 0.2.6
 - Una vez terminado, no tenemos problemas en que el repositorio sea público / queremos manternerlo privado

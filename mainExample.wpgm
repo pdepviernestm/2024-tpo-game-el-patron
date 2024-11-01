@@ -1,0 +1,10 @@
+// juego.wpgm
+import example.*
+import wollok.game.*
+import proyectil.*
+import nivel.*
+
+program PepitaGame {
+  nivel.configurate() 
+  game.start()
+}
