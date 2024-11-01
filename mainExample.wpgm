@@ -14,11 +14,7 @@ program PepitaGame {
   var proyectil = new Proyectil()
   var enemigo = new Enemigo()
   var yaColisiono = true
-  
-  var hitbox_1 = new Hitbox_enemigo()
-  var hitbox_2 = new Hitbox_enemigo()
-  var hitbox_3 = new Hitbox_enemigo()
-  var hitbox_4 = new Hitbox_enemigo()
+  var i = 0
   
   pepita.spawnea()
   
@@ -47,7 +43,7 @@ program PepitaGame {
       } }
   )
   
-  game.onTick(200,"movimientoProyectil",{ 
+  game.onTick(300,"movimientoProyectil",{ 
       proyectil.lanzar()
       if (proyectil.position().y() == game.height()) {
         game.removeVisual(proyectil)
@@ -55,8 +51,16 @@ program PepitaGame {
       }
     }
   )
-  
-  
+
+  game.onTick(600,"rotacionProyectil",{ 
+    proyectil.cambiarImagen(i)
+      i = i+1
+      if (i > 7){
+        i = 0
+    }}
+  )
+
+ 
   
   game.start()
 }

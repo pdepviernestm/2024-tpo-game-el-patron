@@ -68,7 +68,7 @@ class Proyectil {
   method image() = imagen
   
   method cambiarImagen(img) {
-    imagen = img
+    imagen = "balboa".concat(img).concat(".png")
   }
 }
 
