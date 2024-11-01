@@ -47,30 +47,6 @@ class Enemigo {
   }
 }
 
-class Proyectil {
-  var imagen = "balboa-45.png"
-  var position = game.origin()
-  
-  method position() = position
-  
-  method position(newPos) {
-    position = newPos
-  }
-  
-  method spawnea() {
-    position = pepita.position()
-  }
-  
-  method lanzar() {
-    self.position(self.position().up(5))
-  }
-  
-  method image() = imagen
-  
-  method cambiarImagen(img) {
-    imagen = "balboa".concat(img).concat(".png")
-  }
-}
 
 class Hitbox_enemigo{
     var contador = 0
