@@ -7,7 +7,7 @@ program PepitaGame {
   game.cellSize(10)
   game.height(160)
   game.width(120)
-  game.boardGround("fondo2.jpg")
+  game.boardGround("calle.png")
   
   game.addVisual(pepita)
   
