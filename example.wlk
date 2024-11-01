@@ -47,27 +47,38 @@ class Enemigo {
   }
 }
 
-class Proyectil {
-  var imagen = "balboa0.png"
-  var position = game.origin()
-  
-  method position() = position
-  
-  method position(newPos) {
-    position = newPos
-  }
-  
-  method spawnea() {
-    position = pepita.position()
-  }
-  
-  method lanzar() {
-    self.position(self.position().up(4))
-  }
-  
-  method image() = imagen
-  
-  method cambiarImagen(img) {
-    imagen = "balboa".concat(img).concat(".png")
-  }
+
+class Hitbox_enemigo{
+    var contador = 0
+
+    var position = game.origin()
+
+    method position(){
+      if(contador == 0){
+        const x = Enemigo.position().x() + 1
+        const y = Enemigo.position().y() 
+        position = game.at(x,y)
+        contador = contador + 1
+      }
+      if(contador == 1){
+        const x = Enemigo.position().x() - 1
+        const y = Enemigo.position().y() 
+        position = game.at(x,y)
+        contador = contador + 1
+      }
+      if(contador == 2){
+        const x = Enemigo.position().x()
+        const y = Enemigo.position().y() + 1 
+        position = game.at(x,y)
+        contador = contador + 1
+      }
+      if(contador == 3){
+        const x = Enemigo.position().x()
+        const y = Enemigo.position().y() - 1 
+        position = game.at(x,y)
+        contador = contador + 1
+      } 
+    return position 
+    }
 }
+
