@@ -1,7 +1,7 @@
 // pepita.wlk
 object pepita {
   var position = game.origin()
-  var imagen = "messi3.png"
+  var imagen = "barra.png"
   
   method position() = position
   
@@ -24,7 +24,7 @@ object pepita {
 
 
 class Enemigo {
-  var imagen = "defensor2.png"
+  var imagen = "barra_enemig.png"
   var position = game.origin()
   
   method position() = position
@@ -37,7 +37,7 @@ class Enemigo {
     const x = (game.width() / 2)
     const y = (game.height() / 2)
     
-    position = game.at(x, y)
+    position = game.at(x,y)
   }
   
   method image() = imagen
