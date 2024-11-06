@@ -37,7 +37,6 @@ class Enemigo {
   method position(newPos) {
     position = newPos
   }
-  
   method spawnea(x,y) {
     position = game.at(x,y)
   }

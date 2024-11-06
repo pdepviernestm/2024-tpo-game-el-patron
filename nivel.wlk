@@ -18,7 +18,7 @@ object nivel {
     var i = 0
     var proyectilEnemigo = new ProyectilEnemigo()
     var derecha = true
-    var step = 2
+    var step = 4
     
     pepita.spawnea() // spawnear enemigos
     
@@ -32,7 +32,7 @@ object nivel {
             return game.addVisual(enemigo)
           }
         ) }
-    ) // enemigos.size()*167+1000
+    ) 
     
     /*Todos los enemigos van a la derecha y cuando se llega al borde
     de la derecha, todos los enemigos van para abajo. 
@@ -70,17 +70,17 @@ object nivel {
         }
     }
 )
+
     
-    //             enemigos.forEach(
-    //               { enemigo =>
-    //                   enemigo.position(enemigo.position().down(8))
-    //               }
-    //             )
-    //             }
-    keyboard.right().onPressDo({ pepita.position(pepita.position().right(4)) })
     
-    keyboard.left().onPressDo({ pepita.position(pepita.position().left(4)) })
-    
+    keyboard.right().onPressDo({
+      if(pepita.position().x() < game.width() - 16) {
+        pepita.position(pepita.position().right(4)) }
+      })
+    keyboard.left().onPressDo({ 
+      if(pepita.position().x() > 8){
+      pepita.position(pepita.position().left(4)) }})
+      
     keyboard.space().onPressDo(
       { if (yaColisiono) {
           proyectil = new Proyectil()
@@ -101,7 +101,15 @@ object nivel {
     ) // game.onTick(
     
     
+    /*
+    TODO hacer que los enemigos disparen
+    cambiar las texturas
+    agregar vallas 
+    menu 
+    2000 de ping
+    2 tomatess 1 lechuga 1 queso
     
+    */
     
     //   8000,
     //   "movimientoEnemigo",
@@ -146,7 +154,7 @@ object nivel {
     //       )
     // })
     game.onTick(
-      50,
+      1,
       "movimientoProyectil",
       { 
         proyectil.lanzar()
@@ -158,7 +166,7 @@ object nivel {
     )
     
     game.onTick(
-      100,
+      1,
       "rotacionProyectil",
       { 
         proyectil.cambiarImagen(i)
