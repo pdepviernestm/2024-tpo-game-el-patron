@@ -47,11 +47,11 @@ object nivel {
         var nuevaDireccion = derecha
 
         enemigos.forEach({ enemigo =>
-            if (enemigo.position().x() > (game.width() - 8) && derecha) {
+            if (enemigo.position().x() > (game.width() - 16) && derecha) {
                 moverHaciaAbajo = true
                 nuevaDireccion = false
             }
-            else if (enemigo.position().x() < 8 && !derecha) {
+            else if (enemigo.position().x() <  8 && !derecha) {
                 moverHaciaAbajo = true
                 nuevaDireccion = true
             }
@@ -146,7 +146,7 @@ object nivel {
     //       )
     // })
     game.onTick(
-      1,
+      50,
       "movimientoProyectil",
       { 
         proyectil.lanzar()
