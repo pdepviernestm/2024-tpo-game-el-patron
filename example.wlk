@@ -1,3 +1,4 @@
+import proyectil.*
 // pepita.wlk
 object pepita {
   var position = game.origin()
@@ -10,7 +11,7 @@ object pepita {
   }
   
   method spawnea() {
-    const x = (game.width() / 2) - 4
+    const x = (game.width() / 2)
     const y = 4
     position = game.at(x, y)
   }
@@ -20,6 +21,10 @@ object pepita {
   method cambiarImagen(img) {
     imagen = img
   }
+
+  method soyPepita() = true
+
+  method soyEnemigo() = false
 }
 
 
@@ -42,4 +47,8 @@ class Enemigo {
   method cambiarImagen(img) {
     imagen = img
   }
+
+  method soyPepita() = false
+
+  method soyEnemigo() = true
 }
