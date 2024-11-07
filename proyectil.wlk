@@ -10,8 +10,8 @@ class Proyectil {
     position = newPos
   }
   
-  method spawnea() {
-    position = pepita.position()
+  method spawnea(x) {
+    position = x
   }
   
   method lanzar() {
@@ -31,11 +31,7 @@ class Proyectil {
 }
 
 class ProyectilEnemigo inherits Proyectil{
-
-  method spawnea(x){
-    position = x
-  }
-
+  
   override method lanzar(){
     self.position(self.position().down(4))
   }

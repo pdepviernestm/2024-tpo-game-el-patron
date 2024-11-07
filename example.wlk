@@ -1,6 +1,6 @@
 import proyectil.*
 // pepita.wlk
-object pepita {
+class JugadorPrincipal {
   var position = game.origin()
   var imagen = "barra.png"
   var vidas = 3
@@ -13,7 +13,7 @@ object pepita {
   
   method spawnea() {
     const x = (game.width() / 2)
-    const y = 4
+    const y = 12
     position = game.at(x, y)
   }
   
