@@ -36,6 +36,19 @@ object foto_Inicio {
   }
 }
 
+object foto_gameOver {
+  var position = game.origin()
+  var imagen = "gameover.png"
+  
+  method image() = imagen
+  
+  method position() = position
+  
+  method position(x, y) {
+    position = game.at(x, y)
+  }
+}
+
 object seleccionador {
   var position = game.at(55,48)
   var imagen = "balboa6.png"

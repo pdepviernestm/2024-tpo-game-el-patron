@@ -9,6 +9,8 @@ class JugadorPrincipal {
 
   var indicadores = []
 
+  method jugador() = jugador
+
   method cargarIndicadores() {
     3.times({
       x => 
@@ -39,10 +41,8 @@ class JugadorPrincipal {
     position = newPos
   }
   
-  method spawnea() {
-    const x = (game.width() / 2)
-    const y = 12
-    position = game.at(x, y)
+  method spawnea(offset) {
+    position = game.at(game.width()/2+offset, 12)
   }
 
   method image() = imagen
@@ -65,10 +65,9 @@ class JugadorPrincipal {
 
 class Hitbox{
 
-  var imagen = "chiquiMafia.png"
+  var imagen = "j2.png"
 
   var position = game.origin()
-  var soyHitbox = true 
   method position() = position
 
   method position(newPos) {
@@ -86,15 +85,15 @@ class Hitbox{
   method sacarVida(valla){
     valla.setVidas(valla.getVidas()-1) 
   }
-  method soyHitbox() = soyHitbox
+  method soyHitbox() = true
 
-  method soyHitbox(bool){
-    soyHitbox = bool
-  }
+  // method soyHitbox(bool){
+  //   soyHitbox = bool
+  // }
   method soyPepita() = true
   method soyEnemigo() = false
 
-   method image() = imagen
+  //  method image() = imagen
   
   method cambiarImagen(img) {
     imagen = img
