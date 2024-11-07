@@ -1,33 +1,35 @@
 import example.*
 import wollok.game.*
 import proyectil.*
+import iu.*
 
 object nivel {
   method configurate() {
     game.title("BARRA INVADERS")
-    game.cellSize(10)
+    game.cellSize(8)
     game.height(160)
-    game.width(120)
+    game.width(160)
     game.boardGround("calle.png")
     
     game.addVisual(pepita)
     
     var proyectil = new Proyectil()
     var proyectilEnemigo = new ProyectilEnemigo()
+    
 
     var yaColisiono = true
     var yaColisionoEnemigo = true
 
     var enemigos = []
+    var indicadores = []
     var i = 0
     var derecha = true
     var step = 4
     
     pepita.spawnea() // spawnear enemigos
-    game.showAttributes(pepita)
     
     3.times(
-      { y => 6.times(
+      { y => 7.times(
           { x =>
             var enemigo = new Enemigo()
             enemigos.add(enemigo)
@@ -41,6 +43,15 @@ object nivel {
     de la derecha, todos los enemigos van para abajo. 
     Todos van a la izquierda y cuando llegan al borde bajan.
     */
+
+    // Poner grafico de vidas en la esquina inferior izquierda
+    3.times({
+      x => 
+      var indicador = new IndicadorVida()
+      indicador.position(12*x-9)
+      indicadores.add(indicador)
+      return game.addVisual(indicador)
+    })
 
     game.onTick(
     1000,
@@ -134,11 +145,14 @@ object nivel {
                  game.removeVisual(proyectilEnemigo)
                  if(elemento.getVidas() > 1){
                    elemento.setVidas(elemento.getVidas() - 1)
+                   
                  }
                  else{
                   game.removeVisual(elemento)
                   // game.stop()
                  }
+                game.removeVisual(indicadores.get(indicadores.size() - 1))
+                indicadores.remove(indicadores.get(indicadores.size() - 1))
                 yaColisionoEnemigo = true
                 }
             }

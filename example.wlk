@@ -4,7 +4,7 @@ object pepita {
   var position = game.origin()
   var imagen = "barra.png"
   var vidas = 3
-  
+
   method position() = position
   
   method position(newPos) {
