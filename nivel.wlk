@@ -10,9 +10,89 @@ object nivel {
     game.height(160)
     game.width(160)
     game.boardGround("calle.png")
+
+    self.menu()
+  }
+
+  method menu() {
+    var jugador1 = new JugadorOpcion(imagen = "1_Jugador.png")
+    var jugador2= new JugadorOpcion(imagen = "2_Jugadores.png")
+    var juegoIniciado = false
+    var jugadores = 1
+    var iniciado = false
     
+    jugador1.position(80,80)
+    jugador2.position(80,60)
+    seleccionador.position(75,80)
+
+    game.addVisual(seleccionador)
+    game.addVisual(jugador1)
+    game.addVisual(jugador2)
+
+    keyboard.up().onPressDo({
+      seleccionador.position(75,80) 
+    })
+    keyboard.down().onPressDo({
+      seleccionador.position(75,60)
+    })
+    keyboard.enter().onPressDo({
+      if (!iniciado){
+        if(seleccionador.position().y() == 80){
+          jugadores = 1
+        }
+        else{
+          jugadores = 2
+        }
+        game.removeVisual(jugador1)
+        game.removeVisual(jugador2)
+        game.removeVisual(seleccionador)
+        iniciado = true
+        self.start(jugadores)
+      }
+    })
+  }
+
+
+  method start(jugadores) {
+
+    
+    var pepita = new JugadorPrincipal()
+    if(jugadores == 2){
+      var pepita2 = new JugadorPrincipal()
+      game.addVisual(pepita2)
+       keyboard.right().onPressDo({
+      if(pepita.position().x() < game.width() - 12) {
+        pepita.position(pepita.position().right(4)) }
+      })
+    keyboard.left().onPressDo({ 
+      if(pepita.position().x() > 8){
+      pepita.position(pepita.position().left(4)) }})
+      
+    keyboard.enter().onPressDo(
+      { if (yaColisiono) {
+          yaColisiono = false
+
+          proyectil = new Proyectil()
+
+          game.addVisual(proyectil)
+          proyectil.spawnea(pepita.position().x())
+          proyectil.lanzar()
+
+          game.onCollideDo(
+            proyectil,
+            { elemento => if (elemento.soyEnemigo()) {
+                game.removeVisual(proyectil)
+                game.removeVisual(elemento)
+                enemigos.remove(elemento)
+
+                yaColisiono = true
+              } }
+          )
+        } }
+    ) 
+    
+    }
     game.addVisual(pepita)
-    
     var proyectil = new Proyectil()
     var proyectilEnemigo = new ProyectilEnemigo()
     
@@ -84,37 +164,6 @@ object nivel {
         }
     }
 )
-    
-    keyboard.right().onPressDo({
-      if(pepita.position().x() < game.width() - 12) {
-        pepita.position(pepita.position().right(4)) }
-      })
-    keyboard.left().onPressDo({ 
-      if(pepita.position().x() > 8){
-      pepita.position(pepita.position().left(4)) }})
-      
-    keyboard.space().onPressDo(
-      { if (yaColisiono) {
-          yaColisiono = false
-
-          proyectil = new Proyectil()
-
-          game.addVisual(proyectil)
-          proyectil.spawnea()
-          proyectil.lanzar()
-
-          game.onCollideDo(
-            proyectil,
-            { elemento => if (elemento.soyEnemigo()) {
-                game.removeVisual(proyectil)
-                game.removeVisual(elemento)
-                enemigos.remove(elemento)
-
-                yaColisiono = true
-              } }
-          )
-        } }
-    ) 
     
     /*
     TODO hacer que los enemigos disparen
@@ -196,5 +245,14 @@ object nivel {
         }
       }
     )
+    game.onTick(
+    2000,
+    "verificarPosicionEnemigos",
+    {
+        if (enemigos.any({ enemigo => enemigo.position().y() < 35 })) {
+            game.stop()
+        }
+    }
+  )
   }
 }
