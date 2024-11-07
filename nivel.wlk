@@ -4,7 +4,7 @@ import proyectil.*
 
 object nivel {
   method configurate() {
-    game.title("Pepita")
+    game.title("BARRA INVADERS")
     game.cellSize(10)
     game.height(160)
     game.width(120)
@@ -13,16 +13,18 @@ object nivel {
     game.addVisual(pepita)
     
     var proyectil = new Proyectil()
-    var enemigos = []
+    var proyectilEnemigo = new ProyectilEnemigo()
+
     var yaColisiono = true
     var yaColisionoEnemigo = true
+
+    var enemigos = []
     var i = 0
-    var proyectilEnemigo = new ProyectilEnemigo()
     var derecha = true
     var step = 4
     
     pepita.spawnea() // spawnear enemigos
-    
+    game.showAttributes(pepita)
     
     3.times(
       { y => 6.times(
@@ -130,9 +132,14 @@ object nivel {
             { elemento =>
               if(elemento.soyPepita()){
                  game.removeVisual(proyectilEnemigo)
-                 game.removeVisual(elemento)
-
-                 yaColisionoEnemigo = true
+                 if(elemento.getVidas() > 1){
+                   elemento.setVidas(elemento.getVidas() - 1)
+                 }
+                 else{
+                  game.removeVisual(elemento)
+                  // game.stop()
+                 }
+                yaColisionoEnemigo = true
                 }
             }
           )
@@ -168,6 +175,7 @@ object nivel {
       "rotacionProyectil",
       { 
         proyectil.cambiarImagen(i)
+        proyectilEnemigo.cambiarImagen(i)
         i += 1
         if (i > 7) {
           i = 0
