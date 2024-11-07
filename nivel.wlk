@@ -15,6 +15,7 @@ object nivel {
   }
 
   method menu() {
+  
     var jugador1 = new JugadorOpcion(imagen = "1_Jugador.png")
     var jugador2= new JugadorOpcion(imagen = "2_Jugadores.png")
     var juegoIniciado = false
@@ -24,6 +25,7 @@ object nivel {
     jugador2.position(80,60)
     seleccionador.position(75,80)
 
+    game.addVisual(foto_Inicio)
     game.addVisual(seleccionador)
     game.addVisual(jugador1)
     game.addVisual(jugador2)
@@ -49,6 +51,7 @@ object nivel {
         game.removeVisual(jugador1)
         game.removeVisual(jugador2)
         game.removeVisual(seleccionador)
+        game.removeVisual(foto_Inicio)
         juegoIniciado = true
         self.start(jugadores)
       }
@@ -133,7 +136,7 @@ object nivel {
      {
       if(chiquiCounter >= 3){
         game.addVisual(chiquiTapia)
-        chiquiTapia.spawnear(pepita.position().x()-16,game.height())
+        chiquiTapia.spawnear(pepita.position().x(),game.height())
         game.onTick(1,"Detonar",{
           pepita.position(game.at(chiquiTapia.position().x(),pepita.position().y()))
           chiquiTapia.detonar()
@@ -206,7 +209,7 @@ object nivel {
       3.times({
       x => 
       var indicador = new IndicadorVidaJ2()
-      indicador.position(12*x-9)
+      indicador.position(12*x+1)
       indicadoresj2.add(indicador)
       return game.addVisual(indicador)
     })

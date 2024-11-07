@@ -59,7 +59,7 @@ class Enemigo {
 }
 
 class Valla{
-  var imagen = "valla1N.png"
+  var imagen = "valla192.png"
   var position = game.origin()
   method position() = position
   

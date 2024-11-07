@@ -17,6 +17,18 @@ class IndicadorVidaJ2 inherits IndicadorVida {
     }
 }
 
+object foto_Inicio{
+
+var position = game.origin()
+    var imagen = "menu.png"
+
+    method image() = imagen
+    method position() = position
+
+    method position(x,y){
+        position= game.at(x,y)
+    }
+}
 
 class JugadorOpcion{
 
