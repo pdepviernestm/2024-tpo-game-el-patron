@@ -15,9 +15,10 @@ object nivel {
   }
 
   method menu() {
-  
-    var jugador1 = new JugadorOpcion(imagen = "1_Jugador.png")
-    var jugador2= new JugadorOpcion(imagen = "2_Jugadores.png")
+
+    var jugador1 = new JugadorOpcion(imagen = "1jugador.png")
+    var jugador2= new JugadorOpcion(imagen = "2jugadores.png")
+
     var juegoIniciado = false
     var jugadores = 1
     

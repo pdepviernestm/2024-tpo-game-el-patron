@@ -43,6 +43,19 @@ class JugadorOpcion{
     }
 }
 
+object fondoOpciones{
+
+    var position = game.origin()
+    var imagen = "rectangulo.png"
+
+    method image() = imagen
+    method position() = position
+
+    method position(x,y){
+        position= game.at(x,y)
+    }
+}
+
 object chiquiTapia{
     var position = game.origin()
     var imagen = "chiquiMafia.png"

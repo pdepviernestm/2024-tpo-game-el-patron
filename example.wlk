@@ -61,6 +61,8 @@ class Enemigo {
 class Valla{
   var imagen = "valla192.png"
   var position = game.origin()
+  const x
+  const y
   method position() = position
   
   method position(newPos) {
@@ -78,8 +80,6 @@ class Valla{
   method soyEnemigo() = false
 
   method spawnea() {
-    const x = 5
-    const y = 35
     position = game.at(x, y)
   }
 }
