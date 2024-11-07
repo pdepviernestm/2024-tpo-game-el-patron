@@ -16,55 +16,65 @@ object nivel {
 
   method menu() {
 
-    var jugador1 = new JugadorOpcion(imagen = "1jugador.png")
-    var jugador2= new JugadorOpcion(imagen = "2jugadores.png")
-
+    var opciones = new Opciones()
     var juegoIniciado = false
     var jugadores = 1
-    
-    jugador1.position(80,80)
-    jugador2.position(80,60)
-    seleccionador.position(75,80)
+    var juegoPorArrancar = false
+    var enControles = false
+    opciones.position(65,30)
 
     game.addVisual(foto_Inicio)
+    game.addVisual(opciones)
     game.addVisual(seleccionador)
-    game.addVisual(jugador1)
-    game.addVisual(jugador2)
 
     keyboard.up().onPressDo({
-      if(!juegoIniciado){
-        seleccionador.position(75,80) 
+      if(!juegoIniciado && seleccionador.seleccion() > 0 && !enControles){
+        // seleccionador.position(55,80)
+        seleccionador.arriba()
       }
     })
     keyboard.down().onPressDo({
-      if(!juegoIniciado){
-        seleccionador.position(75,60)
+      if(!juegoIniciado && seleccionador.seleccion() < 2 && !enControles){
+        // seleccionador.position(55,67)
+        seleccionador.abajo()
       }
     })
     keyboard.enter().onPressDo({
       if (!juegoIniciado){
-        if(seleccionador.position().y() == 80){
+        if(enControles){
+          opciones.cambiarImagen("opciones2.png")
+          enControles = false
+        }
+        else if(seleccionador.seleccion() == 0){
           jugadores = 1
+          juegoPorArrancar = true
+        }
+        else if(seleccionador.seleccion() == 1){
+          jugadores = 2
+          juegoPorArrancar = true
         }
         else{
-          jugadores = 2
+           enControles = true
+           opciones.cambiarImagen("controles2.png")
+         }
+        if(juegoPorArrancar){
+          game.removeVisual(opciones)
+          game.removeVisual(seleccionador)
+          game.removeVisual(foto_Inicio)
+          juegoIniciado = true
+          self.start(jugadores)
         }
-        game.removeVisual(jugador1)
-        game.removeVisual(jugador2)
-        game.removeVisual(seleccionador)
-        game.removeVisual(foto_Inicio)
-        juegoIniciado = true
-        self.start(jugadores)
       }
     })
+  
   }
-
-
   method start(jugadores) {
 
-    var valla1 = new Valla()
     var pepita = new JugadorPrincipal()
     var pepita2 = new JugadorPrincipal()
+
+    pepita.setJugador(1)
+    pepita2.setJugador(2)
 
     var proyectil = new Proyectil()
     var proyectilj2 = new Proyectil()
@@ -75,8 +85,10 @@ object nivel {
     var yaColisionoEnemigo = true
 
     var enemigos = []
-    var indicadores = []
-    var indicadoresj2 = []
+    // var indicadores = []
+    // var indicadoresj2 = []
+    var vallas = []
+    var hitboxes = []
 
     var i = 0
     var derecha = true
@@ -88,8 +100,26 @@ object nivel {
     game.addVisual(pepita)
     pepita.spawnea() // spawnear enemigos
     
-    valla1.spawnea()    
-    game.addVisual(valla1)
+    4.times({
+      v => 
+      var valla = new Valla()
+      valla.spawnea(24*v,35)
+      var d = -8
+      3.times({
+        c => 
+      var hitbox = new Hitbox()
+      hitbox.position(game.at((12*(v))+ d,35))
+      hitbox.valla(v)
+      game.addVisual(hitbox)
+      hitboxes.add(hitbox)
+      d += 8
+      game.say(hitbox,"ESTOY ACA")
+      })
+      game.addVisual(valla)
+      vallas.add(valla)
+      })
+    
+
     
     if(jugadores == 2){
       
@@ -197,24 +227,29 @@ object nivel {
     Todos van a la izquierda y cuando llegan al borde bajan.
     */
 
-    // Poner grafico de vidas en la esquina inferior izquierda
-    3.times({
-      x => 
-      var indicador = new IndicadorVida()
-      indicador.position(12*x-9)
-      indicadores.add(indicador)
-      return game.addVisual(indicador)
-    })
-
-    if(jugadores == 2){
-      3.times({
-      x => 
-      var indicador = new IndicadorVidaJ2()
-      indicador.position(12*x+1)
-      indicadoresj2.add(indicador)
-      return game.addVisual(indicador)
-    })
+    pepita.cargarIndicadores()
+    if (jugadores == 2){
+      pepita2.cargarIndicadores()
     }
+
+    // Poner grafico de vidas en la esquina inferior izquierda
+    // 3.times({
+    //   x => 
+    //   var indicador = new IndicadorVida()
+    //   indicador.position(12*x-9)
+    //   indicadores.add(indicador)
+    //   return game.addVisual(indicador)
+    // })
+
+    // if(jugadores == 2){
+    //   3.times({
+    //   x => 
+    //   var indicador = new IndicadorVidaJ2()
+    //   indicador.position(12*x+1)
+    //   indicadoresj2.add(indicador)
+    //   return game.addVisual(indicador)
+    // })
+    // }
 
     game.onTick(
     1000,
@@ -283,9 +318,21 @@ object nivel {
                   game.removeVisual(elemento)
                   // game.stop()
                  }
+                var indicadores = elemento.indicadores()
                 game.removeVisual(indicadores.get(indicadores.size() - 1))
                 indicadores.remove(indicadores.get(indicadores.size() - 1))
                 yaColisionoEnemigo = true
+                }
+                else if(elemento.soyHitbox()){
+                  var index = elemento.valla()
+                  var valla = vallas.get(index)
+                  if(valla.getVidas()> 0){
+                  elemento.sacarVida(valla)
+                  game.removeVisual(proyectilEnemigo)
+                  }else{
+                    game.removeVisual(valla)
+                    elemento.soyHitbox(false)
+                  } 
                 }
             }
           )
@@ -342,7 +389,7 @@ object nivel {
       }
     )
     game.onTick(
-    2000,
+    1000,
     "verificarPosicionEnemigos",
     {
         if (enemigos.any({ enemigo => enemigo.position().y() < 35 })) {

@@ -28,6 +28,7 @@ class Proyectil {
 
   method soyEnemigo() = false
 
+  method soyHitbox()= false
 }
 
 class ProyectilEnemigo inherits Proyectil{
