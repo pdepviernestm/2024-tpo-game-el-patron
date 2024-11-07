@@ -3,6 +3,7 @@ import example.*
 import wollok.game.*
 import proyectil.*
 import nivel.*
+import iu.*
 
 program PepitaGame {
   nivel.configurate() 

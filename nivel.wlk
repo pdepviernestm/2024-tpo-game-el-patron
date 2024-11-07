@@ -1,30 +1,35 @@
 import example.*
 import wollok.game.*
 import proyectil.*
+import iu.*
 
 object nivel {
   method configurate() {
-    game.title("Pepita")
-    game.cellSize(10)
+    game.title("BARRA INVADERS")
+    game.cellSize(8)
     game.height(160)
-    game.width(120)
+    game.width(160)
     game.boardGround("calle.png")
     
     game.addVisual(pepita)
     
     var proyectil = new Proyectil()
-    var enemigos = []
-    var yaColisiono = true
-    var i = 0
     var proyectilEnemigo = new ProyectilEnemigo()
+    
+
+    var yaColisiono = true
+    var yaColisionoEnemigo = true
+
+    var enemigos = []
+    var indicadores = []
+    var i = 0
     var derecha = true
     var step = 4
     
     pepita.spawnea() // spawnear enemigos
     
-    
     3.times(
-      { y => 6.times(
+      { y => 7.times(
           { x =>
             var enemigo = new Enemigo()
             enemigos.add(enemigo)
@@ -39,6 +44,15 @@ object nivel {
     Todos van a la izquierda y cuando llegan al borde bajan.
     */
 
+    // Poner grafico de vidas en la esquina inferior izquierda
+    3.times({
+      x => 
+      var indicador = new IndicadorVida()
+      indicador.position(12*x-9)
+      indicadores.add(indicador)
+      return game.addVisual(indicador)
+    })
+
     game.onTick(
     1000,
     "movimientoEnemigo",
@@ -51,7 +65,7 @@ object nivel {
                 moverHaciaAbajo = true
                 nuevaDireccion = false
             }
-            else if (enemigo.position().x() <  8 && !derecha) {
+            else if (enemigo.position().x() <  12 && !derecha) {
                 moverHaciaAbajo = true
                 nuevaDireccion = true
             }
@@ -70,11 +84,9 @@ object nivel {
         }
     }
 )
-
-    
     
     keyboard.right().onPressDo({
-      if(pepita.position().x() < game.width() - 16) {
+      if(pepita.position().x() < game.width() - 12) {
         pepita.position(pepita.position().right(4)) }
       })
     keyboard.left().onPressDo({ 
@@ -83,23 +95,26 @@ object nivel {
       
     keyboard.space().onPressDo(
       { if (yaColisiono) {
+          yaColisiono = false
+
           proyectil = new Proyectil()
+
           game.addVisual(proyectil)
           proyectil.spawnea()
           proyectil.lanzar()
-          yaColisiono = false
+
           game.onCollideDo(
             proyectil,
             { elemento => if (elemento.soyEnemigo()) {
                 game.removeVisual(proyectil)
                 game.removeVisual(elemento)
-                yaColisiono = true
                 enemigos.remove(elemento)
+
+                yaColisiono = true
               } }
           )
         } }
-    ) // game.onTick(
-    
+    ) 
     
     /*
     TODO hacer que los enemigos disparen
@@ -110,49 +125,41 @@ object nivel {
     2 tomatess 1 lechuga 1 queso
     
     */
-    
-    //   8000,
-    //   "movimientoEnemigo",
-    //   { enemigo.position(enemigo.position().right(4)) }
-    // )
-    // game.onTick(
-    //   100,
-    //   "disparoEnemigo",{
-    //   proyectilEnemigo = new ProyectilEnemigo()
-    //   game.addVisual(proyectilEnemigo)
-    //   const indice =  0.randomUpTo(enemigos.size())
-    //   const enemigo = enemigos.get(indice)
-    //   proyectilEnemigo.spawnea(enemigo.position())
-    //   game.onTick(
-    //   1,
-    //   "movimientoProyectil",
-    //   { 
-    //     proyectilEnemigo.lanzar()
-    //     if (proyectil.position().y() > game.height()) {
-    //       game.removeVisual(proyectil)
-    //     }
-    //   })
-    //   game.onTick(
-    //   100,
-    //   "rotacionProyectil",
-    //   { 
-    //     proyectilEnemigo.cambiarImagen(i)
-    //     i += 1
-    //     if (i > 7) {
-    //       i = 0
-    //     }
-    //   })
-    //       game.onCollideDo(proyectilEnemigo,
-    //         { elemento =>
-    //         if(elemento.soyPepita()){
-    //           game.say(enemigo, "Toma ñero")
-    //           game.removeVisual(proyectilEnemigo)
-    //           game.removeVisual(elemento)
-    //           yaColisiono = true
-    //         }
-    //         }
-    //       )
-    // })
+    game.onTick(
+      1000,
+      "disparoEnemigo",{
+        if(yaColisionoEnemigo){
+          yaColisionoEnemigo = false
+
+          const indice =  0.randomUpTo(enemigos.size())
+          const enemigo = enemigos.get(indice)
+          proyectilEnemigo = new ProyectilEnemigo()
+
+          game.addVisual(proyectilEnemigo)
+          proyectilEnemigo.spawnea(enemigo.position())
+          proyectilEnemigo.lanzar()
+
+          game.onCollideDo(proyectilEnemigo,
+            { elemento =>
+              if(elemento.soyPepita()){
+                 game.removeVisual(proyectilEnemigo)
+                 if(elemento.getVidas() > 1){
+                   elemento.setVidas(elemento.getVidas() - 1)
+                   
+                 }
+                 else{
+                  game.removeVisual(elemento)
+                  // game.stop()
+                 }
+                game.removeVisual(indicadores.get(indicadores.size() - 1))
+                indicadores.remove(indicadores.get(indicadores.size() - 1))
+                yaColisionoEnemigo = true
+                }
+            }
+          )
+        }
+      
+    })
     game.onTick(
       1,
       "movimientoProyectil",
@@ -164,12 +171,25 @@ object nivel {
         }
       }
     )
+
+    game.onTick(
+      1,
+      "movimientoProyectilEnemigo",
+      { 
+        proyectilEnemigo.lanzar()
+        if (proyectilEnemigo.position().y() < 0) {
+          game.removeVisual(proyectilEnemigo)
+          yaColisionoEnemigo = true
+        }
+      }
+    )
     
     game.onTick(
       1,
       "rotacionProyectil",
       { 
         proyectil.cambiarImagen(i)
+        proyectilEnemigo.cambiarImagen(i)
         i += 1
         if (i > 7) {
           i = 0
