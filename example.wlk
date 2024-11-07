@@ -2,7 +2,7 @@ import proyectil.*
 // pepita.wlk
 class JugadorPrincipal {
   var position = game.origin()
-  var imagen = "barra.png"
+  var imagen = "j1.png"
   var vidas = 3
 
   method position() = position
@@ -35,7 +35,7 @@ class JugadorPrincipal {
 
 
 class Enemigo {
-  var imagen = "barra_enemig.png"
+  var imagen = "enemigo.png"
   var position = game.origin()
   
   method position() = position
@@ -56,4 +56,30 @@ class Enemigo {
   method soyPepita() = false
 
   method soyEnemigo() = true
+}
+
+class Valla{
+  var imagen = "valla1N.png"
+  var position = game.origin()
+  method position() = position
+  
+  method position(newPos) {
+    position = newPos
+  }
+  
+  method image() = imagen
+  
+  method cambiarImagen(img) {
+    imagen = img
+  }
+
+  method soyPepita() = true
+
+  method soyEnemigo() = false
+
+  method spawnea() {
+    const x = 5
+    const y = 35
+    position = game.at(x, y)
+  }
 }
