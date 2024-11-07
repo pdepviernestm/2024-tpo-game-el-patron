@@ -51,7 +51,7 @@ object nivel {
                 moverHaciaAbajo = true
                 nuevaDireccion = false
             }
-            else if (enemigo.position().x() <  8 && !derecha) {
+            else if (enemigo.position().x() <  12 && !derecha) {
                 moverHaciaAbajo = true
                 nuevaDireccion = true
             }
@@ -74,7 +74,7 @@ object nivel {
     
     
     keyboard.right().onPressDo({
-      if(pepita.position().x() < game.width() - 16) {
+      if(pepita.position().x() < game.width() - 12) {
         pepita.position(pepita.position().right(4)) }
       })
     keyboard.left().onPressDo({ 
