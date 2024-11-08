@@ -6,9 +6,9 @@ import proyectil.*
 
 object eventos {
   var enemigos = nivel.getEnemigos()
-  var yaColisionoEnemigo = true
   var proyectilEnemigo = new ProyectilEnemigo()
-  var proyectil = nivel.getProyectil()
+  var proyectilj1 = nivel.getProyectil(1)
+  var proyectilj2 = nivel.getProyectil(2)
 
   var i_rotacion = 0
   
@@ -17,17 +17,22 @@ object eventos {
     self.movimientoEnemigo()
     self.disparoEnemigo()
     self.rotacionProyectil()
+    self.movimientoProyectil()
     self.movimientoProyectilEnemigo()
     self.verificarPosicionEnemigos()
   }
   
+    // Jugador 0: Enemigo
+    // Jugador 1: J1
+    // Jugador 2: J2
+
   method disparoEnemigo() {
     game.onTick(
       1,
       "disparoEnemigo",
       { if (nivel.estadoJuego()) {
-          if (yaColisionoEnemigo) {
-            yaColisionoEnemigo = false
+          if (nivel.checkYaColisiono(0)) {
+            nivel.setYaColisiono(0,false)
             
             const indice = 0.randomUpTo(enemigos.size())
             const enemigo = enemigos.get(indice)
@@ -52,7 +57,7 @@ object eventos {
           var indicadores = elemento.indicadores()
           game.removeVisual(indicadores.get(indicadores.size() - 1))
           indicadores.remove(indicadores.get(indicadores.size() - 1))
-          yaColisionoEnemigo = true
+          nivel.setYaColisiono(0, true)
           
           if (nivel.checkMuerto(1) && nivel.checkMuerto(2)) {
             game.removeVisual(elemento)
@@ -72,7 +77,7 @@ object eventos {
           proyectilEnemigo.lanzar()
           if (proyectilEnemigo.position().y() < 0) {
             game.removeVisual(proyectilEnemigo)
-            yaColisionoEnemigo = true
+            nivel.setYaColisiono(0,true)
           }
         } }
     )
@@ -84,7 +89,8 @@ object eventos {
       "rotacionProyectil",
       { if (nivel.estadoJuego()) {
           
-          proyectil.cambiarImagen(i_rotacion)
+          proyectilj1.cambiarImagen(i_rotacion)
+          proyectilj2.cambiarImagen(i_rotacion)
           //   proyectilj2.cambiarImagen(i_rotacion)
           
           proyectilEnemigo.cambiarImagen(i_rotacion)
@@ -93,6 +99,36 @@ object eventos {
             i_rotacion = 0
           }
         } }
+    )
+  }
+
+  method movimientoProyectil() {
+     game.onTick(
+      1,
+      "movimientoProyectil",
+      { 
+        if(nivel.estadoJuego()){
+        proyectilj1.lanzar()
+        if (proyectilj1.position().y() > game.height()) {
+          game.removeVisual(proyectilj1)
+          nivel.setYaColisiono(1,true)
+        }
+        }
+      }
+    )
+    
+    game.onTick(
+      1,
+      "movimientoProyectilj2",
+      { 
+        if(nivel.estadoJuego()){
+        proyectilj2.lanzar()
+        if (proyectilj2.position().y() > game.height()) {
+          game.removeVisual(proyectilj2)
+          nivel.setYaColisiono(2,true)
+        }
+        }
+      }
     )
   }
   

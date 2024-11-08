@@ -160,29 +160,63 @@ object nivel {
     else return false
   }
 
+  method checkYaColisiono(jugador) {
+    if(jugador == 0){
+      return yaColisionoEnemigo
+    }
+    else if(jugador == 1){
+      return yaColisionoj1
+    }
+    else if(jugador == 2){
+      return yaColisionoj2
+    }
+    else return true
+  }
+
+  method setYaColisiono(jugador,bool){
+     if(jugador == 0){
+      yaColisionoEnemigo = bool
+    }
+    else if(jugador == 1){
+      yaColisionoj1 = bool
+    }
+    else if(jugador == 2){
+      yaColisionoj2 = bool
+    }
+  }
+
   method getEnemigos() = enemigos
 
-  var proyectil = new Proyectil()
+  var yaColisionoj1 = true
+  var yaColisionoj2 = true
+  var yaColisionoEnemigo = true
+
+  var proyectilj1 = new Proyectil()
   var proyectilj2 = new Proyectil()
 
-  method getProyectil() = proyectil
+  method getProyectil(jugador){
+    if(jugador == 1){
+      return proyectilj1
+    }
+    else if (jugador == 2){
+      return proyectilj2
+    }
+    else return 0
+  }
+    
   method start() {
+
+    eventos.cargarEventos()
 
     pepita.setJugador(1)
     pepita2.setJugador(2)
 
-    // var proyectilEnemigo = new ProyectilEnemigo()
-
-    var yaColisionoj1 = true
-    var yaColisionoj2 = true
-    var yaColisionoEnemigo = true
 
     // var indicadores = []
     // var indicadoresj2 = []
     var vallas = []
     var hitboxes = []
 
-    eventos.cargarEventos()
 
 
     if (jugadores == 1){
@@ -236,8 +270,6 @@ object nivel {
       { if (yaColisionoj2 && !self.checkMuerto(2)) {
           yaColisionoj2 = false
 
-          proyectilj2 = new Proyectil()
-
           game.addVisual(proyectilj2)
           proyectilj2.spawnea(pepita2.position())
           proyectilj2.lanzar()
@@ -273,16 +305,16 @@ object nivel {
       { if (yaColisionoj1 && !self.checkMuerto(1)) {
           yaColisionoj1 = false
 
-          // proyectil = new Proyectil()
+          // proyectilj1 = new Proyectil()
 
-          game.addVisual(proyectil)
-          proyectil.spawnea(pepita.position())
-          proyectil.lanzar()
+          game.addVisual(proyectilj1)
+          proyectilj1.spawnea(pepita.position())
+          proyectilj1.lanzar()
 
           game.onCollideDo(
-            proyectil,
+            proyectilj1,
             { elemento => if (elemento.soyEnemigo()) {
-                game.removeVisual(proyectil)
+                game.removeVisual(proyectilj1)
                 game.removeVisual(elemento)
                 enemigos.remove(elemento)
 
@@ -318,41 +350,6 @@ object nivel {
     if (jugadores == 2){
       pepita2.cargarIndicadores()
     }
-
-
-
-    
-
-   
-
-    
-    game.onTick(
-      1,
-      "movimientoProyectil",
-      { 
-        if(estadoJuego){
-        proyectil.lanzar()
-        if (proyectil.position().y() > game.height()) {
-          game.removeVisual(proyectil)
-          yaColisionoj1 = true
-        }
-        }
-      }
-    )
-
-    game.onTick(
-      1,
-      "movimientoProyectilj2",
-      { 
-        if(estadoJuego){
-        proyectilj2.lanzar()
-        if (proyectilj2.position().y() > game.height()) {
-          game.removeVisual(proyectilj2)
-          yaColisionoj2 = true
-        }
-        }
-      }
-    )
 
     
 
