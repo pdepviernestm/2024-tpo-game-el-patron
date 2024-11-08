@@ -7,8 +7,22 @@ import controles.*
 import pantallas.*
 
 object nivel {
-  var yaJugo = false
   var jugadores = 1
+
+  var pepita = new JugadorPrincipal()
+  var pepita2 = new JugadorPrincipal()
+  var enemigos = []
+
+  var j1muerto = false
+  var j2muerto = false
+
+  var yaColisionoj1 = true
+  var yaColisionoj2 = true
+  var yaColisionoEnemigo = true
+
+  var proyectilj1 = new Proyectil()
+  var proyectilj2 = new Proyectil()
+
   method configurate() {
     game.title("BARRA INVADERS")
     game.cellSize(8)
@@ -20,19 +34,16 @@ object nivel {
     pantallas.menu()
   }
 
+  method cargarModulos() {
+    eventos.cargarEventos()
+    // controles.cargarControles()
+  }
+  
+  method jugadores () = jugadores
+
   method setJugadores(j) {
     jugadores = j
   }
-
-  method jugadores () = jugadores
-
-
-  var pepita = new JugadorPrincipal()
-  var pepita2 = new JugadorPrincipal()
-  var enemigos = []
-
-  var j1muerto = false
-  var j2muerto = false
 
   method getPlayer(jugador) {
     if(jugador == 1){
@@ -43,7 +54,6 @@ object nivel {
     }
     else return 0
   } 
-
 
   method setMuerto(jugador){
     if(jugador == 1){
@@ -89,19 +99,8 @@ object nivel {
     }
   }
 
-  method cargarModulos() {
-    eventos.cargarEventos()
-    // controles.cargarControles()
-  }
 
   method getEnemigos() = enemigos
-
-  var yaColisionoj1 = true
-  var yaColisionoj2 = true
-  var yaColisionoEnemigo = true
-
-  var proyectilj1 = new Proyectil()
-  var proyectilj2 = new Proyectil()
 
   method getProyectil(jugador){
     if(jugador == 1){

@@ -60,6 +60,9 @@ object eventos {
             
             const indice = 0.randomUpTo(enemigos.size())
             const enemigo = enemigos.get(indice)
+
+            enemigo.cambiarImagen("enemigo_tirar.png")
+            game.schedule(500, { enemigo.cambiarImagen("enemigo.png") })
             
             game.addVisual(proyectilEnemigo)
             proyectilEnemigo.spawnea(enemigo.position())
@@ -116,11 +119,8 @@ object eventos {
       { if (pantallas.estadoJuego()) {
           proyectilj1.cambiarImagen(i_rotacion)
           proyectilj2.cambiarImagen(i_rotacion)
-          //   proyectilj2.cambiarImagen(i_rotacion)
-          
-          
-          
           proyectilEnemigo.cambiarImagen(i_rotacion)
+          
           i_rotacion += 1
           if (i_rotacion > 7) {
             i_rotacion = 0

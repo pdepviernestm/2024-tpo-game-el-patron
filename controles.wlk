@@ -35,7 +35,9 @@ var enMenu = true
       { if (nivel.checkYaColisiono(1) && !nivel.checkMuerto(1)) {
           nivel.setYaColisiono(1,false)
 
-          // proyectilj1 = new Proyectil()
+          // Cambia la sprite del jugador
+          pepita.cambiarImagen("j1_tirar.png")
+          game.schedule(250, { pepita.cambiarImagen("j1.png") })
 
           game.addVisual(proyectilj1)
           proyectilj1.spawnea(pepita.position())
@@ -58,6 +60,9 @@ method controlesj2 () {
     keyboard.enter().onPressDo(
       { if (nivel.checkYaColisiono(2) && !nivel.checkMuerto(2)) {
           nivel.setYaColisiono(2,false)
+
+          pepita2.cambiarImagen("j2_tirar.png")
+          game.schedule(250, { pepita2.cambiarImagen("j2.png") })
 
           game.addVisual(proyectilj2)
           proyectilj2.spawnea(pepita2.position())
