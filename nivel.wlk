@@ -162,13 +162,15 @@ object nivel {
 
   method getEnemigos() = enemigos
 
+  var proyectil = new Proyectil()
+  var proyectilj2 = new Proyectil()
+
+  method getProyectil() = proyectil
   method start() {
 
     pepita.setJugador(1)
     pepita2.setJugador(2)
 
-    var proyectil = new Proyectil()
-    var proyectilj2 = new Proyectil()
     // var proyectilEnemigo = new ProyectilEnemigo()
 
     var yaColisionoj1 = true

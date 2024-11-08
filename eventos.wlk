@@ -8,7 +8,8 @@ object eventos {
   var enemigos = nivel.getEnemigos()
   var yaColisionoEnemigo = true
   var proyectilEnemigo = new ProyectilEnemigo()
-  var proyectil = new Proyectil()
+  var proyectil = nivel.getProyectil()
+
   var i_rotacion = 0
   
   method cargarEventos() {
@@ -82,6 +83,7 @@ object eventos {
       1,
       "rotacionProyectil",
       { if (nivel.estadoJuego()) {
+          
           proyectil.cambiarImagen(i_rotacion)
           //   proyectilj2.cambiarImagen(i_rotacion)
           
