@@ -24,6 +24,11 @@ class Proyectil {
     imagen = "balboa".concat(img).concat(".png")
   }
 
+  // Evita que el proyectil siga actuando de manera invisible
+  method destruir() {
+    self.position(game.at(-1,-1))
+  }
+
   method soyPepita() = false
 
   method soyEnemigo() = false

@@ -3,18 +3,19 @@ import example.*
 import nivel.*
 import iu.*
 import proyectil.*
+import pantallas.*
 
 object eventos {
   var enemigos = nivel.getEnemigos()
   var proyectilEnemigo = new ProyectilEnemigo()
   var proyectilj1 = nivel.getProyectil(1)
   var proyectilj2 = nivel.getProyectil(2)
-
   var i_rotacion = 0
   
   method cargarEventos() {
     self.chiqui()
     self.movimientoEnemigo()
+    self.colisionDisparo()
     self.disparoEnemigo()
     self.rotacionProyectil()
     self.movimientoProyectil()
@@ -22,17 +23,40 @@ object eventos {
     self.verificarPosicionEnemigos()
   }
   
-    // Jugador 0: Enemigo
-    // Jugador 1: J1
-    // Jugador 2: J2
-
+  // Jugador 0: Enemigo
+  // Jugador 1: J1
+  // Jugador 2: J2
+  method colisionDisparo() {
+    game.whenCollideDo(
+      proyectilj1,
+      { elemento => self._handleDisparo(elemento,proyectilj1) }
+    )
+    game.whenCollideDo(
+      proyectilj2,
+      { elemento => self._handleDisparo(elemento,proyectilj2) }
+    )
+  }
+  
+  method _handleDisparo(elemento,proyectil) {
+    if (elemento.soyEnemigo()) {
+      game.removeVisual(proyectil)
+      game.removeVisual(elemento)
+      enemigos.remove(elemento)
+      
+      proyectil.destruir()
+      nivel.setYaColisiono(1, true)
+      
+      if (enemigos == []) pantallas.youwin()
+    }
+  }
+  
   method disparoEnemigo() {
     game.onTick(
       1,
       "disparoEnemigo",
-      { if (nivel.estadoJuego()) {
+      { if (pantallas.estadoJuego()) {
           if (nivel.checkYaColisiono(0)) {
-            nivel.setYaColisiono(0,false)
+            nivel.setYaColisiono(0, false)
             
             const indice = 0.randomUpTo(enemigos.size())
             const enemigo = enemigos.get(indice)
@@ -48,6 +72,7 @@ object eventos {
       { elemento => if (elemento.soyPepita()) {
           game.removeVisual(proyectilEnemigo)
           elemento.setVidas(elemento.getVidas() - 1)
+          
           if (elemento.getVidas() < 1) {
             game.removeVisual(elemento)
             if (elemento.jugador() == 1) nivel.setMuerto(1)
@@ -57,13 +82,14 @@ object eventos {
           var indicadores = elemento.indicadores()
           game.removeVisual(indicadores.get(indicadores.size() - 1))
           indicadores.remove(indicadores.get(indicadores.size() - 1))
+          
           nivel.setYaColisiono(0, true)
           
           if (nivel.checkMuerto(1) && nivel.checkMuerto(2)) {
             game.removeVisual(elemento)
             enemigos.forEach({ enemigo => game.removeVisual(enemigo) })
             enemigos.clear()
-            nivel.gameover()
+            pantallas.gameover()
           }
         } }
     )
@@ -73,11 +99,11 @@ object eventos {
     game.onTick(
       1,
       "movimientoProyectilEnemigo",
-      { if (nivel.estadoJuego()) {
+      { if (pantallas.estadoJuego()) {
           proyectilEnemigo.lanzar()
           if (proyectilEnemigo.position().y() < 0) {
             game.removeVisual(proyectilEnemigo)
-            nivel.setYaColisiono(0,true)
+            nivel.setYaColisiono(0, true)
           }
         } }
     )
@@ -87,11 +113,12 @@ object eventos {
     game.onTick(
       1,
       "rotacionProyectil",
-      { if (nivel.estadoJuego()) {
-          
+      { if (pantallas.estadoJuego()) {
           proyectilj1.cambiarImagen(i_rotacion)
           proyectilj2.cambiarImagen(i_rotacion)
           //   proyectilj2.cambiarImagen(i_rotacion)
+          
+          
           
           proyectilEnemigo.cambiarImagen(i_rotacion)
           i_rotacion += 1
@@ -101,34 +128,30 @@ object eventos {
         } }
     )
   }
-
+  
   method movimientoProyectil() {
-     game.onTick(
+    game.onTick(
       1,
       "movimientoProyectil",
-      { 
-        if(nivel.estadoJuego()){
-        proyectilj1.lanzar()
-        if (proyectilj1.position().y() > game.height()) {
-          game.removeVisual(proyectilj1)
-          nivel.setYaColisiono(1,true)
-        }
-        }
-      }
+      { if (pantallas.estadoJuego()) {
+          proyectilj1.lanzar()
+          if (proyectilj1.position().y() > game.height()) {
+            game.removeVisual(proyectilj1)
+            nivel.setYaColisiono(1, true)
+          }
+        } }
     )
     
     game.onTick(
       1,
       "movimientoProyectilj2",
-      { 
-        if(nivel.estadoJuego()){
-        proyectilj2.lanzar()
-        if (proyectilj2.position().y() > game.height()) {
-          game.removeVisual(proyectilj2)
-          nivel.setYaColisiono(2,true)
-        }
-        }
-      }
+      { if (pantallas.estadoJuego()) {
+          proyectilj2.lanzar()
+          if (proyectilj2.position().y() > game.height()) {
+            game.removeVisual(proyectilj2)
+            nivel.setYaColisiono(2, true)
+          }
+        } }
     )
   }
   
@@ -139,7 +162,7 @@ object eventos {
     game.onTick(
       1000,
       "movimientoEnemigo",
-      { if (nivel.estadoJuego()) {
+      { if (pantallas.estadoJuego()) {
           var moverHaciaAbajo = false
           var nuevaDireccion = derecha
           
@@ -172,14 +195,14 @@ object eventos {
   method chiqui() {
     var chiquiCounter = 0
     var yaDetono = false
-    var player = nivel.getPlayer()
+    var player = nivel.getPlayer(1)
     
     keyboard.t().onPressDo({ if (chiquiCounter < 3) {chiquiCounter += 1} })
     
     game.onTick(
       1000,
       "chiquiMafia",
-      { if (nivel.estadoJuego() && (!yaDetono)) {
+      { if (pantallas.estadoJuego() && (!yaDetono)) {
           if (chiquiCounter >= 3) {
             yaDetono = true
             game.addVisual(chiquiTapia)
@@ -196,7 +219,7 @@ object eventos {
                   game.say(chiquiTapia, "No trates de entenderla, disfrutala")
                   game.removeVisual(chiquiTapia)
                   chiquiCounter = 0
-                  nivel.gameover()
+                  pantallas.gameover()
                 }
               }
             )
@@ -209,9 +232,9 @@ object eventos {
     game.onTick(
       1000,
       "verificarPosicionEnemigos",
-      { if (nivel.estadoJuego()) {
+      { if (pantallas.estadoJuego()) {
           if (enemigos.any({ enemigo => enemigo.position().y() < 35 }))
-            nivel.gameover()
+            pantallas.gameover()
         } }
     )
   }
