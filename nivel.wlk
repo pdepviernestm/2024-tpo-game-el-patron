@@ -67,6 +67,11 @@ object nivel {
     // })
   }
 
+  method youwin() {
+    estadoJuego = false
+    game.addVisual(foto_youWin)
+  }
+
   method menu() {
 
     var opciones = new Opciones()
@@ -165,7 +170,6 @@ object nivel {
             game.addVisual(hitbox)
             hitboxes.add(hitbox)
             d += 4
-            game.say(hitbox,"ESTOY ACA")
           })
         game.addVisual(valla)
         vallas.add(valla)
@@ -214,6 +218,9 @@ object nivel {
                 enemigos.remove(elemento)
 
                 yaColisionoj2 = true
+                if (enemigos == []){
+                  self.youwin()
+                }
               } }
           )
         } }
@@ -237,7 +244,7 @@ object nivel {
             game.say(chiquiTapia,"No trates de entenderla, disfrutala")
             game.removeVisual(chiquiTapia)
             chiquiCounter = 0
-            // self.gameover()
+            self.gameover()
           }
         })
       }
@@ -269,12 +276,17 @@ object nivel {
                 enemigos.remove(elemento)
 
                 yaColisionoj1 = true
+
+                if (enemigos == []){
+                  self.youwin()
+                }
               } }
           )
         } }
     ) 
 
     // Crear enemigos
+    // 3 filas, 7 columnas
     3.times(
       { y => 7.times(
           { x =>
