@@ -2,6 +2,7 @@ import example.*
 import wollok.game.*
 import proyectil.*
 import iu.*
+import eventos.*
 
 object nivel {
   var estadoJuego = true
@@ -16,6 +17,8 @@ object nivel {
 
     self.menu()
   }
+
+  method estadoJuego() = estadoJuego
 
   method setJugadores(j) {
     jugadores = j
@@ -125,36 +128,63 @@ object nivel {
     })
   
   }
+
+  var pepita = new JugadorPrincipal()
+  var pepita2 = new JugadorPrincipal()
+  var enemigos = []
+
+  var j1muerto = false
+  var j2muerto = false
+
+  method getPlayer() {
+      return pepita
+  } 
+
+
+  method setMuerto(jugador){
+    if(jugador == 1){
+      j1muerto = true
+    }
+    else if(jugador == 2){
+      j2muerto = true
+    }
+  }
+
+  method checkMuerto(jugador){
+    if(jugador == 1){
+      return j1muerto
+    } 
+    else if (jugador == 2){
+      return j2muerto
+    }
+    else return false
+  }
+
+  method getEnemigos() = enemigos
+
   method start() {
-    var pepita = new JugadorPrincipal()
-    var pepita2 = new JugadorPrincipal()
 
     pepita.setJugador(1)
     pepita2.setJugador(2)
 
     var proyectil = new Proyectil()
     var proyectilj2 = new Proyectil()
-    var proyectilEnemigo = new ProyectilEnemigo()
+    // var proyectilEnemigo = new ProyectilEnemigo()
 
     var yaColisionoj1 = true
     var yaColisionoj2 = true
     var yaColisionoEnemigo = true
 
-    var enemigos = []
     // var indicadores = []
     // var indicadoresj2 = []
     var vallas = []
     var hitboxes = []
 
-    var i = 0
-    var derecha = true
-    var step = 4
-    var chiquiCounter = 0
+    eventos.cargarEventos()
 
-    var j1muerto = false
-    var j2muerto = false
+
     if (jugadores == 1){
-      j2muerto = true
+      self.setMuerto(2)
     }
 
     pepita2.cambiarImagen("j2.png")
@@ -201,7 +231,7 @@ object nivel {
       pepita2.position(pepita2.position().left(4)) }})
       
     keyboard.enter().onPressDo(
-      { if (yaColisionoj2 && !j2muerto) {
+      { if (yaColisionoj2 && !self.checkMuerto(2)) {
           yaColisionoj2 = false
 
           proyectilj2 = new Proyectil()
@@ -227,29 +257,8 @@ object nivel {
     ) 
     }
 
-    keyboard.t().onPressDo({
-      chiquiCounter += 1
-    })
 
-    game.onTick(1000,"chiquiMafia",
-     {
-      if(estadoJuego){
-      if(chiquiCounter >= 3){
-        game.addVisual(chiquiTapia)
-        chiquiTapia.spawnear(pepita.position().x(),game.height())
-        game.onTick(1,"Detonar",{
-          pepita.position(game.at(chiquiTapia.position().x(),pepita.position().y()))
-          chiquiTapia.detonar()
-          if(chiquiTapia.position().y()< pepita.position().y()){
-            game.say(chiquiTapia,"No trates de entenderla, disfrutala")
-            game.removeVisual(chiquiTapia)
-            chiquiCounter = 0
-            self.gameover()
-          }
-        })
-      }
-      }
-     })
+    
     keyboard.d().onPressDo({
       if(pepita.position().x() < game.width() - 12) {
         pepita.position(pepita.position().right(4)) }
@@ -259,10 +268,10 @@ object nivel {
       pepita.position(pepita.position().left(4)) }})
       
     keyboard.space().onPressDo(
-      { if (yaColisionoj1 && !j1muerto) {
+      { if (yaColisionoj1 && !self.checkMuerto(1)) {
           yaColisionoj1 = false
 
-          proyectil = new Proyectil()
+          // proyectil = new Proyectil()
 
           game.addVisual(proyectil)
           proyectil.spawnea(pepita.position())
@@ -310,107 +319,9 @@ object nivel {
 
 
 
-    game.onTick(
-    1000,
-    "movimientoEnemigo",
-    { 
-        if(estadoJuego){
-        var moverHaciaAbajo = false
-        var nuevaDireccion = derecha
+    
 
-        enemigos.forEach({ enemigo =>
-            if (enemigo.position().x() > (game.width() - 16) && derecha) {
-                moverHaciaAbajo = true
-                nuevaDireccion = false
-            }
-            else if (enemigo.position().x() <  12 && !derecha) {
-                moverHaciaAbajo = true
-                nuevaDireccion = true
-            
-            }
-        })
-
-        if (moverHaciaAbajo) {
-            enemigos.forEach({ enem =>
-                enem.position(enem.position().down(8))
-            })
-            derecha = nuevaDireccion
-            step *= -1
-        } else {
-            enemigos.forEach({ enemigo =>
-                enemigo.position(enemigo.position().right(step))
-            })
-        }
-        }
-    }
-)
-
-
-    game.onTick(
-      1000,
-      "disparoEnemigo",{
-        if(estadoJuego){
-        if(yaColisionoEnemigo){
-          yaColisionoEnemigo = false
-
-          const indice =  0.randomUpTo(enemigos.size())
-          const enemigo = enemigos.get(indice)
-          proyectilEnemigo = new ProyectilEnemigo()
-
-          game.addVisual(proyectilEnemigo)
-          proyectilEnemigo.spawnea(enemigo.position())
-          proyectilEnemigo.lanzar()
-
-          game.onCollideDo(proyectilEnemigo,
-            { elemento =>
-              if(elemento.soyPepita()){
-                  game.removeVisual(proyectilEnemigo)
-                  elemento.setVidas(elemento.getVidas() - 1)
-                  if(elemento.getVidas()<1){
-                    game.removeVisual(elemento)
-                   if(elemento.jugador() == 1){
-                      j1muerto = true
-
-                    }
-                    if(elemento.jugador() == 2){
-                      j2muerto = true
-                    }
-                 
-                  }
-
-                var indicadores = elemento.indicadores()
-                game.removeVisual(indicadores.get(indicadores.size() - 1))
-                indicadores.remove(indicadores.get(indicadores.size() - 1))
-                yaColisionoEnemigo = true
-
-                if(j1muerto && j2muerto){
-                  game.removeVisual(elemento)
-                  game.removeVisual(proyectil)
-                  enemigos.forEach({ enemigo =>
-                    game.removeVisual(enemigo)
-                  })
-                  enemigos.clear()
-                  self.gameover()
-                }
-              }
-                else if(elemento.soyHitbox()){
-                    game.stop()
-                    var index = elemento.valla()
-                    var valla = vallas.get(index)
-                    if(valla.getVidas()> 0){
-                      elemento.sacarVida(valla)
-                      game.removeVisual(proyectilEnemigo)
-                    }else{
-                      game.removeVisual(valla)
-                      elemento.soyHitbox(false)
-                      } 
-            }
-            })
-          
-          
-        }
-        }
-    })
+   
 
     
     game.onTick(
@@ -441,46 +352,8 @@ object nivel {
       }
     )
 
-    game.onTick(
-      1,
-      "movimientoProyectilEnemigo",
-      { 
-        if(estadoJuego){
-        proyectilEnemigo.lanzar()
-        if (proyectilEnemigo.position().y() < 0) {
-          game.removeVisual(proyectilEnemigo)
-          yaColisionoEnemigo = true
-        }
-        }
-      }
-    )
     
-    game.onTick(
-      1,
-      "rotacionProyectil",
-      { 
-        if(estadoJuego){
-        proyectil.cambiarImagen(i)
-        proyectilj2.cambiarImagen(i)
-        proyectilEnemigo.cambiarImagen(i)
-        i += 1
-        if (i > 7) {
-          i = 0
-        }
-        }
-      }
-    )
-    game.onTick(
-    1000,
-    "verificarPosicionEnemigos",
-    {
-      if(estadoJuego){
-        if (enemigos.any({ enemigo => enemigo.position().y() < 35 })) {
-            game.stop()
-        }
-      }
-    }
-  )
+
   
   }
 }
