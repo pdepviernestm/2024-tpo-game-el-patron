@@ -34,26 +34,34 @@ object eventos {
   method colisionDisparo() {
     game.whenCollideDo(
       proyectiles.get(1),
-      { elemento => self._handleDisparo(elemento, proyectiles.get(1)) }
+      { elemento => self._handleDisparo(elemento, 1) }
     )
     if (proyectiles.size() > 2) 
     game.whenCollideDo(
       proyectiles.get(2),
-      { elemento => self._handleDisparo(elemento, proyectiles.get(2)) }
+      { elemento => self._handleDisparo(elemento, 2) }
     )
   }
   
-  method _handleDisparo(elemento, proyectil) {
+  method _handleDisparo(elemento, jugador) {
+    const proyectil = proyectiles.get(jugador)
+
     if (elemento.soyEnemigo()) {
-      game.removeVisual(proyectil)
-      game.removeVisual(elemento)
       enemigos.remove(elemento)
-      
-      proyectil.destruir()
-      nivel.setYaColisiono(1, true)
       
       if (enemigos == []) pantallas.youwin()
     }
+    else if (elemento.soyProyectil()){
+      elemento.destruir()
+      nivel.setYaColisiono(0, true)
+    }
+
+    proyectil.destruir()
+
+    game.removeVisual(proyectil)
+    game.removeVisual(elemento)
+
+    nivel.setYaColisiono(jugador, true)
   }
   
   method disparoEnemigo() {
@@ -105,7 +113,13 @@ object eventos {
             // enemigos.clear()
             pantallas.gameover()
           }
-        } }
+        } 
+        else if (elemento.soyProyectil()) {
+          game.removeVisual(proyectiles.get(0))
+          game.removeVisual(elemento)
+          elemento.destruir()
+          nivel.setYaColisiono(0, true)
+        }}
     )
   }
   
@@ -264,4 +278,6 @@ object eventos {
         } }
     )
   }
+
+  
 }

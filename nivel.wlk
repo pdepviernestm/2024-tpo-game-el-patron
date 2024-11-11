@@ -97,8 +97,8 @@ object nivel {
       jugador2.cargarIndicadores()
       game.addVisual(jugador2)
 
-      jugador1.spawnea(-8) // spawnear personajes
-      jugador2.spawnea(8)
+      jugador1.spawnea(-(game.width()/4)) // spawnear personajes
+      jugador2.spawnea((game.width()/4))
     }
     else {
       jugador1.spawnea(0) // spawnear enemigos
@@ -106,11 +106,11 @@ object nivel {
     
     4.times({v => 
         var valla = new Valla()
-        valla.spawnea(40*v-32,35)
+        valla.spawnea(40*v-32,36)
         var d = -8
           5.times({c => 
             var hitbox = new Hitbox()
-            hitbox.position(game.at((40*(v)-24)+ d,35))
+            hitbox.position(game.at((40*(v)-24)+ d,36))
             hitbox.valla(v)
             game.addVisual(hitbox)
             hitboxes.add(hitbox)

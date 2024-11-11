@@ -1,6 +1,6 @@
 import example.*
 
-class Proyectil {
+class Proyectil inherits Entidad {
   var imagen = "balboa0.png"
   var position = game.origin()
   var i_rotacion = 0
@@ -31,11 +31,7 @@ class Proyectil {
     self.position(game.at(-1, game.height()))
   }
   
-  method soyPepita() = false
-  
-  method soyEnemigo() = false
-  
-  method soyHitbox() = false
+  override method soyProyectil () = true
 }
 
 class ProyectilEnemigo inherits Proyectil {
