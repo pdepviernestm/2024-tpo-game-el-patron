@@ -20,8 +20,9 @@ object nivel {
   var yaColisionoj2 = true
   var yaColisionoEnemigo = true
 
-  var proyectilj1 = new Proyectil()
-  var proyectilj2 = new Proyectil()
+  // var proyectilj1 = new Proyectil()
+  // var proyectilj2 = new Proyectil()
+  const proyectiles = [new Proyectil(), new Proyectil()]
 
   method configurate() {
     game.title("BARRA INVADERS")
@@ -103,35 +104,42 @@ object nivel {
   method getEnemigos() = enemigos
 
   method getProyectil(jugador){
-    if(jugador == 1){
-      return proyectilj1
-    }
-    else if (jugador == 2){
-      return proyectilj2
-    }
-    else return 0
+    // if(jugador == 1){
+    //   return proyectilj1
+    // }
+    // else if (jugador == 2){
+    //   return proyectilj2
+    // }
+    // else return 0
+    return proyectiles.get(jugador - 1)
   }
     
   method start() {
 
     self.cargarModulos()
 
-    pepita.setJugador(1)
-    pepita2.setJugador(2)
-
-
     // var indicadores = []
     // var indicadoresj2 = []
     var vallas = []
     var hitboxes = []
 
+    pepita.setJugador(1)
+    pepita.cargarIndicadores()
+    game.addVisual(pepita)
 
+    if (jugadores == 2){
+      pepita2.cambiarImagen("j2.png")
+      pepita2.setJugador(2)
+      pepita2.cargarIndicadores()
+      game.addVisual(pepita2)
 
-    if (jugadores == 1){
-      self.setMuerto(2)
+      pepita.spawnea(-8) // spawnear personajes
+      pepita2.spawnea(8)
     }
-
-    pepita2.cambiarImagen("j2.png")
+    else {
+      self.setMuerto(2)
+      pepita.spawnea(0) // spawnear enemigos
+    }
     
     4.times({v => 
         var valla = new Valla()
@@ -148,25 +156,7 @@ object nivel {
         game.addVisual(valla)
         vallas.add(valla)
       })
-    
 
-    game.addVisual(pepita)
-
-    if (jugadores == 2){
-      pepita.spawnea(-8) // spawnear enemigos
-      pepita2.spawnea(8)
-    }
-    else {
-      pepita.spawnea(0) // spawnear enemigos
-    }
-    
-    if(jugadores == 2){
-      
-      game.addVisual(pepita2)
-      
-
-       
-    }
 
     // Crear enemigos
     // 3 filas, 7 columnas
@@ -186,13 +176,5 @@ object nivel {
     Todos van a la izquierda y cuando llegan al borde bajan.
     */
 
-    pepita.cargarIndicadores()
-    if (jugadores == 2){
-      pepita2.cargarIndicadores()
-    }
-
-    
-
-  
   }
 }

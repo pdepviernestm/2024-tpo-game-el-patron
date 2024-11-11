@@ -6,10 +6,8 @@ import proyectil.*
 import pantallas.*
 
 object eventos {
-  var enemigos = nivel.getEnemigos()
-  var proyectilEnemigo = new ProyectilEnemigo()
-  var proyectilj1 = nivel.getProyectil(1)
-  var proyectilj2 = nivel.getProyectil(2)
+  const enemigos = nivel.getEnemigos()
+  const proyectiles = [new ProyectilEnemigo(), nivel.getProyectil(1), nivel.getProyectil(2)]
   var i_rotacion = 0
   
   method cargarEventos() {
@@ -28,12 +26,12 @@ object eventos {
   // Jugador 2: J2
   method colisionDisparo() {
     game.whenCollideDo(
-      proyectilj1,
-      { elemento => self._handleDisparo(elemento,proyectilj1) }
+      proyectiles.get(1),
+      { elemento => self._handleDisparo(elemento,proyectiles.get(1)) }
     )
     game.whenCollideDo(
-      proyectilj2,
-      { elemento => self._handleDisparo(elemento,proyectilj2) }
+      proyectiles.get(2),
+      { elemento => self._handleDisparo(elemento,proyectiles.get(2)) }
     )
   }
   
@@ -58,31 +56,37 @@ object eventos {
           if (nivel.checkYaColisiono(0)) {
             nivel.setYaColisiono(0, false)
             
-            const indice = 0.randomUpTo(enemigos.size())
+            const indice = 0.randomUpTo(enemigos.size()).truncate(0)
             const enemigo = enemigos.get(indice)
+
+            console.println("Enemigo: " + indice)
 
             enemigo.cambiarImagen("enemigo_tirar.png")
             game.schedule(500, { enemigo.cambiarImagen("enemigo.png") })
             
-            game.addVisual(proyectilEnemigo)
-            proyectilEnemigo.spawnea(enemigo.position())
-            proyectilEnemigo.lanzar()
+            game.addVisual(proyectiles.get(0))
+            proyectiles.get(0).spawnea(enemigo.position())
+            proyectiles.get(0).lanzar()
           }
         } }
     )
     game.whenCollideDo(
-      proyectilEnemigo,
-      { elemento => if (elemento.soyPepita()) {
-          game.removeVisual(proyectilEnemigo)
+      proyectiles.get(0),
+      { elemento => 
+      if (elemento.soyPepita()) {
+          game.removeVisual(proyectiles.get(0))
           elemento.setVidas(elemento.getVidas() - 1)
+          
+          elemento.cambiarImagen("j" + elemento.jugador() + "_hit.png")
+          game.schedule(300, { elemento.cambiarImagen("j" + elemento.jugador() + ".png") })
           
           if (elemento.getVidas() < 1) {
             game.removeVisual(elemento)
-            if (elemento.jugador() == 1) nivel.setMuerto(1)
-            if (elemento.jugador() == 2) nivel.setMuerto(2)
+            nivel.setMuerto(elemento.jugador())
           }
+
           
-          var indicadores = elemento.indicadores()
+          const indicadores = elemento.indicadores()
           game.removeVisual(indicadores.get(indicadores.size() - 1))
           indicadores.remove(indicadores.get(indicadores.size() - 1))
           
@@ -97,34 +101,24 @@ object eventos {
         } }
     )
   }
+
+  method _criterio_enemigo(i) = proyectiles.get(i).position().y() < 0
+  method _criterio_jugador(i) = proyectiles.get(i).position().y() > game.height()
+
+  method _handleProyectilMovimiento(i, criterio){
+    proyectiles.get(i).lanzar()
+          if (criterio) {
+            game.removeVisual(proyectiles.get(i))
+            nivel.setYaColisiono(i, true)
+          }
+  }
   
   method movimientoProyectilEnemigo() {
     game.onTick(
       1,
       "movimientoProyectilEnemigo",
       { if (pantallas.estadoJuego()) {
-          proyectilEnemigo.lanzar()
-          if (proyectilEnemigo.position().y() < 0) {
-            game.removeVisual(proyectilEnemigo)
-            nivel.setYaColisiono(0, true)
-          }
-        } }
-    )
-  }
-  
-  method rotacionProyectil() {
-    game.onTick(
-      1,
-      "rotacionProyectil",
-      { if (pantallas.estadoJuego()) {
-          proyectilj1.cambiarImagen(i_rotacion)
-          proyectilj2.cambiarImagen(i_rotacion)
-          proyectilEnemigo.cambiarImagen(i_rotacion)
-          
-          i_rotacion += 1
-          if (i_rotacion > 7) {
-            i_rotacion = 0
-          }
+          self._handleProyectilMovimiento(0, self._criterio_enemigo(0))
         } }
     )
   }
@@ -134,11 +128,7 @@ object eventos {
       1,
       "movimientoProyectil",
       { if (pantallas.estadoJuego()) {
-          proyectilj1.lanzar()
-          if (proyectilj1.position().y() > game.height()) {
-            game.removeVisual(proyectilj1)
-            nivel.setYaColisiono(1, true)
-          }
+          self._handleProyectilMovimiento(1, self._criterio_jugador(1))
         } }
     )
     
@@ -146,14 +136,27 @@ object eventos {
       1,
       "movimientoProyectilj2",
       { if (pantallas.estadoJuego()) {
-          proyectilj2.lanzar()
-          if (proyectilj2.position().y() > game.height()) {
-            game.removeVisual(proyectilj2)
-            nivel.setYaColisiono(2, true)
+          self._handleProyectilMovimiento(2, self._criterio_jugador(2))
+        } }
+    )
+  }
+  method rotacionProyectil() {
+    game.onTick(
+      1,
+      "rotacionProyectil",
+      { if (pantallas.estadoJuego()) {
+          proyectiles.get(1).cambiarImagen(i_rotacion)
+          proyectiles.get(2).cambiarImagen(i_rotacion)
+          proyectiles.get(0).cambiarImagen(i_rotacion)
+          
+          i_rotacion += 1
+          if (i_rotacion > 7) {
+            i_rotacion = 0
           }
         } }
     )
   }
+  
   
   method movimientoEnemigo() {
     var derecha = true
