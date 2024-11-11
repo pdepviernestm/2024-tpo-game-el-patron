@@ -1,15 +1,34 @@
 import proyectil.*
 import iu.*
 // pepita.wlk
-class JugadorPrincipal {
-  var position = game.origin()
+class Entidad {
+  method soyPepita() = false
+  method soyEnemigo() = false
+  method soyHitbox() = false
+}
+
+class JugadorPrincipal inherits Entidad {
   var imagen = "j1.png"
+  var position = game.origin()
+
   var vidas = 3
   var jugador = 1
 
   var indicadores = []
 
   method jugador() = jugador
+
+  method image() = imagen
+
+  method cambiarImagen(img) {
+    imagen = img
+  }
+
+  method position() = position
+
+  method position(newPos) {
+    position = newPos
+  }
 
   method cargarIndicadores() {
     3.times({
@@ -35,39 +54,23 @@ class JugadorPrincipal {
 
   method indicadores() = indicadores
 
-  method position() = position
-  
-  method position(newPos) {
-    position = newPos
-  }
-  
   method spawnea(offset) {
     position = game.at(game.width()/2+offset, 12)
   }
-
-  method image() = imagen
-
-  method cambiarImagen(img) {
-    imagen = img
-  }
-  
 
   method getVidas() = vidas
   method setVidas(newVidas) {
     vidas = newVidas
   }
 
-  method soyPepita() = true
-
-  method soyEnemigo() = false
-    method soyHitbox() = false
+  override method soyPepita() = true
 }
 
-class Hitbox{
+class Hitbox inherits Entidad{
 
   var imagen = "j2.png"
-
   var position = game.origin()
+
   method position() = position
 
   method position(newPos) {
@@ -85,15 +88,14 @@ class Hitbox{
   method sacarVida(valla){
     valla.setVidas(valla.getVidas()-1) 
   }
-  method soyHitbox() = true
+  
+  override method soyHitbox() = true
 
   // method soyHitbox(bool){
   //   soyHitbox = bool
   // }
-  method soyPepita() = true
-  method soyEnemigo() = false
 
-  //  method image() = imagen
+  method image() = imagen
   
   method cambiarImagen(img) {
     imagen = img
@@ -102,7 +104,7 @@ class Hitbox{
 
 }
 
-class Enemigo {
+class Enemigo inherits Entidad {
   var imagen = "enemigo.png"
   var position = game.origin()
   
@@ -111,6 +113,7 @@ class Enemigo {
   method position(newPos) {
     position = newPos
   }
+  
   method spawnea(x,y) {
     position = game.at(x,y)
   }
@@ -121,10 +124,7 @@ class Enemigo {
     imagen = img
   }
 
-  method soyPepita() = false
-
-  method soyEnemigo() = true
-    method soyHitbox() = false
+  override method soyEnemigo() = true
 }
 
 class Valla{
@@ -132,7 +132,6 @@ class Valla{
   var position = game.origin()
   var vidas = 3
   
- 
   method position() = position
   
   method position(newPos) {
