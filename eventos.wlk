@@ -7,17 +7,14 @@ import pantallas.*
 
 object eventos {
   const enemigos = nivel.getEnemigos()
-  const proyectiles = [
-    new ProyectilEnemigo(),
-    nivel.getProyectil(1),
-    nivel.getProyectil(2)
-  ]
+  var proyectiles = []
   const jugadores = nivel.jugadores()
   var i_rotacion = 0
   var derecha = true
   var step = 4
   
   method cargarEventos() {
+    self._setProyectiles()
     self.chiqui()
     self.movimientoEnemigo()
     self.colisionDisparo()
@@ -25,6 +22,10 @@ object eventos {
     self.rotacionProyectil()
     self.movimientoProyectiles()
     self.verificarPosicionEnemigos()
+  }
+
+  method _setProyectiles(){
+     proyectiles = [new ProyectilEnemigo()] + nivel.proyectiles()
   }
   
   // Jugador 0: Enemigo
@@ -35,6 +36,7 @@ object eventos {
       proyectiles.get(1),
       { elemento => self._handleDisparo(elemento, proyectiles.get(1)) }
     )
+    if (proyectiles.size() > 2) 
     game.whenCollideDo(
       proyectiles.get(2),
       { elemento => self._handleDisparo(elemento, proyectiles.get(2)) }
@@ -98,9 +100,9 @@ object eventos {
           nivel.setYaColisiono(0, true)
           
           if (jugadores.all ({ jugador => nivel.checkMuerto(jugador.jugador())})) {
-            game.removeVisual(elemento)
-            enemigos.forEach({ enemigo => game.removeVisual(enemigo) })
-            enemigos.clear()
+            // game.removeVisual(elemento)
+            // enemigos.forEach({ enemigo => game.removeVisual(enemigo) })
+            // enemigos.clear()
             pantallas.gameover()
           }
         } }
@@ -125,8 +127,9 @@ object eventos {
     game.onTick(
       1,
       "movimientoProyectiles",
-      { if (pantallas.estadoJuego()) 3.times(
-            { i => self._handleProyectilMovimiento(
+      { if (pantallas.estadoJuego()) proyectiles.size().times(
+            { i => 
+            self._handleProyectilMovimiento(
                 i - 1,
                 self._criterio(i - 1)
               ) }
@@ -156,6 +159,7 @@ object eventos {
     Por cada 7 enemigos, se van moviendo mas rápido.
     Y cuando queda uno solo, se mueve a la velocidad máxima.
     */
+    
     game.onTick(
       2000,
       "movimientoEnemigo1",
@@ -163,13 +167,13 @@ object eventos {
           self._movimiento() }
     )
     game.onTick(
-      1000,
+      1500,
       "movimientoEnemigo2",
       { if (enemigos.size() > 7 && enemigos.size() <= 14)
           self._movimiento() }
     )
     game.onTick(
-      750,
+      1000,
       "movimientoEnemigo3",
       { if (enemigos.size() > 1 && enemigos.size() <= 7)
           self._movimiento() }
@@ -213,6 +217,7 @@ object eventos {
   }
   
   method chiqui() {
+    if (pantallas.estadoJuego()){
     var chiquiCounter = 0
     var yaDetono = false
     var player = nivel.getPlayer(1)
@@ -239,13 +244,14 @@ object eventos {
                   game.say(chiquiTapia, "No trates de entenderla, disfrutala")
                   game.removeVisual(chiquiTapia)
                   chiquiCounter = 0
-                  pantallas.gameover()
+                  
                 }
               }
             )
           }
-        } }
-    )
+        }
+         }
+    )}
   }
   
   method verificarPosicionEnemigos() {

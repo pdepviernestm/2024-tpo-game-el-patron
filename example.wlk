@@ -31,7 +31,7 @@ class JugadorPrincipal inherits Entidad {
   }
 
   method cargarIndicadores() {
-    3.times({
+    vidas.times({
       x => 
       var indicador = new IndicadorVida()
       if(jugador == 1){

@@ -4,7 +4,7 @@ import pantallas.*
 import iu.*
 
 object controles {
-  const proyectiles = [nivel.getProyectil(1), nivel.getProyectil(2)]
+  const proyectiles = nivel.proyectiles()
   const jugadores = nivel.jugadores()
   var enMenu = true
   
@@ -18,28 +18,36 @@ object controles {
   }
   
   method _derecha(j) {
-    const jugador = jugadores.get(j - 1)
-    if (jugador.position().x() < (game.width() - 12)) jugador.position(
-        jugador.position().right(4)
-      )
+    if (j <= nivel.jugadores().size()) {
+      const jugador = jugadores.get(j - 1)
+      if (jugador.position().x() < (game.width() - 12)) jugador.position(
+          jugador.position().right(4)
+        )
+    }
   }
   
   method _izquierda(j) {
-    const jugador = jugadores.get(j - 1)
-    if (jugador.position().x() > 8) jugador.position(jugador.position().left(4))
+    if (j <= nivel.jugadores().size()) {
+      const jugador = jugadores.get(j - 1)
+      if (jugador.position().x() > 8) jugador.position(
+          jugador.position().left(4)
+        )
+    }
   }
   
   method _disparo(j) {
-    const jugador = jugadores.get(j - 1)
-    const proyectil = proyectiles.get(j - 1)
-    if (nivel.checkYaColisiono(j) && (!nivel.checkMuerto(j))) {
-      nivel.setYaColisiono(j, false)
-      
-      jugador.cambiarImagen(("j" + j) + "_tirar.png")
-      game.schedule(250, { jugador.cambiarImagen(("j" + j) + ".png") })
-      
-      game.addVisual(proyectil)
-      proyectil.spawnea(jugador.position()) // proyectil.lanzar()
+    if (j <= nivel.jugadores().size()) {
+      const jugador = jugadores.get(j - 1)
+      const proyectil = proyectiles.get(j - 1)
+      if (nivel.checkYaColisiono(j) && (!nivel.checkMuerto(j))) {
+        nivel.setYaColisiono(j, false)
+        
+        jugador.cambiarImagen(("j" + j) + "_tirar.png")
+        game.schedule(250, { jugador.cambiarImagen(("j" + j) + ".png") })
+        
+        game.addVisual(proyectil)
+        proyectil.spawnea(jugador.position()) // proyectil.lanzar()
+      }
     }
   }
   
@@ -82,6 +90,7 @@ object controles {
             } else {
               if (seleccionador.seleccion() == 1) {
                 nivel.setJugadores(2)
+                // nivel.setProyectiles(jugadores.size())
                 pantallas.setJuegoPorArrancar(true)
               } else {
                 pantallas.setEnControles(true)
@@ -90,6 +99,7 @@ object controles {
             }
           }
           if (pantallas.juegoPorArrancar()) {
+            pantallas.setJuegoPorArrancar(false)
             game.removeVisual(pantallas.opciones())
             game.removeVisual(seleccionador)
             game.removeVisual(foto_Inicio)
