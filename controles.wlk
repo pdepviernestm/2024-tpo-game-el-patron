@@ -4,116 +4,100 @@ import pantallas.*
 import iu.*
 
 object controles {
-
-var proyectilj1 = nivel.getProyectil(1)
-var proyectilj2 = nivel.getProyectil(2)
-
-method cargarControles () {
-  self.controlesMenu()
-}
-
-method cargarControlesJuego () {
-  self.controlesj1()
-  self.controlesj2()
-}
-
-var pepita = nivel.getPlayer(1)
-var pepita2 = nivel.getPlayer(2)
-
-var enMenu = true
-
- method controlesj1 () {
-    keyboard.d().onPressDo({
-      if(pepita.position().x() < game.width() - 12) {
-        pepita.position(pepita.position().right(4)) }
-      })
-    keyboard.a().onPressDo({ 
-      if(pepita.position().x() > 8){
-      pepita.position(pepita.position().left(4)) }})
-      
-    keyboard.space().onPressDo(
-      { if (nivel.checkYaColisiono(1) && !nivel.checkMuerto(1)) {
-          nivel.setYaColisiono(1,false)
-
-          // Cambia la sprite del jugador
-          pepita.cambiarImagen("j1_tirar.png")
-          game.schedule(250, { pepita.cambiarImagen("j1.png") })
-
-          game.addVisual(proyectilj1)
-          proyectilj1.spawnea(pepita.position())
-          proyectilj1.lanzar()
-    
-        } }
-    ) 
-}
-
-method controlesj2 () {
-  keyboard.right().onPressDo({
-      if(pepita2.position().x() < game.width() - 12) {
-        pepita2.position(pepita2.position().right(4)) }
-      })
-      
-    keyboard.left().onPressDo({ 
-      if(pepita2.position().x() > 8){
-      pepita2.position(pepita2.position().left(4)) }})
-      
-    keyboard.enter().onPressDo(
-      { if (nivel.checkYaColisiono(2) && !nivel.checkMuerto(2)) {
-          nivel.setYaColisiono(2,false)
-
-          pepita2.cambiarImagen("j2_tirar.png")
-          game.schedule(250, { pepita2.cambiarImagen("j2.png") })
-
-          game.addVisual(proyectilj2)
-          proyectilj2.spawnea(pepita2.position())
-          proyectilj2.lanzar()
-
-        } }
-    ) 
-}
-
-method controlesMenu() {
+  const proyectiles = [nivel.getProyectil(1), nivel.getProyectil(2)]
+  const jugadores = nivel.jugadores()
+  var enMenu = true
   
-  keyboard.up().onPressDo({
-      if(!pantallas.juegoIniciado() && seleccionador.seleccion() > 0 && !pantallas.enControles() && pantallas.estadoJuego()){
-        // seleccionador.position(55,80)
-        seleccionador.arriba()
-      }
-    })
-    keyboard.down().onPressDo({
-      if(!pantallas.juegoIniciado() && seleccionador.seleccion() < 2 && !pantallas.enControles() && pantallas.estadoJuego()){
-        // seleccionador.position(55,67)
-        seleccionador.abajo()
-      }
-    })
-    keyboard.enter().onPressDo({
-      if (!pantallas.juegoIniciado() && pantallas.estadoJuego()){
-        if(pantallas.enControles()){
-          pantallas.opciones().cambiarImagen("opciones2.png")
-          pantallas.setEnControles(false)
-        }
-        else if(seleccionador.seleccion() == 0){
-          nivel.setJugadores(1)
-          pantallas.setJuegoPorArrancar(true)
-        }
-        else if(seleccionador.seleccion() == 1){
-          nivel.setJugadores(2)
-          pantallas.setJuegoPorArrancar(true)
-        }
-        else{
-          pantallas.setEnControles(true)
-           pantallas.opciones().cambiarImagen("controles2.png")
-         }
-        if(pantallas.juegoPorArrancar()){
-          game.removeVisual(pantallas.opciones())
-          game.removeVisual(seleccionador)
-          game.removeVisual(foto_Inicio)
-          pantallas.setJuegoIniciado(true)
-          self.cargarControlesJuego()
-          nivel.start()
-        }
-      }
-    })
-}
-
+  method cargarControles() {
+    self.controlesMenu()
+  }
+  
+  method cargarControlesJuego() {
+    self.controlesj1()
+    self.controlesj2()
+  }
+  
+  method _derecha(j) {
+    const jugador = jugadores.get(j - 1)
+    if (jugador.position().x() < (game.width() - 12)) jugador.position(
+        jugador.position().right(4)
+      )
+  }
+  
+  method _izquierda(j) {
+    const jugador = jugadores.get(j - 1)
+    if (jugador.position().x() > 8) jugador.position(jugador.position().left(4))
+  }
+  
+  method _disparo(j) {
+    const jugador = jugadores.get(j - 1)
+    const proyectil = proyectiles.get(j - 1)
+    if (nivel.checkYaColisiono(j) && (!nivel.checkMuerto(j))) {
+      nivel.setYaColisiono(j, false)
+      
+      jugador.cambiarImagen(("j" + j) + "_tirar.png")
+      game.schedule(250, { jugador.cambiarImagen(("j" + j) + ".png") })
+      
+      game.addVisual(proyectil)
+      proyectil.spawnea(jugador.position()) // proyectil.lanzar()
+    }
+  }
+  
+  method controlesj1() {
+    keyboard.a().onPressDo({ self._izquierda(1) })
+    
+    keyboard.d().onPressDo({ self._derecha(1) })
+    
+    keyboard.space().onPressDo({ self._disparo(1) })
+  }
+  
+  method controlesj2() {
+    keyboard.left().onPressDo({ self._izquierda(2) })
+    
+    keyboard.right().onPressDo({ self._derecha(2) })
+    
+    keyboard.enter().onPressDo({ self._disparo(2) })
+  }
+  
+  method controlesMenu() {
+    keyboard.up().onPressDo(
+      { if ((((!pantallas.juegoIniciado()) && (seleccionador.seleccion() > 0)) && (!pantallas.enControles())) && pantallas.estadoJuego())
+          // seleccionador.position(55,80)
+          seleccionador.arriba() }
+    )
+    keyboard.down().onPressDo(
+      { if ((((!pantallas.juegoIniciado()) && (seleccionador.seleccion() < 2)) && (!pantallas.enControles())) && pantallas.estadoJuego())
+          // seleccionador.position(55,67)
+          seleccionador.abajo() }
+    )
+    keyboard.enter().onPressDo(
+      { if ((!pantallas.juegoIniciado()) && pantallas.estadoJuego()) {
+          if (pantallas.enControles()) {
+            pantallas.opciones().cambiarImagen("opciones2.png")
+            pantallas.setEnControles(false)
+          } else {
+            if (seleccionador.seleccion() == 0) {
+              nivel.setJugadores(1)
+              pantallas.setJuegoPorArrancar(true)
+            } else {
+              if (seleccionador.seleccion() == 1) {
+                nivel.setJugadores(2)
+                pantallas.setJuegoPorArrancar(true)
+              } else {
+                pantallas.setEnControles(true)
+                pantallas.opciones().cambiarImagen("controles2.png")
+              }
+            }
+          }
+          if (pantallas.juegoPorArrancar()) {
+            game.removeVisual(pantallas.opciones())
+            game.removeVisual(seleccionador)
+            game.removeVisual(foto_Inicio)
+            pantallas.setJuegoIniciado(true)
+            self.cargarControlesJuego()
+            nivel.start()
+          }
+        } }
+    )
+  }
 }

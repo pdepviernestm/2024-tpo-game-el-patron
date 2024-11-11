@@ -7,21 +7,14 @@ import controles.*
 import pantallas.*
 
 object nivel {
-  var jugadores = 1
 
-  var pepita = new JugadorPrincipal()
-  var pepita2 = new JugadorPrincipal()
+  var jugadores = []
   var enemigos = []
-
-  var j1muerto = false
-  var j2muerto = false
 
   var yaColisionoj1 = true
   var yaColisionoj2 = true
   var yaColisionoEnemigo = true
 
-  // var proyectilj1 = new Proyectil()
-  // var proyectilj2 = new Proyectil()
   const proyectiles = [new Proyectil(), new Proyectil()]
 
   method configurate() {
@@ -40,40 +33,13 @@ object nivel {
     // controles.cargarControles()
   }
   
+  method setJugadores(j) = j.times({i => jugadores.add(new JugadorPrincipal())})
+
+  method getPlayer(jugador) = jugadores.get(jugador - 1)
+
   method jugadores () = jugadores
 
-  method setJugadores(j) {
-    jugadores = j
-  }
-
-  method getPlayer(jugador) {
-    if(jugador == 1){
-      return pepita
-    }
-    else if (jugador == 2){
-      return pepita2
-    }
-    else return 0
-  } 
-
-  method setMuerto(jugador){
-    if(jugador == 1){
-      j1muerto = true
-    }
-    else if(jugador == 2){
-      j2muerto = true
-    }
-  }
-
-  method checkMuerto(jugador){
-    if(jugador == 1){
-      return j1muerto
-    } 
-    else if (jugador == 2){
-      return j2muerto
-    }
-    else return false
-  }
+  method checkMuerto(jugador) = jugadores.get(jugador-1).getVidas() < 1
 
   method checkYaColisiono(jugador) {
     if(jugador == 0){
@@ -123,22 +89,24 @@ object nivel {
     var vallas = []
     var hitboxes = []
 
-    pepita.setJugador(1)
-    pepita.cargarIndicadores()
-    game.addVisual(pepita)
+    const jugador1 = jugadores.get(0)
 
-    if (jugadores == 2){
-      pepita2.cambiarImagen("j2.png")
-      pepita2.setJugador(2)
-      pepita2.cargarIndicadores()
-      game.addVisual(pepita2)
+    jugador1.setJugador(1)
+    jugador1.cargarIndicadores()
+    game.addVisual(jugador1)
 
-      pepita.spawnea(-8) // spawnear personajes
-      pepita2.spawnea(8)
+    if (jugadores.size() == 2){
+      const jugador2 = jugadores.get(1)
+      jugador2.cambiarImagen("j2.png")
+      jugador2.setJugador(2)
+      jugador2.cargarIndicadores()
+      game.addVisual(jugador2)
+
+      jugador1.spawnea(-8) // spawnear personajes
+      jugador2.spawnea(8)
     }
     else {
-      self.setMuerto(2)
-      pepita.spawnea(0) // spawnear enemigos
+      jugador1.spawnea(0) // spawnear enemigos
     }
     
     4.times({v => 

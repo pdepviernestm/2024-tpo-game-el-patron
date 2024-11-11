@@ -7,8 +7,15 @@ import pantallas.*
 
 object eventos {
   const enemigos = nivel.getEnemigos()
-  const proyectiles = [new ProyectilEnemigo(), nivel.getProyectil(1), nivel.getProyectil(2)]
+  const proyectiles = [
+    new ProyectilEnemigo(),
+    nivel.getProyectil(1),
+    nivel.getProyectil(2)
+  ]
+  const jugadores = nivel.jugadores()
   var i_rotacion = 0
+  var derecha = true
+  var step = 4
   
   method cargarEventos() {
     self.chiqui()
@@ -26,15 +33,15 @@ object eventos {
   method colisionDisparo() {
     game.whenCollideDo(
       proyectiles.get(1),
-      { elemento => self._handleDisparo(elemento,proyectiles.get(1)) }
+      { elemento => self._handleDisparo(elemento, proyectiles.get(1)) }
     )
     game.whenCollideDo(
       proyectiles.get(2),
-      { elemento => self._handleDisparo(elemento,proyectiles.get(2)) }
+      { elemento => self._handleDisparo(elemento, proyectiles.get(2)) }
     )
   }
   
-  method _handleDisparo(elemento,proyectil) {
+  method _handleDisparo(elemento, proyectil) {
     if (elemento.soyEnemigo()) {
       game.removeVisual(proyectil)
       game.removeVisual(elemento)
@@ -57,7 +64,7 @@ object eventos {
             
             const indice = 0.randomUpTo(enemigos.size()).truncate(0)
             const enemigo = enemigos.get(indice)
-
+            
             enemigo.cambiarImagen("enemigo_tirar.png")
             game.schedule(500, { enemigo.cambiarImagen("enemigo.png") })
             
@@ -69,19 +76,20 @@ object eventos {
     )
     game.whenCollideDo(
       proyectiles.get(0),
-      { elemento => 
-      if (elemento.soyPepita()) {
+      { elemento => if (elemento.soyPepita()) {
           game.removeVisual(proyectiles.get(0))
           elemento.setVidas(elemento.getVidas() - 1)
           
-          elemento.cambiarImagen("j" + elemento.jugador() + "_hit.png")
-          game.schedule(300, { elemento.cambiarImagen("j" + elemento.jugador() + ".png") })
+          elemento.cambiarImagen(("j" + elemento.jugador()) + "_hit.png")
+          game.schedule(
+            300,
+            { elemento.cambiarImagen(("j" + elemento.jugador()) + ".png") }
+          )
           
           if (elemento.getVidas() < 1) {
             game.removeVisual(elemento)
-            nivel.setMuerto(elemento.jugador())
           }
-
+          
           
           const indicadores = elemento.indicadores()
           game.removeVisual(indicadores.get(indicadores.size() - 1))
@@ -89,7 +97,7 @@ object eventos {
           
           nivel.setYaColisiono(0, true)
           
-          if (nivel.checkMuerto(1) && nivel.checkMuerto(2)) {
+          if (jugadores.all ({ jugador => nivel.checkMuerto(jugador.jugador())})) {
             game.removeVisual(elemento)
             enemigos.forEach({ enemigo => game.removeVisual(enemigo) })
             enemigos.clear()
@@ -98,38 +106,42 @@ object eventos {
         } }
     )
   }
-
+  
   method _criterio(i) {
     const y = proyectiles.get(i).position().y()
-    return  y < 0 || y > game.height()
+    return (y < 0) || (y > game.height())
   }
-
-  method _handleProyectilMovimiento(i, criterio){
+  
+  method _handleProyectilMovimiento(i, criterio) {
     proyectiles.get(i).lanzar()
-          if (criterio) {
-            game.removeVisual(proyectiles.get(i))
-            nivel.setYaColisiono(i, true)
-          }
+    if (criterio) {
+      game.removeVisual(proyectiles.get(i))
+      proyectiles.get(i).destruir()
+      nivel.setYaColisiono(i, true)
+    }
   }
   
   method movimientoProyectiles() {
     game.onTick(
       1,
       "movimientoProyectiles",
-      { if (pantallas.estadoJuego()) {
-          3.times({ i => 
-            self._handleProyectilMovimiento(i-1 , self._criterio(i-1))
-          })
-        } }
+      { if (pantallas.estadoJuego()) 3.times(
+            { i => self._handleProyectilMovimiento(
+                i - 1,
+                self._criterio(i - 1)
+              ) }
+          ) }
     )
   }
+  
   method rotacionProyectil() {
     game.onTick(
       1,
       "rotacionProyectil",
       { if (pantallas.estadoJuego()) {
-        proyectiles.forEach(
-          { proyectil => proyectil.cambiarImagen(i_rotacion) })
+          proyectiles.forEach(
+            { proyectil => proyectil.cambiarImagen(i_rotacion) }
+          )
           
           i_rotacion += 1
           if (i_rotacion > 7) {
@@ -140,40 +152,64 @@ object eventos {
   }
   
   method movimientoEnemigo() {
-    var derecha = true
-    var step = 4
-    
+    /*
+    Por cada 7 enemigos, se van moviendo mas rápido.
+    Y cuando queda uno solo, se mueve a la velocidad máxima.
+    */
+    game.onTick(
+      2000,
+      "movimientoEnemigo1",
+      { if(enemigos.size() > 14 && enemigos.size() <= 21)
+          self._movimiento() }
+    )
     game.onTick(
       1000,
-      "movimientoEnemigo",
-      { if (pantallas.estadoJuego()) {
-          var moverHaciaAbajo = false
-          var nuevaDireccion = derecha
-          
-          enemigos.forEach(
-            { enemigo =>
-              if ((enemigo.position().x() > (game.width() - 16)) && derecha) {
-                moverHaciaAbajo = true
-                nuevaDireccion = false
-              } else {
-                if ((enemigo.position().x() < 12) && (!derecha)) {
-                  moverHaciaAbajo = true
-                  nuevaDireccion = true
-                }
-              } }
-          )
-          
-          if (moverHaciaAbajo) {
-            enemigos.forEach({ enem => enem.position(enem.position().down(8)) })
-            derecha = nuevaDireccion
-            step *= -1
-          } else {
-            enemigos.forEach(
-              { enemigo => enemigo.position(enemigo.position().right(step)) }
-            )
+      "movimientoEnemigo2",
+      { if (enemigos.size() > 7 && enemigos.size() <= 14)
+          self._movimiento() }
+    )
+    game.onTick(
+      750,
+      "movimientoEnemigo3",
+      { if (enemigos.size() > 1 && enemigos.size() <= 7)
+          self._movimiento() }
+    )
+    game.onTick(
+      500,
+      "movimientoEnemigo4",
+      { if (enemigos.size() <= 1)
+          self._movimiento() }
+    )
+  }
+  
+  method _movimiento() {
+    if (pantallas.estadoJuego()){
+    var moverHaciaAbajo = false
+    var nuevaDireccion = derecha
+    
+    enemigos.forEach(
+      { enemigo =>
+        if ((enemigo.position().x() > (game.width() - 16)) && derecha) {
+          moverHaciaAbajo = true
+          nuevaDireccion = false
+        } else {
+          if ((enemigo.position().x() < 12) && (!derecha)) {
+            moverHaciaAbajo = true
+            nuevaDireccion = true
           }
         } }
     )
+    
+    if (moverHaciaAbajo) {
+      enemigos.forEach({ enem => enem.position(enem.position().down(8)) })
+      derecha = nuevaDireccion
+      step *= -1
+    } else {
+      enemigos.forEach(
+        { enemigo => enemigo.position(enemigo.position().right(step)) }
+      )
+    }
+    }
   }
   
   method chiqui() {
