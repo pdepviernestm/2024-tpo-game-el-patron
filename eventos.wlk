@@ -16,8 +16,7 @@ object eventos {
     self.colisionDisparo()
     self.disparoEnemigo()
     self.rotacionProyectil()
-    self.movimientoProyectil()
-    self.movimientoProyectilEnemigo()
+    self.movimientoProyectiles()
     self.verificarPosicionEnemigos()
   }
   
@@ -58,8 +57,6 @@ object eventos {
             
             const indice = 0.randomUpTo(enemigos.size()).truncate(0)
             const enemigo = enemigos.get(indice)
-
-            console.println("Enemigo: " + indice)
 
             enemigo.cambiarImagen("enemigo_tirar.png")
             game.schedule(500, { enemigo.cambiarImagen("enemigo.png") })
@@ -102,8 +99,10 @@ object eventos {
     )
   }
 
-  method _criterio_enemigo(i) = proyectiles.get(i).position().y() < 0
-  method _criterio_jugador(i) = proyectiles.get(i).position().y() > game.height()
+  method _criterio(i) {
+    const y = proyectiles.get(i).position().y()
+    return  y < 0 || y > game.height()
+  }
 
   method _handleProyectilMovimiento(i, criterio){
     proyectiles.get(i).lanzar()
@@ -113,30 +112,14 @@ object eventos {
           }
   }
   
-  method movimientoProyectilEnemigo() {
+  method movimientoProyectiles() {
     game.onTick(
       1,
-      "movimientoProyectilEnemigo",
+      "movimientoProyectiles",
       { if (pantallas.estadoJuego()) {
-          self._handleProyectilMovimiento(0, self._criterio_enemigo(0))
-        } }
-    )
-  }
-  
-  method movimientoProyectil() {
-    game.onTick(
-      1,
-      "movimientoProyectil",
-      { if (pantallas.estadoJuego()) {
-          self._handleProyectilMovimiento(1, self._criterio_jugador(1))
-        } }
-    )
-    
-    game.onTick(
-      1,
-      "movimientoProyectilj2",
-      { if (pantallas.estadoJuego()) {
-          self._handleProyectilMovimiento(2, self._criterio_jugador(2))
+          3.times({ i => 
+            self._handleProyectilMovimiento(i-1 , self._criterio(i-1))
+          })
         } }
     )
   }
@@ -145,9 +128,8 @@ object eventos {
       1,
       "rotacionProyectil",
       { if (pantallas.estadoJuego()) {
-          proyectiles.get(1).cambiarImagen(i_rotacion)
-          proyectiles.get(2).cambiarImagen(i_rotacion)
-          proyectiles.get(0).cambiarImagen(i_rotacion)
+        proyectiles.forEach(
+          { proyectil => proyectil.cambiarImagen(i_rotacion) })
           
           i_rotacion += 1
           if (i_rotacion > 7) {
@@ -156,7 +138,6 @@ object eventos {
         } }
     )
   }
-  
   
   method movimientoEnemigo() {
     var derecha = true
