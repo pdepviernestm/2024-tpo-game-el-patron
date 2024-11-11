@@ -12,7 +12,7 @@ class JugadorPrincipal inherits Entidad {
   var imagen = "j1.png"
   var position = game.origin()
 
-  var vidas = 1
+  var vidas = 3
   var jugador = 1
 
   var indicadores = []
@@ -67,9 +67,32 @@ class JugadorPrincipal inherits Entidad {
   override method soyPepita() = true
 }
 
+
+class Enemigo inherits Entidad {
+  var imagen = "enemigo.png"
+  var position = game.origin()
+  
+  method position() = position
+  
+  method position(newPos) {
+    position = newPos
+  }
+  
+  method spawnea(x,y) {
+    position = game.at(x,y)
+  }
+  
+  method image() = imagen
+  
+  method cambiarImagen(img) {
+    imagen = img
+  }
+
+  override method soyEnemigo() = true
+}
 class Hitbox inherits Entidad{
 
-  var imagen = "j2.png"
+  var imagen = "j2.png" // Para visualizar la hitbox
   var position = game.origin()
 
   method position() = position
@@ -96,42 +119,18 @@ class Hitbox inherits Entidad{
   //   soyHitbox = bool
   // }
 
-  method image() = imagen
+  // method image() = imagen
   
   method cambiarImagen(img) {
     imagen = img
   }
 
-
 }
 
-class Enemigo inherits Entidad {
-  var imagen = "enemigo.png"
-  var position = game.origin()
-  
-  method position() = position
-  
-  method position(newPos) {
-    position = newPos
-  }
-  
-  method spawnea(x,y) {
-    position = game.at(x,y)
-  }
-  
-  method image() = imagen
-  
-  method cambiarImagen(img) {
-    imagen = img
-  }
-
-  override method soyEnemigo() = true
-}
-
-class Valla{
+class Valla inherits Entidad{
   var imagen = "valla192.png"
   var position = game.origin()
-  var vidas = 3
+  var vidas = 5
   
   method position() = position
   

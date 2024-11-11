@@ -11,6 +11,8 @@ object nivel {
   var jugadores = []
   var enemigos = []
   var proyectiles = []
+  var vallas = []
+  var hitboxes = []
 
   var yaColisionoj1 = true
   var yaColisionoj2 = true
@@ -39,13 +41,15 @@ object nivel {
 
   method jugadores () = jugadores
 
+  method checkMuerto(jugador) = jugadores.get(jugador-1).getVidas() < 1
+
   method setProyectiles(j) = j.times({i => proyectiles.add(new Proyectil())})
 
   method getProyectil(jugador) = proyectiles.get(jugador - 1)
 
   method proyectiles() = proyectiles
 
-  method checkMuerto(jugador) = jugadores.get(jugador-1).getVidas() < 1
+  method vallas () = vallas
 
   method checkYaColisiono(jugador) {
     if(jugador == 0){
@@ -81,8 +85,6 @@ object nivel {
 
     // var indicadores = []
     // var indicadoresj2 = []
-    var vallas = []
-    var hitboxes = []
 
     const jugador1 = jugadores.get(0)
 

@@ -48,20 +48,22 @@ object eventos {
 
     if (elemento.soyEnemigo()) {
       enemigos.remove(elemento)
-      
+      game.removeVisual(proyectil)
+      game.removeVisual(elemento)
+      proyectil.destruir()
+      nivel.setYaColisiono(jugador, true)
       if (enemigos == []) pantallas.youwin()
     }
     else if (elemento.soyProyectil()){
       elemento.destruir()
+      game.removeVisual(proyectil)
+      game.removeVisual(elemento)
+      proyectil.destruir()
       nivel.setYaColisiono(0, true)
     }
-
-    proyectil.destruir()
-
-    game.removeVisual(proyectil)
-    game.removeVisual(elemento)
-
-    nivel.setYaColisiono(jugador, true)
+    else if (elemento.soyHitbox()){
+      self._handleHitbox(elemento, jugador)    
+    }
   }
   
   method disparoEnemigo() {
@@ -86,7 +88,8 @@ object eventos {
     )
     game.whenCollideDo(
       proyectiles.get(0),
-      { elemento => if (elemento.soyPepita()) {
+      { elemento => 
+      if (elemento.soyPepita()) {
           game.removeVisual(proyectiles.get(0))
           elemento.setVidas(elemento.getVidas() - 1)
           
@@ -119,8 +122,25 @@ object eventos {
           game.removeVisual(elemento)
           elemento.destruir()
           nivel.setYaColisiono(0, true)
-        }}
+        }
+        else if (elemento.soyHitbox()){
+          self._handleHitbox(elemento, 0)
+        }
+        }
     )
+  }
+
+  method _handleHitbox(elemento, jugador) {
+    const valla = nivel.vallas().get(elemento.valla()-1)
+    if (valla.getVidas() >= 1) {
+      elemento.sacarVida(valla)
+      game.removeVisual(proyectiles.get(jugador))
+      nivel.setYaColisiono(jugador, true)
+      // Debug
+      console.println("Vidas de la valla " + elemento.valla() + ": " + valla.getVidas())
+    } if (valla.getVidas() < 1) {
+      game.removeVisual(valla)
+    }
   }
   
   method _criterio(i) {
