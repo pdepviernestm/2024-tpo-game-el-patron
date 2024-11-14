@@ -25,7 +25,7 @@ class IndicadorVidaJ2 inherits IndicadorVida {
 
 object foto_Inicio {
   var position = game.origin()
-  var imagen = "menu.png"
+  var imagen = "menu_.png"
   
   method image() = imagen
   

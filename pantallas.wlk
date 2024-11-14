@@ -9,6 +9,7 @@ object pantallas {
     var estadoJuego = true
     const temaPrincipal = game.sound("main_loop.mp3")
     const temaGameOver = game.sound("game_over.mp3")
+    const temaVictory = game.sound("victory.mp3")
 
 method juegoIniciado() = juegoIniciado
 method juegoPorArrancar() = juegoPorArrancar
@@ -116,6 +117,9 @@ method setJuegoIniciado(bool){
   }
 
   method youwin() {
+    temaPrincipal.stop()
+    temaVictory.volume(0.5)
+    temaVictory.play()
     estadoJuego = false
     game.addVisual(foto_youWin)
   }
