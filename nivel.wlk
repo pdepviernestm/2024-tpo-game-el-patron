@@ -18,6 +18,7 @@ object nivel {
   var yaColisionoj2 = true
   var yaColisionoEnemigo = true
 
+
   method configurate() {
     game.title("BARRA INVADERS")
     game.cellSize(8)

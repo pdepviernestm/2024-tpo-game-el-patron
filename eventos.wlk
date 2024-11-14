@@ -49,7 +49,7 @@ object eventos {
     if (elemento.soyEnemigo()) {
       enemigos.remove(elemento)
       game.removeVisual(proyectil)
-      game.removeVisual(elemento)
+      elemento.morir()
       proyectil.destruir()
       nivel.setYaColisiono(jugador, true)
       if (enemigos == []) pantallas.youwin()
@@ -82,7 +82,8 @@ object eventos {
             
             game.addVisual(proyectiles.get(0))
             proyectiles.get(0).spawnea(enemigo.position())
-            proyectiles.get(0).lanzar()
+            // proyectiles.get(0).lanzar()
+            proyectiles.get(0).reproducir()
           }
         } }
     )
@@ -135,6 +136,7 @@ object eventos {
     if (valla.getVidas() >= 1) {
       elemento.sacarVida(valla)
       game.removeVisual(proyectiles.get(jugador))
+      proyectiles.get(jugador).destruir()
       nivel.setYaColisiono(jugador, true)
       // Debug
     valla.cambiarImagen("valla_hit.png")

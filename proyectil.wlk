@@ -4,6 +4,12 @@ class Proyectil inherits Entidad {
   var imagen = "balboa0.png"
   var position = game.origin()
   var i_rotacion = 0
+  const sonido = game.sound("lanzar.mp3")
+  
+  method reproducir() {
+    sonido.play()
+    game.schedule(500, { sonido.stop() })
+  }
   
   method position() = position
   
@@ -18,7 +24,6 @@ class Proyectil inherits Entidad {
   method lanzar() {
     self.position(self.position().up(4))
   }
-
   
   method image() = imagen
   
@@ -31,7 +36,7 @@ class Proyectil inherits Entidad {
     self.position(game.at(-1, game.height()))
   }
   
-  override method soyProyectil () = true
+  override method soyProyectil() = true
 }
 
 class ProyectilEnemigo inherits Proyectil {

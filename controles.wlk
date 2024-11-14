@@ -47,6 +47,7 @@ object controles {
         
         game.addVisual(proyectil)
         proyectil.spawnea(jugador.position()) // proyectil.lanzar()
+        proyectil.reproducir()
       }
     }
   }
@@ -89,8 +90,8 @@ object controles {
               pantallas.setJuegoPorArrancar(true)
             } else {
               if (seleccionador.seleccion() == 1) {
-                nivel.setJugadores(2)
-                // nivel.setProyectiles(jugadores.size())
+                nivel.setJugadores(2) // nivel.setProyectiles(jugadores.size())
+                
                 pantallas.setJuegoPorArrancar(true)
               } else {
                 pantallas.setEnControles(true)

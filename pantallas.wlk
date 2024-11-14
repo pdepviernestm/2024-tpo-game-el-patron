@@ -7,6 +7,8 @@ object pantallas {
     var opciones = new Opciones()
     var enControles = false
     var estadoJuego = true
+    const temaPrincipal = game.sound("main_loop.mp3")
+    const temaGameOver = game.sound("game_over.mp3")
 
 method juegoIniciado() = juegoIniciado
 method juegoPorArrancar() = juegoPorArrancar
@@ -25,6 +27,10 @@ method setJuegoIniciado(bool){
 
   method menu() {
     
+    temaPrincipal.shouldLoop(true)
+    temaPrincipal.volume(0.5)
+    game.schedule(500, { temaPrincipal.play()} )
+    
     opciones.position(65,30)
 
     game.addVisual(foto_Inicio)
@@ -35,6 +41,9 @@ method setJuegoIniciado(bool){
   
   }
   method gameover() {
+    temaPrincipal.stop()
+    temaGameOver.volume(0.5)
+    temaGameOver.play()
     // console.println("entro a gameover")
     // nivel.getEnemigos()
     // console.println(nivel.jugadores())
