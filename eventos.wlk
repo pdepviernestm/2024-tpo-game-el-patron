@@ -137,6 +137,11 @@ object eventos {
       game.removeVisual(proyectiles.get(jugador))
       nivel.setYaColisiono(jugador, true)
       // Debug
+    valla.cambiarImagen("valla_hit.png")
+          game.schedule(
+            300,
+          { valla.cambiarImagen("valla192.png") }
+      )
       console.println("Vidas de la valla " + elemento.valla() + ": " + valla.getVidas())
     } if (valla.getVidas() < 1) {
       game.removeVisual(valla)
@@ -263,6 +268,7 @@ object eventos {
       "chiquiMafia",
       { if (pantallas.estadoJuego() && (!yaDetono)) {
           if (chiquiCounter >= 3) {
+            const chiquiSong = game.sound("chiquiSong.mp3").play()
             yaDetono = true
             game.addVisual(chiquiTapia)
             chiquiTapia.spawnear(player.position().x(), game.height())
@@ -278,7 +284,8 @@ object eventos {
                   game.say(chiquiTapia, "No trates de entenderla, disfrutala")
                   game.removeVisual(chiquiTapia)
                   chiquiCounter = 0
-                  
+                  chiquiSong.stop()
+                  pantallas.gameover()
                 }
               }
             )
