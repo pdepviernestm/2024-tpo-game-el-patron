@@ -44,7 +44,7 @@ class JugadorPrincipal inherits Entidad {
   method cargarIndicadores() {
     vidas.times(
       { x =>
-        var indicador = new IndicadorVida()
+        const indicador = new IndicadorVida()
         if (jugador == 1) {
           indicador.position((12 * x) - 9)
           indicador.cambiarImagen("piluso2x.png")

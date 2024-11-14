@@ -81,6 +81,7 @@ object controles {
     )
     keyboard.enter().onPressDo(
       { if ((!pantallas.juegoIniciado()) && pantallas.estadoJuego()) {
+          seleccionador.seleccionar()
           if (pantallas.enControles()) {
             pantallas.opciones().cambiarImagen("opciones2.png")
             pantallas.setEnControles(false)

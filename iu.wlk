@@ -3,7 +3,7 @@ class IndicadorVida {
   var imagen = "piluso2x.png"
   
   method image() = imagen
-
+  
   method cambiarImagen(img) {
     imagen = img
   }
@@ -63,30 +63,42 @@ object foto_youWin {
 }
 
 object seleccionador {
-  var position = game.at(55,48)
+  var position = game.at(55, 48)
   var imagen = "balboa6.png"
   var seleccion = 0
+  const elegir = game.sound("lanzar.mp3")
+  const entrar = game.sound("hit_valla.mp3")
+  
+  method reproducir(sonido) {
+    sonido.play()
+    game.schedule(400, { sonido.stop() })
+  }
   
   method image() = imagen
   
   method position() = position
-
-// Para debugear
-//   method text() = "Seleccion: " + seleccion
-//   method textColor() = "000000"
-
+  
+  // Para debugear
+  //   method text() = "Seleccion: " + seleccion
+  //   method textColor() = "000000"
   method seleccion() = seleccion
-
-  method abajo(){
+  
+  method abajo() {
     seleccion += 1
     self.position(self.position().down(9))
+    self.reproducir(elegir)
   }
-
-  method arriba(){
+  
+  method arriba() {
     seleccion -= 1
     self.position(self.position().up(9))
+    self.reproducir(elegir)
   }
-
+  
+  method seleccionar() {
+    self.reproducir(entrar)
+  }
+  
   method position(newPos) {
     position = newPos
   }
