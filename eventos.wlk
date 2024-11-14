@@ -268,7 +268,8 @@ object eventos {
       "chiquiMafia",
       { if (pantallas.estadoJuego() && (!yaDetono)) {
           if (chiquiCounter >= 3) {
-            const chiquiSong = game.sound("chiquiSong.mp3").play()
+            const chiquiSong = game.sound("chiquiSong.mp3")
+            chiquiSong.play()
             yaDetono = true
             game.addVisual(chiquiTapia)
             chiquiTapia.spawnear(player.position().x(), game.height())
@@ -276,16 +277,18 @@ object eventos {
               1,
               "Detonar",
               { 
-                player.position(
-                  game.at(chiquiTapia.position().x(), player.position().y())
-                )
-                chiquiTapia.detonar()
-                if (chiquiTapia.position().y() < player.position().y()) {
-                  game.say(chiquiTapia, "No trates de entenderla, disfrutala")
-                  game.removeVisual(chiquiTapia)
-                  chiquiCounter = 0
-                  chiquiSong.stop()
-                  pantallas.gameover()
+                if(pantallas.estadoJuego()){
+                  player.position(
+                    game.at(chiquiTapia.position().x(), player.position().y())
+                  )
+                  chiquiTapia.detonar()
+                  if (chiquiTapia.position().y() < player.position().y()) {
+                    game.say(chiquiTapia, "No trates de entenderla, disfrutala")
+                    game.removeVisual(chiquiTapia)
+                    chiquiCounter = 0
+                    chiquiSong.stop()
+                    pantallas.gameover()
+                  }
                 }
               }
             )
