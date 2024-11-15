@@ -24,7 +24,7 @@ class Proyectil inherits Entidad {
   }
   
   method lanzar() {
-    self.position(self.position().up(2))
+    self.position(self.position().up(4))
   }
   
   method image() = imagen
@@ -43,6 +43,6 @@ class Proyectil inherits Entidad {
 
 class ProyectilEnemigo inherits Proyectil {
   override method lanzar() {
-    self.position(self.position().down(2))
+    self.position(self.position().down(4))
   }
 }
