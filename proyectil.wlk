@@ -6,6 +6,8 @@ class Proyectil inherits Entidad {
   var i_rotacion = 0
   const sonido = game.sound("lanzar.mp3")
   
+  override method hitSound() = game.sound("hit_botella.mp3")
+  
   method reproducir() {
     sonido.play()
     game.schedule(500, { sonido.stop() })
@@ -22,7 +24,7 @@ class Proyectil inherits Entidad {
   }
   
   method lanzar() {
-    self.position(self.position().up(4))
+    self.position(self.position().up(2))
   }
   
   method image() = imagen
@@ -41,6 +43,6 @@ class Proyectil inherits Entidad {
 
 class ProyectilEnemigo inherits Proyectil {
   override method lanzar() {
-    self.position(self.position().down(4))
+    self.position(self.position().down(2))
   }
 }

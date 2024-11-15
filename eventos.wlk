@@ -55,6 +55,7 @@ object eventos {
       if (enemigos == []) pantallas.youwin()
     }
     else if (elemento.soyProyectil()){
+      elemento.golpe()
       elemento.destruir()
       game.removeVisual(proyectil)
       game.removeVisual(elemento)
@@ -119,6 +120,7 @@ object eventos {
           }
         } 
         else if (elemento.soyProyectil()) {
+          elemento.golpe()
           game.removeVisual(proyectiles.get(0))
           game.removeVisual(elemento)
           elemento.destruir()
