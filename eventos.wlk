@@ -11,6 +11,7 @@ object eventos {
   var i_rotacion = 0
   var derecha = true
   var step = 4
+  var enemigosVivos = 0
   
   method cargarEventos() {
     self._setEnemigos()
@@ -25,6 +26,7 @@ object eventos {
 
   method _setEnemigos(){
     enemigos = nivel.enemigos()
+    enemigosVivos = enemigos.count({e => !e.muerto()})
   }
   
   // Jugador 0: Enemigo
@@ -51,6 +53,7 @@ object eventos {
       // enemigos.remove(elemento)
       // game.removeVisual(proyectil)
       elemento.morir()
+      enemigosVivos -= 1
       proyectil.destruir()
       nivel.setYaColisiono(jugador, true)
       if (enemigos.all({e => e.muerto()})) pantallas.youwin()
@@ -76,9 +79,9 @@ object eventos {
           if (nivel.checkYaColisiono(0)) {
             nivel.setYaColisiono(0, false)
             
-            const enemigosVivos = enemigos.filter({e => !e.muerto()})
-            const indice = 0.randomUpTo(enemigosVivos.size()).truncate(0)
-            const enemigo = enemigosVivos.get(indice)
+            const e_vivos = enemigos.filter({e => !e.muerto()})
+            const indice = 0.randomUpTo(e_vivos.size()).truncate(0)
+            const enemigo = e_vivos.get(indice)
             
             enemigo.cambiarImagen("enemigo_tirar.png")
             game.schedule(500, { enemigo.cambiarImagen("enemigo.png") })
@@ -200,7 +203,7 @@ object eventos {
         } }
     )
   }
-  
+
   method movimientoEnemigo() {
     /*
     Por cada 7 enemigos, se van moviendo mas rápido.
@@ -210,25 +213,25 @@ object eventos {
     game.onTick(
       2000,
       "movimientoEnemigo1",
-      { if(enemigos.size() > 14 && enemigos.size() <= 21)
+      { if(enemigosVivos > 14 && enemigosVivos <= 21)
           self._movimiento() }
     )
     game.onTick(
       1500,
       "movimientoEnemigo2",
-      { if (enemigos.size() > 7 && enemigos.size() <= 14)
+      { if (enemigosVivos > 7 && enemigosVivos <= 14)
           self._movimiento() }
     )
     game.onTick(
       1000,
       "movimientoEnemigo3",
-      { if (enemigos.size() > 1 && enemigos.size() <= 7)
+      { if (enemigosVivos > 1 && enemigosVivos <= 7)
           self._movimiento() }
     )
     game.onTick(
       500,
       "movimientoEnemigo4",
-      { if (enemigos.size() <= 1)
+      { if (enemigosVivos <= 1)
           self._movimiento() }
     )
   }
@@ -237,8 +240,9 @@ object eventos {
     if (p_Juego.actual()){
     var moverHaciaAbajo = false
     var nuevaDireccion = derecha
+    const e_vivos = enemigos.filter({e => !e.muerto()})
     
-    enemigos.forEach(
+    e_vivos.forEach(
       { enemigo =>
         if ((enemigo.position().x() > (game.width() - 16)) && derecha) {
           moverHaciaAbajo = true
@@ -267,7 +271,7 @@ object eventos {
     if (p_Juego.actual()){
     var chiquiCounter = 0
     var yaDetono = false
-    var player = nivel.jugador(1)
+    const player = nivel.jugador(1)
     
     keyboard.t().onPressDo({ if (chiquiCounter < 3) {chiquiCounter += 1} })
     
@@ -291,7 +295,6 @@ object eventos {
                   )
                   chiquiTapia.detonar()
                   if (chiquiTapia.position().y() < player.position().y()) {
-                    game.say(chiquiTapia, "No trates de entenderla, disfrutala")
                     game.removeVisual(chiquiTapia)
                     chiquiCounter = 0
                     chiquiSong.stop()
