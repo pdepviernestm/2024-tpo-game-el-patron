@@ -2,8 +2,9 @@ import example.*
 
 class Proyectil inherits Entidad {
   var imagen = "balboa0.png"
-  var position = game.origin()
+  var position = game.at(-1, -1)
   var i_rotacion = 0
+  var step = 4
   const sonido = game.sound("lanzar.mp3")
   
   override method hitSound() = game.sound("hit_botella.mp3")
@@ -22,9 +23,14 @@ class Proyectil inherits Entidad {
   method spawnea(x) {
     position = x
   }
+
+  method step() = step
+  method step(nuevo) {
+    step = nuevo
+  }
   
   method lanzar() {
-    self.position(self.position().up(4))
+    self.position(self.position().up(step))
   }
   
   method image() = imagen

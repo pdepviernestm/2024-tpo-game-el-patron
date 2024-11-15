@@ -6,45 +6,46 @@ import proyectil.*
 import pantallas.*
 
 object eventos {
-  const enemigos = nivel.getEnemigos()
-  var proyectiles = []
+  var enemigos = []
   const jugadores = nivel.jugadores()
   var i_rotacion = 0
   var derecha = true
   var step = 4
   
   method cargarEventos() {
-    self._setProyectiles()
+    self._setEnemigos()
     self.chiqui()
     self.movimientoEnemigo()
-    self.colisionDisparo()
     self.disparoEnemigo()
     self.rotacionProyectil()
     self.movimientoProyectiles()
     self.verificarPosicionEnemigos()
+    self.colisionDisparo()
   }
 
-  method _setProyectiles(){
-     proyectiles = [new ProyectilEnemigo()] + nivel.proyectiles()
+  method _setEnemigos(){
+    enemigos = nivel.enemigos()
   }
   
   // Jugador 0: Enemigo
   // Jugador 1: J1
   // Jugador 2: J2
   method colisionDisparo() {
-    game.whenCollideDo(
-      proyectiles.get(1),
-      { elemento => self._handleDisparo(elemento, 1) }
-    )
-    if (proyectiles.size() > 2) 
-    game.whenCollideDo(
-      proyectiles.get(2),
-      { elemento => self._handleDisparo(elemento, 2) }
-    )
+    // console.println(nivel.nivel.proyectiles()())
+
+      game.whenCollideDo(
+        nivel.proyectil(1),
+        { elemento => self._handleDisparo(elemento, 1) }
+      )
+      
+      game.whenCollideDo(
+        nivel.proyectil(2),
+        { elemento => self._handleDisparo(elemento, 2) }
+      )
   }
   
   method _handleDisparo(elemento, jugador) {
-    const proyectil = proyectiles.get(jugador)
+    const proyectil = nivel.proyectil(jugador)
 
     if (elemento.soyEnemigo()) {
       enemigos.remove(elemento)
@@ -71,7 +72,7 @@ object eventos {
     game.onTick(
       1,
       "disparoEnemigo",
-      { if (pantallas.estadoJuego()) {
+      { if (p_Juego.actual()) {
           if (nivel.checkYaColisiono(0)) {
             nivel.setYaColisiono(0, false)
             
@@ -81,18 +82,18 @@ object eventos {
             enemigo.cambiarImagen("enemigo_tirar.png")
             game.schedule(500, { enemigo.cambiarImagen("enemigo.png") })
             
-            game.addVisual(proyectiles.get(0))
-            proyectiles.get(0).spawnea(enemigo.position())
-            // proyectiles.get(0).lanzar()
-            proyectiles.get(0).reproducir()
+            game.addVisual(nivel.proyectil(0))
+            nivel.proyectil(0).spawnea(enemigo.position())
+            // nivel.proyectil(0).lanzar()
+            nivel.proyectil(0).reproducir()
           }
         } }
     )
     game.whenCollideDo(
-      proyectiles.get(0),
+      nivel.proyectil(0),
       { elemento => 
       if (elemento.soyPepita()) {
-          game.removeVisual(proyectiles.get(0))
+          game.removeVisual(nivel.proyectil(0))
           elemento.setVidas(elemento.getVidas() - 1)
           
           elemento.cambiarImagen(("j" + elemento.jugador()) + "_hit.png")
@@ -121,7 +122,7 @@ object eventos {
         } 
         else if (elemento.soyProyectil()) {
           elemento.golpe()
-          game.removeVisual(proyectiles.get(0))
+          game.removeVisual(nivel.proyectil(0))
           game.removeVisual(elemento)
           elemento.destruir()
           nivel.setYaColisiono(0, true)
@@ -137,8 +138,8 @@ object eventos {
     const valla = nivel.vallas().get(elemento.valla()-1)
     if (valla.getVidas() >= 1) {
       elemento.sacarVida(valla)
-      game.removeVisual(proyectiles.get(jugador))
-      proyectiles.get(jugador).destruir()
+      game.removeVisual(nivel.proyectil(jugador))
+      nivel.proyectil(jugador).destruir()
       nivel.setYaColisiono(jugador, true)
       // Debug
     valla.cambiarImagen("valla_hit.png")
@@ -153,15 +154,15 @@ object eventos {
   }
   
   method _criterio(i) {
-    const y = proyectiles.get(i).position().y()
+    const y = nivel.proyectil(i).position().y()
     return (y < 0) || (y > game.height())
   }
   
   method _handleProyectilMovimiento(i, criterio) {
-    proyectiles.get(i).lanzar()
+    nivel.proyectil(i).lanzar()
     if (criterio) {
-      game.removeVisual(proyectiles.get(i))
-      proyectiles.get(i).destruir()
+      game.removeVisual(nivel.proyectil(i))
+      nivel.proyectil(i).destruir()
       nivel.setYaColisiono(i, true)
     }
   }
@@ -170,7 +171,7 @@ object eventos {
     game.onTick(
       1,
       "movimientoProyectiles",
-      { if (pantallas.estadoJuego()) proyectiles.size().times(
+      { if (p_Juego.actual()) nivel.proyectiles().size().times(
             { i => 
             self._handleProyectilMovimiento(
                 i - 1,
@@ -184,8 +185,8 @@ object eventos {
     game.onTick(
       1,
       "rotacionProyectil",
-      { if (pantallas.estadoJuego()) {
-          proyectiles.forEach(
+      { if (p_Juego.actual()) {
+          nivel.proyectiles().forEach(
             { proyectil => proyectil.cambiarImagen(i_rotacion) }
           )
           
@@ -230,7 +231,7 @@ object eventos {
   }
   
   method _movimiento() {
-    if (pantallas.estadoJuego()){
+    if (p_Juego.actual()){
     var moverHaciaAbajo = false
     var nuevaDireccion = derecha
     
@@ -260,17 +261,17 @@ object eventos {
   }
   
   method chiqui() {
-    if (pantallas.estadoJuego()){
+    if (p_Juego.actual()){
     var chiquiCounter = 0
     var yaDetono = false
-    var player = nivel.getPlayer(1)
+    var player = nivel.jugador(1)
     
     keyboard.t().onPressDo({ if (chiquiCounter < 3) {chiquiCounter += 1} })
     
     game.onTick(
       1000,
       "chiquiMafia",
-      { if (pantallas.estadoJuego() && (!yaDetono)) {
+      { if (p_Juego.actual() && (!yaDetono)) {
           if (chiquiCounter >= 3) {
             const chiquiSong = game.sound("chiquiSong.mp3")
             chiquiSong.play()
@@ -281,7 +282,7 @@ object eventos {
               1,
               "Detonar",
               { 
-                if(pantallas.estadoJuego()){
+                if(p_Juego.actual()){
                   player.position(
                     game.at(chiquiTapia.position().x(), player.position().y())
                   )
@@ -306,7 +307,7 @@ object eventos {
     game.onTick(
       1000,
       "verificarPosicionEnemigos",
-      { if (pantallas.estadoJuego()) {
+      { if (p_Juego.actual()) {
           if (enemigos.any({ enemigo => enemigo.position().y() < 35 }))
             pantallas.gameover()
         } }

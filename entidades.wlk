@@ -23,7 +23,7 @@ class Entidad {
 class JugadorPrincipal inherits Entidad {
   var imagen = "j1.png"
   var position = game.origin()
-  var vidas = 3
+  var vidas = 1
   var jugador = 1
   var indicadores = []
   

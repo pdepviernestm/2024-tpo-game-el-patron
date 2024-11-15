@@ -18,6 +18,9 @@ object nivel {
   var yaColisionoj2 = true
   var yaColisionoEnemigo = true
 
+  const f_enem = 7
+  const c_enem = 3
+
 
   method configurate() {
     game.title("BARRA INVADERS")
@@ -26,27 +29,48 @@ object nivel {
     game.width(160)
     game.boardGround("calle__.png")
 
-    controles.cargarControles()
+    self.cargarModulos()
     pantallas.menu()
   }
 
   method cargarModulos() {
+    self.cargarEntidades()
+    pantallas.cargarControles()
+    controles.cargarControlesJuego()
     eventos.cargarEventos()
     // controles.cargarControles()
   }
 
+  method cargarEntidades(){
+    self.cargarEnemigos()
+    self.cargarProyectiles()
+  }
 
-  method setJugadores(j) = j.times({i => jugadores.add(new JugadorPrincipal())})
+  method cargarProyectiles() {
+    3.times({i => 
+    const proyectil = new Proyectil()
+    if(i == 1) proyectil.step(proyectil.step()*(-1))
+    proyectiles.add(proyectil)})
+  }
 
-  method getPlayer(jugador) = jugadores.get(jugador - 1)
+  method cargarEnemigos() {
+    (f_enem*c_enem).times(
+      { _ => 
+          const enemigo = new Enemigo()
+          enemigos.add(enemigo)
+      }
+    ) 
+  }
+  method jugadores(j) = j.times({i => jugadores.add(new JugadorPrincipal())})
+
+  method jugador(jugador) = jugadores.get(jugador - 1)
 
   method jugadores () = jugadores
 
   method checkMuerto(jugador) = jugadores.get(jugador-1).getVidas() < 1
 
-  method setProyectiles(j) = j.times({i => proyectiles.add(new Proyectil())})
 
-  method getProyectil(jugador) = proyectiles.get(jugador - 1)
+  method proyectil(jugador) = proyectiles.get(jugador)
 
   method proyectiles() = proyectiles
 
@@ -77,12 +101,14 @@ object nivel {
     }
   }
 
-  method getEnemigos() = enemigos
+  method enemigos() = enemigos
 
-  method start() {
-    
-    self.setProyectiles(jugadores.size())
-    self.cargarModulos()
+
+  method start(j) {
+    self.jugadores(j)
+    console.println(jugadores)
+    console.println(proyectiles)
+    // self.cargarModulos()
 
     // var indicadores = []
     // var indicadoresj2 = []
@@ -126,13 +152,14 @@ object nivel {
 
     // Crear enemigos
     // 3 filas, 7 columnas
-    3.times(
-      { y => 7.times(
+    var i = 0
+    f_enem.times(
+      { y => c_enem.times(
           { x =>
-            var enemigo = new Enemigo()
-            enemigos.add(enemigo)
+            const enemigo = enemigos.get(i)
             enemigo.spawnea((16 * x) - 8, (y * 20) + (game.height() / 2))
-            return game.addVisual(enemigo)
+            game.addVisual(enemigo)
+            i += 1
           }
         ) }
     ) 

@@ -23,89 +23,64 @@ class IndicadorVidaJ2 inherits IndicadorVida {
   }
 }
 
-object foto_Inicio {
-  var position = game.origin()
-  var imagen = "menu_.png"
-  
-  method image() = imagen
-  
-  method position() = position
-  
-  method position(x, y) {
-    position = game.at(x, y)
-  }
-}
 
-object foto_gameOver {
-  var position = game.origin()
-  var imagen = "gameover.png"
-  
-  method image() = imagen
-  
-  method position() = position
-  
-  method position(x, y) {
-    position = game.at(x, y)
-  }
-}
 
-object foto_youWin {
-  var position = game.origin()
-  var imagen = "youwin_.png"
-  
-  method image() = imagen
-  
-  method position() = position
-  
-  method position(x, y) {
-    position = game.at(x, y)
-  }
-}
-
-object seleccionador {
-  var position = game.at(55, 48)
+object selector {
+  var position = game.at(opciones.position().x()-10, opciones.position().y()+18)
   var imagen = "balboa6.png"
   var seleccion = 0
+  var maxOpciones = 2
   const elegir = game.sound("lanzar.mp3")
   const entrar = game.sound("hit_valla.mp3")
   
   method reproducir(sonido) {
-    sonido.play()
-    game.schedule(400, { sonido.stop() })
+    // if (!sonido.played()) {
+      sonido.play()
+      game.schedule(400, { sonido.stop() })
+    // }
   }
   
   method image() = imagen
   
   method position() = position
-  
-  // Para debugear
-  //   method text() = "Seleccion: " + seleccion
-  //   method textColor() = "000000"
+
+  method position(newPos) {
+    position = newPos
+  }
+
   method seleccion() = seleccion
+  method seleccion(s){
+    seleccion = s
+  }
   
+  method setMaxOpciones(max) {
+    maxOpciones = max
+  }
+
   method abajo() {
-    seleccion += 1
-    self.position(self.position().down(9))
-    self.reproducir(elegir)
+    if (seleccion < maxOpciones) {
+      seleccion += 1
+      self.position(self.position().down(9))
+      self.reproducir(elegir)
+    }
   }
   
   method arriba() {
-    seleccion -= 1
-    self.position(self.position().up(9))
-    self.reproducir(elegir)
+    if (seleccion > 0) {
+      seleccion -= 1
+      self.position(self.position().up(9))
+      self.reproducir(elegir)
+    }
   }
   
   method seleccionar() {
     self.reproducir(entrar)
   }
   
-  method position(newPos) {
-    position = newPos
-  }
 }
 
-class Opciones {
-  var position = game.origin()
+object opciones {
+  var position = game.at(65, 30)
   var imagen = "opciones2.png"
   
   method image() = imagen
@@ -118,19 +93,6 @@ class Opciones {
   
   method cambiarImagen(img) {
     imagen = img
-  }
-}
-
-object fondoOpciones {
-  var position = game.origin()
-  var imagen = "rectangulo.png"
-  
-  method image() = imagen
-  
-  method position() = position
-  
-  method position(x, y) {
-    position = game.at(x, y)
   }
 }
 
