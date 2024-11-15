@@ -26,6 +26,8 @@ class JugadorPrincipal inherits Entidad {
   var vidas = 1
   var jugador = 1
   var indicadores = []
+
+  method muerto() = vidas < 1
   
   method jugador() = jugador
   
@@ -83,6 +85,12 @@ class JugadorPrincipal inherits Entidad {
 class Enemigo inherits Entidad {
   var imagen = "enemigo.png"
   var position = game.origin()
+  var muerto = false
+
+  method muerto() = muerto
+  method muerto(bool) {
+    muerto = bool
+  }
   
   method position() = position
   
@@ -95,6 +103,7 @@ class Enemigo inherits Entidad {
   }
   
   method morir() {
+    self.muerto(true)
     game.removeVisual(self)
     self.golpe()
   }

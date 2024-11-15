@@ -32,7 +32,7 @@ object controles {
     if (j <= nivel.jugadores().size()) {
       const jugador = nivel.jugador(j)
       const proyectil = nivel.proyectil(j)
-      if (nivel.checkYaColisiono(j) && (!nivel.checkMuerto(j))) {
+      if (nivel.checkYaColisiono(j) && (!jugador.muerto())) {
         nivel.setYaColisiono(j, false)
         
         jugador.cambiarImagen(("j" + j) + "_tirar.png")

@@ -1,5 +1,5 @@
 import wollok.game.*
-import example.*
+import entidades.*
 import nivel.*
 import iu.*
 import proyectil.*
@@ -48,19 +48,19 @@ object eventos {
     const proyectil = nivel.proyectil(jugador)
 
     if (elemento.soyEnemigo()) {
-      enemigos.remove(elemento)
-      game.removeVisual(proyectil)
+      // enemigos.remove(elemento)
+      // game.removeVisual(proyectil)
       elemento.morir()
       proyectil.destruir()
       nivel.setYaColisiono(jugador, true)
-      if (enemigos == []) pantallas.youwin()
+      if (enemigos.all({e => e.muerto()})) pantallas.youwin()
     }
     else if (elemento.soyProyectil()){
       elemento.golpe()
       elemento.destruir()
-      game.removeVisual(proyectil)
-      game.removeVisual(elemento)
       proyectil.destruir()
+      // game.removeVisual(proyectil)
+      // game.removeVisual(elemento)
       nivel.setYaColisiono(0, true)
     }
     else if (elemento.soyHitbox()){
@@ -76,8 +76,9 @@ object eventos {
           if (nivel.checkYaColisiono(0)) {
             nivel.setYaColisiono(0, false)
             
-            const indice = 0.randomUpTo(enemigos.size()).truncate(0)
-            const enemigo = enemigos.get(indice)
+            const enemigosVivos = enemigos.filter({e => !e.muerto()})
+            const indice = 0.randomUpTo(enemigosVivos.size()).truncate(0)
+            const enemigo = enemigosVivos.get(indice)
             
             enemigo.cambiarImagen("enemigo_tirar.png")
             game.schedule(500, { enemigo.cambiarImagen("enemigo.png") })
@@ -93,7 +94,8 @@ object eventos {
       nivel.proyectil(0),
       { elemento => 
       if (elemento.soyPepita()) {
-          game.removeVisual(nivel.proyectil(0))
+          nivel.proyectil(0).destruir()
+          // game.removeVisual(nivel.proyectil(0))
           elemento.setVidas(elemento.getVidas() - 1)
           
           elemento.cambiarImagen(("j" + elemento.jugador()) + "_hit.png")
@@ -113,7 +115,7 @@ object eventos {
           
           nivel.setYaColisiono(0, true)
           
-          if (jugadores.all ({ jugador => nivel.checkMuerto(jugador.jugador())})) {
+          if (jugadores.all ({ j => j.muerto()})) {
             // game.removeVisual(elemento)
             // enemigos.forEach({ enemigo => game.removeVisual(enemigo) })
             // enemigos.clear()
@@ -122,8 +124,9 @@ object eventos {
         } 
         else if (elemento.soyProyectil()) {
           elemento.golpe()
-          game.removeVisual(nivel.proyectil(0))
-          game.removeVisual(elemento)
+          nivel.proyectil(0).destruir()
+          // game.removeVisual(nivel.proyectil(0))
+          // game.removeVisual(elemento)
           elemento.destruir()
           nivel.setYaColisiono(0, true)
         }
@@ -138,7 +141,7 @@ object eventos {
     const valla = nivel.vallas().get(elemento.valla()-1)
     if (valla.getVidas() >= 1) {
       elemento.sacarVida(valla)
-      game.removeVisual(nivel.proyectil(jugador))
+      // game.removeVisual(nivel.proyectil(jugador))
       nivel.proyectil(jugador).destruir()
       nivel.setYaColisiono(jugador, true)
       // Debug
@@ -161,7 +164,7 @@ object eventos {
   method _handleProyectilMovimiento(i, criterio) {
     nivel.proyectil(i).lanzar()
     if (criterio) {
-      game.removeVisual(nivel.proyectil(i))
+      // game.removeVisual(nivel.proyectil(i))
       nivel.proyectil(i).destruir()
       nivel.setYaColisiono(i, true)
     }

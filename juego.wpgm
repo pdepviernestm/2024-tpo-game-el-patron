@@ -1,11 +1,11 @@
 // juego.wpgm
-import example.*
+import entidades.*
 import wollok.game.*
 import proyectil.*
 import nivel.*
 import iu.*
 
 program PepitaGame {
-  nivel.configurate() 
+  nivel.configurate()
   game.start()
 }

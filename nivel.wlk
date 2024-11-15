@@ -1,4 +1,4 @@
-import example.*
+import entidades.*
 import wollok.game.*
 import proyectil.*
 import iu.*
@@ -18,8 +18,8 @@ object nivel {
   var yaColisionoj2 = true
   var yaColisionoEnemigo = true
 
-  const f_enem = 7
-  const c_enem = 3
+  const c_enem = 7
+  const f_enem = 3
 
 
   method configurate() {
@@ -44,6 +44,7 @@ object nivel {
   method cargarEntidades(){
     self.cargarEnemigos()
     self.cargarProyectiles()
+    self.cargarVallas()
   }
 
   method cargarProyectiles() {
@@ -61,14 +62,58 @@ object nivel {
       }
     ) 
   }
-  method jugadores(j) = j.times({i => jugadores.add(new JugadorPrincipal())})
+
+  method cargarVallas() {
+    4.times({v => 
+        const valla = new Valla()
+          5.times({c => 
+            const hitbox = new Hitbox()
+            hitbox.valla(v)
+            hitboxes.add(hitbox)
+          })
+        vallas.add(valla)
+      })
+  }
+
+  method spawnEnemigos() {
+    // Crear enemigos
+    // 3 filas, 7 columnas
+    var i = 0
+    f_enem.times(
+      { y => c_enem.times(
+          { x =>
+            const enemigo = enemigos.get(i)
+            enemigo.spawnea((16 * x) - 8, (y * 20) + (game.height() / 2))
+            game.addVisual(enemigo)
+            i += 1
+          }
+        ) }
+    ) 
+  }
+
+  method spawnVallas() {
+    var i = 0
+    4.times({v => 
+        const valla = vallas.get(v-1)
+        console.println(valla)
+        valla.spawnea(40*v-32,36)
+        var d = -8
+          5.times({c => 
+            const hitbox = hitboxes.get(i)
+            hitbox.position(game.at((40*(v)-24)+ d,36))
+            game.addVisual(hitbox)
+            d += 4
+            i += 1
+          })
+        game.addVisual(valla)
+      })
+  }
+
+  method jugadores(j) = j.times({_ => jugadores.add(new JugadorPrincipal())})
 
   method jugador(jugador) = jugadores.get(jugador - 1)
 
   method jugadores () = jugadores
-
-  method checkMuerto(jugador) = jugadores.get(jugador-1).getVidas() < 1
-
 
   method proyectil(jugador) = proyectiles.get(jugador)
 
@@ -109,18 +154,17 @@ object nivel {
     console.println(jugadores)
     console.println(proyectiles)
     // self.cargarModulos()
+    self.spawnEnemigos()
+    self.spawnVallas()
 
-    // var indicadores = []
-    // var indicadoresj2 = []
-
-    const jugador1 = jugadores.get(0)
+    const jugador1 = self.jugador(1)
 
     jugador1.setJugador(1)
     jugador1.cargarIndicadores()
     game.addVisual(jugador1)
 
     if (jugadores.size() == 2){
-      const jugador2 = jugadores.get(1)
+      const jugador2 = self.jugador(2)
       jugador2.cambiarImagen("j2.png")
       jugador2.setJugador(2)
       jugador2.cargarIndicadores()
@@ -132,42 +176,6 @@ object nivel {
     else {
       jugador1.spawnea(0) // spawnear enemigos
     }
-    
-    4.times({v => 
-        var valla = new Valla()
-        valla.spawnea(40*v-32,36)
-        var d = -8
-          5.times({c => 
-            var hitbox = new Hitbox()
-            hitbox.position(game.at((40*(v)-24)+ d,36))
-            hitbox.valla(v)
-            game.addVisual(hitbox)
-            hitboxes.add(hitbox)
-            d += 4
-          })
-        game.addVisual(valla)
-        vallas.add(valla)
-      })
-
-
-    // Crear enemigos
-    // 3 filas, 7 columnas
-    var i = 0
-    f_enem.times(
-      { y => c_enem.times(
-          { x =>
-            const enemigo = enemigos.get(i)
-            enemigo.spawnea((16 * x) - 8, (y * 20) + (game.height() / 2))
-            game.addVisual(enemigo)
-            i += 1
-          }
-        ) }
-    ) 
-    
-    /*Todos los enemigos van a la derecha y cuando se llega al borde
-    de la derecha, todos los enemigos van para abajo. 
-    Todos van a la izquierda y cuando llegan al borde bajan.
-    */
 
   }
 }

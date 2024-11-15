@@ -1,4 +1,4 @@
-import example.*
+import entidades.*
 
 class Proyectil inherits Entidad {
   var imagen = "balboa0.png"
@@ -23,8 +23,9 @@ class Proyectil inherits Entidad {
   method spawnea(x) {
     position = x
   }
-
+  
   method step() = step
+  
   method step(nuevo) {
     step = nuevo
   }
@@ -41,6 +42,7 @@ class Proyectil inherits Entidad {
   
   // Evita que el proyectil siga actuando de manera invisible
   method destruir() {
+    game.removeVisual(self)
     self.position(game.at(-1, game.height()))
   }
   
