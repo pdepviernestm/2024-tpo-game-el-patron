@@ -48,6 +48,10 @@ object selector {
     position = newPos
   }
 
+  method actualizarPos(){
+    position = game.at(opciones.position().x()-10, opciones.position().y()+18)
+  }
+
   method seleccion() = seleccion
   method seleccion(s){
     seleccion = s

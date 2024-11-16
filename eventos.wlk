@@ -95,7 +95,7 @@ object eventos {
     game.onTick(
       1,
       "disparoEnemigo",
-      { if (p_Juego.actual()) {
+      { if (p_Juego.actual() && !p_Pausa.actual()) {
           if (nivel.checkYaColisiono(0)) {
             nivel.setYaColisiono(0, false)
             
@@ -197,7 +197,7 @@ object eventos {
     game.onTick(
       1,
       "movimientoProyectiles",
-      { if (p_Juego.actual()) nivel.proyectiles().size().times(
+      { if (p_Juego.actual() && !p_Pausa.actual()) nivel.proyectiles().size().times(
             { i => 
             self._handleProyectilMovimiento(
                 i - 1,
@@ -211,7 +211,7 @@ object eventos {
     game.onTick(
       1,
       "rotacionProyectil",
-      { if (p_Juego.actual()) {
+      { if (p_Juego.actual() && !p_Pausa.actual()) {
           nivel.proyectiles().forEach(
             { proyectil => proyectil.cambiarImagen(i_rotacion) }
           )
@@ -257,7 +257,7 @@ object eventos {
   }
   
   method _movimiento() {
-    if (p_Juego.actual()){
+    if (p_Juego.actual() && !p_Pausa.actual()){
     var moverHaciaAbajo = false
     var nuevaDireccion = derecha
     const e_vivos = enemigos.filter({e => !e.muerto()})
@@ -288,46 +288,43 @@ object eventos {
   }
   
   method chiqui() {
-    if (p_Juego.actual()){
-    var chiquiCounter = 0
-    var yaDetono = false
-    const player = nivel.jugador(1)
+      var chiquiCounter = 0
+      var yaDetono = false
+      const player = nivel.jugador(1)
     
-    keyboard.t().onPressDo({ if (chiquiCounter < 3) {chiquiCounter += 1} })
+      keyboard.t().onPressDo({
+        if (chiquiCounter < 3 && p_Juego.actual() && !p_Pausa.actual()) {chiquiCounter += 1} })
     
-    game.onTick(
-      1000,
-      "chiquiMafia",
-      { if (p_Juego.actual() && (!yaDetono)) {
-          if (chiquiCounter >= 3) {
-            const chiquiSong = game.sound("chiquiSong.mp3")
-            chiquiSong.play()
-            yaDetono = true
-            game.addVisual(chiquiTapia)
-            chiquiTapia.spawnear(player.position().x(), game.height())
-            game.onTick(
-              1,
-              "Detonar",
-              { 
-                if(p_Juego.actual()){
-                  player.position(
-                    game.at(chiquiTapia.position().x(), player.position().y())
-                  )
-                  chiquiTapia.detonar()
-                  if (chiquiTapia.position().y() < player.position().y()) {
-                    game.removeVisual(chiquiTapia)
-                    chiquiCounter = 0
-                    chiquiSong.stop()
-                    pantallas.gameover()
+      game.onTick(
+        1000,
+        "chiquiMafia",
+        { if ((p_Juego.actual() || p_Pausa.actual()) && (!yaDetono)) {
+            if (chiquiCounter >= 3) {
+              const chiquiSong = game.sound("chiquiSong.mp3")
+              chiquiSong.play()
+              yaDetono = true
+              game.addVisual(chiquiTapia)
+              chiquiTapia.spawnear(player.position().x()-16, game.height())
+              game.onTick(
+                1,
+                "Detonar",
+                { 
+                  if(p_Juego.actual() || p_Pausa.actual()){
+                    chiquiTapia.position(game.at(player.position().x()-16,chiquiTapia.position().y()))
+                    chiquiTapia.detonar()
+                    if (chiquiTapia.position().y() < player.position().y()) {
+                      game.removeVisual(chiquiTapia)
+                      chiquiCounter = 0
+                      chiquiSong.stop()
+                      pantallas.gameover()
+                    }
                   }
                 }
-              }
-            )
+              )
+            }
           }
-        }
-         }
-    )}
-  }
+          }
+      )}
   
   method verificarPosicionEnemigos() {
     game.onTick(

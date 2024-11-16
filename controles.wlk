@@ -11,7 +11,7 @@ object controles {
   }
   
   method _derecha(j) {
-    if (j <= nivel.jugadores().size()) {
+    if (j <= nivel.jugadores().size() && !p_Pausa.actual()) {
       const jugador = nivel.jugador(j)
       if (jugador.position().x() < (game.width() - 12)) jugador.position(
           jugador.position().right(4)
@@ -20,7 +20,7 @@ object controles {
   }
   
   method _izquierda(j) {
-    if (j <= nivel.jugadores().size()) {
+    if (j <= nivel.jugadores().size() && !p_Pausa.actual()) {
       const jugador = nivel.jugador(j)
       if (jugador.position().x() > 8) jugador.position(
           jugador.position().left(4)

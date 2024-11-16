@@ -25,16 +25,19 @@ object pantallas {
     
     // opciones.position(65, 30)
     
-    game.addVisual(p_Menu)
-    game.addVisual(opciones)
-    game.addVisual(selector) // controles.cargarControles()
+    // game.addVisual(p_Menu)
+    // game.addVisual(opciones)
+    // game.addVisual(selector) // controles.cargarControles()
   }
   
   method gameover() {
     // pantallaActual = p_gameOver
+    // if(p_Pausa.actual()) p_Pausa.toggle()
+    if(p_Pausa.actual()) p_Menu.togglePauseTema()
+    p_Menu.stopTema()
+    p_Pausa.actual(false)
     p_Juego.actual(false)
     p_gameOver.actual(true)
-    p_Menu.stopTema()
     p_gameOver.playTema()
 
   
@@ -57,13 +60,11 @@ object pantallas {
     opciones.cambiarImagen("reintentar.png")
     opciones.position(65,30)
 
-    selector.position(game.at(55,38))
     selector.seleccion(0)
     selector.setMaxOpciones(1)
 
-    game.addVisual(p_gameOver)
-    game.addVisual(opciones)
-    game.addVisual(selector)
+    // game.addVisual(opciones)
+    // game.addVisual(selector)
     
   }
   
@@ -72,7 +73,6 @@ object pantallas {
     p_youWin.actual(true)
     p_Menu.stopTema()
     p_youWin.playTema()
-    game.addVisual(p_youWin)
   }
   
   method controlesMenu() {
@@ -85,6 +85,12 @@ object pantallas {
         dir *= -1
       }
     )
+
+    keyboard.p().onPressDo({
+      if(p_Juego.actual()){
+        p_Pausa.toggle()
+      }
+    })
 
     keyboard.up().onPressDo(
       { if (!p_Juego.actual()) // selector.position(55,80)
@@ -143,6 +149,15 @@ object p_Menu {
   method actual() = actual
   method actual(bool) {
     actual = bool
+    if(actual){
+      game.addVisual(self)
+      game.addVisual(opciones)
+      game.addVisual(selector) // controles.cargarControles()
+    } else {
+      game.removeVisual(self) 
+      game.removeVisual(opciones)
+      game.removeVisual(selector) // controles.cargarControles()
+    }
   }
 
   method image() = "menu_.png"
@@ -154,6 +169,9 @@ object p_Menu {
     tema.play()
   }
   method stopTema() = tema.stop()
+  method togglePauseTema(){
+    if(tema.paused()) tema.resume() else tema.pause()
+  }
 }
 
 object p_gameOver {
@@ -163,6 +181,15 @@ object p_gameOver {
   method actual() = actual
   method actual(bool) {
     actual = bool
+    if(actual){
+      game.addVisual(self)
+      game.addVisual(opciones)
+      game.addVisual(selector) // controles.cargarControles()
+    } else {
+      game.removeVisual(self) 
+      game.removeVisual(opciones)
+      game.removeVisual(selector) // controles.cargarControles()
+    }
   }
 
   method image() = "gameover.png"
@@ -182,6 +209,15 @@ object p_youWin {
   method actual() = actual
   method actual(bool) {
     actual = bool
+    if(actual){
+      game.addVisual(self)
+      game.addVisual(opciones)
+      game.addVisual(selector) // controles.cargarControles()
+    } else {
+      game.removeVisual(self) 
+      game.removeVisual(opciones)
+      game.removeVisual(selector) // controles.cargarControles()
+    }
   }
 
   method image() = "youwin_.png"
@@ -201,4 +237,48 @@ object p_Juego {
   method actual(bool) {
     actual = bool
   }
+
+}
+
+object p_Pausa {
+  var actual = false
+  method image() = "pausa.png"
+  const tema = game.sound("pausa.mp3")
+
+  method actual() = actual
+  method actual(bool) {
+    actual = bool
+    if(actual){
+      game.addVisual(self)
+      game.addVisual(opciones)
+      game.addVisual(selector) // controles.cargarControles()
+      selector.actualizarPos()
+    } else {
+      game.removeVisual(self) 
+      game.removeVisual(opciones)
+      game.removeVisual(selector) // controles.cargarControles()
+    }
+  }
+
+  // Variable para no spamear la pausa
+  var wait = true
+  method toggle() {
+    if(wait){
+      wait = false
+      p_Menu.togglePauseTema()
+      self.actual(!actual)
+      tema.play()
+      game.schedule(3000,{
+        tema.stop()
+        wait = true
+        })
+    }
+  }
+
+  method position() = game.origin()
+  method tema() = tema
+  method playTema() {
+    tema.play()
+  }
+  method stopTema() = tema.stop()
 }
