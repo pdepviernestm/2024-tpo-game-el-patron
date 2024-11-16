@@ -59,8 +59,8 @@ object eventos {
         // if (nuevoIndice < elemento.col()*elemento.fila()){
         //   const nuevoFrente = enemigos.get(nuevoIndice)
           nuevoFrente.enFrente(true)
-          console.println("Nueva fila: "+ nuevoFrente.fila())
-          console.println("Nueva columna: "+nuevoFrente.col())
+          // console.println("Nueva fila: "+ nuevoFrente.fila())
+          // console.println("Nueva columna: "+nuevoFrente.col())
         // }
         // console.println(elemento.fila())
         // console.println("EL QUE LE PEGASTE:")
@@ -119,18 +119,18 @@ object eventos {
       if (elemento.soyPepita()) {
           nivel.proyectil(0).destruir()
           // game.removeVisual(nivel.proyectil(0))
-          elemento.setVidas(elemento.getVidas() - 1)
+          elemento.vidas(elemento.vidas() - 1)
+          
+          if (elemento.vidas() < 1) {
+            game.removeVisual(elemento)
+            elemento.muerto(true)
+          }
           
           elemento.cambiarImagen(("j" + elemento.jugador()) + "_hit.png")
           game.schedule(
             300,
             { elemento.cambiarImagen(("j" + elemento.jugador()) + ".png") }
           )
-          
-          if (elemento.getVidas() < 1) {
-            game.removeVisual(elemento)
-          }
-          
           
           const indicadores = elemento.indicadores()
           game.removeVisual(indicadores.get(indicadores.size() - 1))
@@ -162,7 +162,7 @@ object eventos {
 
   method _handleHitbox(elemento, jugador) {
     const valla = nivel.vallas().get(elemento.valla()-1)
-    if (valla.getVidas() >= 1) {
+    if (valla.vidas() >= 1) {
       elemento.sacarVida(valla)
       // game.removeVisual(nivel.proyectil(jugador))
       nivel.proyectil(jugador).destruir()
@@ -173,8 +173,8 @@ object eventos {
             300,
           { valla.cambiarImagen("valla192.png") }
       )
-      console.println("Vidas de la valla " + elemento.valla() + ": " + valla.getVidas())
-    } if (valla.getVidas() < 1) {
+      // console.println("Vidas de la valla " + elemento.valla() + ": " + valla.getVidas())
+    } if (valla.vidas() < 1) {
       game.removeVisual(valla)
     }
   }

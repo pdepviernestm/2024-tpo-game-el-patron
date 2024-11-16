@@ -3,6 +3,7 @@ import iu.*
 
 // pepita.wlk
 class Entidad {
+  var position = game.at(-1,-1)
   method hitSound() = game.sound("hit.mp3")
   
   method soyPepita() = false
@@ -22,12 +23,17 @@ class Entidad {
 
 class JugadorPrincipal inherits Entidad {
   var imagen = "j1.png"
-  var position = game.origin()
   var vidas = 3
-  var jugador = 1
-  var indicadores = []
+  var muerto = true
 
-  method muerto() = vidas < 1
+  const jugador
+  const indicadores = []
+
+  method muerto() = muerto
+  method muerto(bool){
+    muerto = bool
+    if(muerto) self.position(game.at(-1,-1))
+  }
   
   method jugador() = jugador
   
@@ -45,8 +51,27 @@ class JugadorPrincipal inherits Entidad {
   
   method cargarIndicadores() {
     vidas.times(
-      { x =>
+      { _ =>
         const indicador = new IndicadorVida()
+        // if (jugador == 1) {
+        //   indicador.position((12 * x) - 9)
+        //   indicador.cambiarImagen("piluso2x.png")
+        // } else {
+        //   if (jugador == 2) {
+        //     indicador.position(game.width() - (12 * x))
+        //     indicador.cambiarImagen("piluso2xj2_.png")
+        //   }
+        // }
+        indicadores.add(indicador)
+        // return game.addVisual(indicador)
+      }
+    )
+  }
+
+  method spawnIndicadores () {
+    vidas.times(
+      { x =>
+        const indicador = indicadores.get(x - 1)
         if (jugador == 1) {
           indicador.position((12 * x) - 9)
           indicador.cambiarImagen("piluso2x.png")
@@ -56,14 +81,10 @@ class JugadorPrincipal inherits Entidad {
             indicador.cambiarImagen("piluso2xj2_.png")
           }
         }
-        indicadores.add(indicador)
-        return game.addVisual(indicador)
+        // indicadores.add(indicador)
+        game.addVisual(indicador)
       }
     )
-  }
-  
-  method setJugador(numero) {
-    jugador = numero
   }
   
   method indicadores() = indicadores
@@ -72,9 +93,9 @@ class JugadorPrincipal inherits Entidad {
     position = game.at((game.width() / 2) + offset, 12)
   }
   
-  method getVidas() = vidas
+  method vidas() = vidas
   
-  method setVidas(newVidas) {
+  method vidas(newVidas) {
     vidas = newVidas
     self.golpe()
   }
@@ -84,7 +105,6 @@ class JugadorPrincipal inherits Entidad {
 
 class Enemigo inherits Entidad {
   var imagen = "enemigo.png"
-  var position = game.origin()
   var muerto = false
   var enFrente = false
 
@@ -132,7 +152,6 @@ class Enemigo inherits Entidad {
 
 class Hitbox inherits Entidad {
   var imagen = "j2.png" // Para visualizar la hitbox
-  var position = game.origin()
   var index = -1
   
   override method hitSound() = game.sound("hit_valla.mp3")
@@ -150,7 +169,7 @@ class Hitbox inherits Entidad {
   }
   
   method sacarVida(valla) {
-    valla.setVidas(valla.getVidas() - 1)
+    valla.vidas(valla.vidas() - 1)
     self.golpe()
   }
   
@@ -166,7 +185,6 @@ class Hitbox inherits Entidad {
 
 class Valla inherits Entidad {
   var imagen = "valla192.png"
-  var position = game.origin()
   var vidas = 10
   
   method position() = position
@@ -181,9 +199,9 @@ class Valla inherits Entidad {
     imagen = img
   }
   
-  method getVidas() = vidas
+  method vidas() = vidas
   
-  method setVidas(newVidas) {
+  method vidas(newVidas) {
     vidas = newVidas
   }
   

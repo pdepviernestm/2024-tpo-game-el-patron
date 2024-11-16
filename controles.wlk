@@ -29,9 +29,10 @@ object controles {
   }
   
   method _disparo(j) {
-    if (j <= nivel.jugadores().size()) {
+    if (j <= nivel.jugadores().size() && p_Juego.actual()) {
       const jugador = nivel.jugador(j)
       const proyectil = nivel.proyectil(j)
+      // console.println(proyectil)
       if (nivel.checkYaColisiono(j) && (!jugador.muerto())) {
         nivel.setYaColisiono(j, false)
         

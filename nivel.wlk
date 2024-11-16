@@ -7,11 +7,11 @@ import controles.*
 import pantallas.*
 
 object nivel {
-  var jugadores = []
-  var enemigos = []
-  var proyectiles = []
-  var vallas = []
-  var hitboxes = []
+  const jugadores = []
+  const enemigos = []
+  const proyectiles = []
+  const vallas = []
+  const hitboxes = []
   var yaColisionoj1 = true
   var yaColisionoj2 = true
   var yaColisionoEnemigo = true
@@ -40,6 +40,7 @@ object nivel {
     self.cargarEnemigos()
     self.cargarProyectiles()
     self.cargarVallas()
+    self.cargarJugadores()
   }
   
   method cargarProyectiles() {
@@ -53,22 +54,17 @@ object nivel {
   }
   
   method cargarEnemigos() {
-    // (f_enem*c_enem).times(
-    //   { _ => 
-    //       const enemigo = new Enemigo()
-    //       enemigos.add(enemigo)
-    //   }
-    // ) 
     f_enem.times(
-      {i => c_enem.times({
-        j =>
-        console.println("Fila " + i + " Col " + j)
-        const enemigo = new Enemigo(fila=i,col=j)
-        enemigos.add(enemigo)
-      })}
+      { i => c_enem.times(
+          { j =>
+            // console.println((("Fila " + i) + " Col ") + j)
+            const enemigo = new Enemigo(fila = i, col = j)
+            return enemigos.add(enemigo)
+          }
+        ) }
     )
-
-    console.println(enemigos)
+    
+    // console.println(enemigos)
   }
   
   method cargarVallas() {
@@ -85,6 +81,14 @@ object nivel {
         return vallas.add(valla)
       }
     )
+  }
+
+  method cargarJugadores() {
+    2.times({ i =>
+    const jugador = new JugadorPrincipal(jugador = i)
+    jugador.cargarIndicadores()
+    jugadores.add(jugador)
+    })
   }
   
   method spawnEnemigos() {
@@ -109,7 +113,7 @@ object nivel {
     4.times(
       { v =>
         const valla = vallas.get(v - 1)
-        console.println(valla)
+        // console.println(valla)
         valla.spawnea((40 * v) - 32, 36)
         var d = -8
         5.times(
@@ -126,7 +130,7 @@ object nivel {
     )
   }
   
-  method jugadores(j) = j.times({ _ => jugadores.add(new JugadorPrincipal()) })
+ 
   
   method jugador(jugador) = jugadores.get(jugador - 1)
   
@@ -171,30 +175,28 @@ object nivel {
   method enemigos() = enemigos
   
   method start(j) {
-    self.jugadores(j)
-    console.println(jugadores)
-    console.println(proyectiles) // self.cargarModulos()
-    
+    // console.println(jugadores)
+    // console.println(proyectiles) // self.cargarModulos()
+
     self.spawnEnemigos()
     self.spawnVallas()
     
     const jugador1 = self.jugador(1)
-    
-    jugador1.setJugador(1)
-    jugador1.cargarIndicadores()
+    jugador1.muerto(false)
+    jugador1.spawnIndicadores()
     game.addVisual(jugador1)
     
-    if (jugadores.size() == 2) {
+    if (j == 2) {
       const jugador2 = self.jugador(2)
+      jugador2.muerto(false)
       jugador2.cambiarImagen("j2.png")
-      jugador2.setJugador(2)
-      jugador2.cargarIndicadores()
+      jugador2.spawnIndicadores()
       game.addVisual(jugador2)
       
-      jugador1.spawnea(-(game.width() / 4)) // spawnear personajes
+      jugador1.spawnea(-(game.width() / 4))
       jugador2.spawnea(game.width() / 4)
     } else {
-      jugador1.spawnea(0) // spawnear enemigos
+      jugador1.spawnea(0)
     }
   }
 }

@@ -115,7 +115,7 @@ object pantallas {
         }
         else if (p_gameOver.actual()){
           if (selector.seleccion() == 0){
-            console.println(nivel.jugadores().size())
+            // console.println(nivel.jugadores().size())
             self.arrancar(nivel.jugadores().size())
             p_Menu.playTema()
             
