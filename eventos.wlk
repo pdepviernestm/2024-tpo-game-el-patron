@@ -52,10 +52,30 @@ object eventos {
     if (elemento.soyEnemigo()) {
       // enemigos.remove(elemento)
       // game.removeVisual(proyectil)
+      if(elemento.enFrente()){
+        const e_vivos = enemigos.filter({e => !e.muerto()})
+        const nuevoFrente = e_vivos.findOrDefault({e => e.fila() != elemento.fila() && e.col() == elemento.col()},elemento)
+        // const nuevoIndice = (elemento.col()*elemento.fila())+7
+        // if (nuevoIndice < elemento.col()*elemento.fila()){
+        //   const nuevoFrente = enemigos.get(nuevoIndice)
+          nuevoFrente.enFrente(true)
+          console.println("Nueva fila: "+ nuevoFrente.fila())
+          console.println("Nueva columna: "+nuevoFrente.col())
+        // }
+        // console.println(elemento.fila())
+        // console.println("EL QUE LE PEGASTE:")
+        // console.println(elemento.col()*(elemento.fila()))
+        // console.println("EL DE ARRIBA:")
+        // console.println()
+
+      }
+
       elemento.morir()
       enemigosVivos -= 1
       proyectil.destruir()
       nivel.setYaColisiono(jugador, true)
+
+      
       if (enemigos.all({e => e.muerto()})) pantallas.youwin()
     }
     else if (elemento.soyProyectil()){
@@ -79,7 +99,7 @@ object eventos {
           if (nivel.checkYaColisiono(0)) {
             nivel.setYaColisiono(0, false)
             
-            const e_vivos = enemigos.filter({e => !e.muerto()})
+            const e_vivos = enemigos.filter({e => !e.muerto() && e.enFrente()})
             const indice = 0.randomUpTo(e_vivos.size()).truncate(0)
             const enemigo = e_vivos.get(indice)
             
@@ -314,7 +334,8 @@ object eventos {
       1000,
       "verificarPosicionEnemigos",
       { if (p_Juego.actual()) {
-          if (enemigos.any({ enemigo => enemigo.position().y() < 35 }))
+        const e_vivos = enemigos.filter({e => !e.muerto()})
+          if (e_vivos.any({ enemigo => enemigo.position().y() < 35 }))
             pantallas.gameover()
         } }
     )

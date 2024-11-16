@@ -3,7 +3,6 @@ import entidades.*
 class Proyectil inherits Entidad {
   var imagen = "balboa0.png"
   var position = game.at(-1, -1)
-  var i_rotacion = 0
   var step = 4
   const sonido = game.sound("lanzar.mp3")
   

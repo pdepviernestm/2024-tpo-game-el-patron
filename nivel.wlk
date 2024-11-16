@@ -7,74 +7,86 @@ import controles.*
 import pantallas.*
 
 object nivel {
-
   var jugadores = []
   var enemigos = []
   var proyectiles = []
   var vallas = []
   var hitboxes = []
-
   var yaColisionoj1 = true
   var yaColisionoj2 = true
   var yaColisionoEnemigo = true
-
   const c_enem = 7
   const f_enem = 3
-
-
+  
   method configurate() {
     game.title("BARRA INVADERS")
     game.cellSize(8)
     game.height(160)
     game.width(160)
     game.boardGround("calle__.png")
-
+    
     self.cargarModulos()
     pantallas.menu()
   }
-
+  
   method cargarModulos() {
     self.cargarEntidades()
     pantallas.cargarControles()
     controles.cargarControlesJuego()
-    eventos.cargarEventos()
-    // controles.cargarControles()
+    eventos.cargarEventos() // controles.cargarControles()
   }
-
-  method cargarEntidades(){
+  
+  method cargarEntidades() {
     self.cargarEnemigos()
     self.cargarProyectiles()
     self.cargarVallas()
   }
-
+  
   method cargarProyectiles() {
-    3.times({i => 
-    const proyectil = new Proyectil()
-    if(i == 1) proyectil.step(proyectil.step()*(-1))
-    proyectiles.add(proyectil)})
-  }
-
-  method cargarEnemigos() {
-    (f_enem*c_enem).times(
-      { _ => 
-          const enemigo = new Enemigo()
-          enemigos.add(enemigo)
+    3.times(
+      { i =>
+        const proyectil = new Proyectil()
+        if (i == 1) proyectil.step(proyectil.step() * (-1))
+        return proyectiles.add(proyectil)
       }
-    ) 
+    )
   }
+  
+  method cargarEnemigos() {
+    // (f_enem*c_enem).times(
+    //   { _ => 
+    //       const enemigo = new Enemigo()
+    //       enemigos.add(enemigo)
+    //   }
+    // ) 
+    f_enem.times(
+      {i => c_enem.times({
+        j =>
+        console.println("Fila " + i + " Col " + j)
+        const enemigo = new Enemigo(fila=i,col=j)
+        enemigos.add(enemigo)
+      })}
+    )
 
+    console.println(enemigos)
+  }
+  
   method cargarVallas() {
-    4.times({v => 
+    4.times(
+      { v =>
         const valla = new Valla()
-          5.times({c => 
+        5.times(
+          { c =>
             const hitbox = new Hitbox()
             hitbox.valla(v)
-            hitboxes.add(hitbox)
-          })
-        vallas.add(valla)
-      })
+            return hitboxes.add(hitbox)
+          }
+        )
+        return vallas.add(valla)
+      }
+    )
   }
-
+  
   method spawnEnemigos() {
     // Crear enemigos
     // 3 filas, 7 columnas
@@ -84,98 +96,105 @@ object nivel {
           { x =>
             const enemigo = enemigos.get(i)
             enemigo.spawnea((16 * x) - 8, (y * 20) + (game.height() / 2))
+            if (enemigo.fila() == 1) enemigo.enFrente(true)
             game.addVisual(enemigo)
             i += 1
           }
         ) }
-    ) 
+    )
   }
-
+  
   method spawnVallas() {
     var i = 0
-    4.times({v => 
-        const valla = vallas.get(v-1)
+    4.times(
+      { v =>
+        const valla = vallas.get(v - 1)
         console.println(valla)
-        valla.spawnea(40*v-32,36)
+        valla.spawnea((40 * v) - 32, 36)
         var d = -8
-          5.times({c => 
+        5.times(
+          { c =>
             const hitbox = hitboxes.get(i)
-            hitbox.position(game.at((40*(v)-24)+ d,36))
+            hitbox.position(game.at(((40 * v) - 24) + d, 36))
             game.addVisual(hitbox)
             d += 4
             i += 1
-          })
-        game.addVisual(valla)
-      })
+          }
+        )
+        return game.addVisual(valla)
+      }
+    )
   }
-
-  method jugadores(j) = j.times({_ => jugadores.add(new JugadorPrincipal())})
-
+  
+  method jugadores(j) = j.times({ _ => jugadores.add(new JugadorPrincipal()) })
+  
   method jugador(jugador) = jugadores.get(jugador - 1)
-
-  method jugadores () = jugadores
-
+  
+  method jugadores() = jugadores
+  
   method proyectil(jugador) = proyectiles.get(jugador)
-
+  
   method proyectiles() = proyectiles
-
-  method vallas () = vallas
-
+  
+  method vallas() = vallas
+  
   method checkYaColisiono(jugador) {
-    if(jugador == 0){
+    if (jugador == 0) {
       return yaColisionoEnemigo
+    } else {
+      if (jugador == 1) {
+        return yaColisionoj1
+      } else {
+        if (jugador == 2) {
+          return yaColisionoj2
+        } else {
+          return true
+        }
+      }
     }
-    else if(jugador == 1){
-      return yaColisionoj1
-    }
-    else if(jugador == 2){
-      return yaColisionoj2
-    }
-    else return true
   }
-
-  method setYaColisiono(jugador,bool){
-     if(jugador == 0){
+  
+  method setYaColisiono(jugador, bool) {
+    if (jugador == 0) {
       yaColisionoEnemigo = bool
-    }
-    else if(jugador == 1){
-      yaColisionoj1 = bool
-    }
-    else if(jugador == 2){
-      yaColisionoj2 = bool
+    } else {
+      if (jugador == 1) {
+        yaColisionoj1 = bool
+      } else {
+        if (jugador == 2) {
+          yaColisionoj2 = bool
+        }
+      }
     }
   }
-
+  
   method enemigos() = enemigos
-
-
+  
   method start(j) {
     self.jugadores(j)
     console.println(jugadores)
-    console.println(proyectiles)
-    // self.cargarModulos()
+    console.println(proyectiles) // self.cargarModulos()
+    
     self.spawnEnemigos()
     self.spawnVallas()
-
+    
     const jugador1 = self.jugador(1)
-
+    
     jugador1.setJugador(1)
     jugador1.cargarIndicadores()
     game.addVisual(jugador1)
-
-    if (jugadores.size() == 2){
+    
+    if (jugadores.size() == 2) {
       const jugador2 = self.jugador(2)
       jugador2.cambiarImagen("j2.png")
       jugador2.setJugador(2)
       jugador2.cargarIndicadores()
       game.addVisual(jugador2)
-
-      jugador1.spawnea(-(game.width()/4)) // spawnear personajes
-      jugador2.spawnea((game.width()/4))
-    }
-    else {
+      
+      jugador1.spawnea(-(game.width() / 4)) // spawnear personajes
+      jugador2.spawnea(game.width() / 4)
+    } else {
       jugador1.spawnea(0) // spawnear enemigos
     }
-
   }
 }

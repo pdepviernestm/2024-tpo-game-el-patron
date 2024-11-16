@@ -23,7 +23,7 @@ class Entidad {
 class JugadorPrincipal inherits Entidad {
   var imagen = "j1.png"
   var position = game.origin()
-  var vidas = 1
+  var vidas = 3
   var jugador = 1
   var indicadores = []
 
@@ -86,6 +86,18 @@ class Enemigo inherits Entidad {
   var imagen = "enemigo.png"
   var position = game.origin()
   var muerto = false
+  var enFrente = false
+
+  const fila
+  const col
+
+  method fila() = fila
+  method col() = col
+
+  method enFrente() = enFrente
+  method enFrente(bool) {
+    enFrente = bool
+  }
 
   method muerto() = muerto
   method muerto(bool) {
@@ -103,6 +115,7 @@ class Enemigo inherits Entidad {
   }
   
   method morir() {
+    self.enFrente(false)
     self.muerto(true)
     game.removeVisual(self)
     self.golpe()
@@ -154,7 +167,7 @@ class Hitbox inherits Entidad {
 class Valla inherits Entidad {
   var imagen = "valla192.png"
   var position = game.origin()
-  var vidas = 5
+  var vidas = 10
   
   method position() = position
   
