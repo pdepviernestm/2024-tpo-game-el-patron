@@ -9,5 +9,5 @@
 (Escribirlas)
 ## Otros
 - K2005 - UTN FRBA
-- Wollok 0.2.6
-- Una vez terminado, no tenemos problemas en que el repositorio sea público / queremos manternerlo privado
+- Wollok 0.2.7
+- Una vez terminado, no tenemos problemas en que el repositorio sea público

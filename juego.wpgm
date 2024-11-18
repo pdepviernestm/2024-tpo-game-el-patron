@@ -1,11 +1,14 @@
 // juego.wpgm
-import entidades.*
 import wollok.game.*
-import proyectil.*
-import nivel.*
-import iu.*
+import config.cargar.*
 
-program PepitaGame {
-  nivel.configurate()
+program BarraInvaders {
+  game.title("BARRA INVADERS")
+  game.cellSize(8)
+  game.height(160)
+  game.width(160)
+  game.boardGround("calle__.png")
+  
+  cargar.modulos()
   game.start()
 }

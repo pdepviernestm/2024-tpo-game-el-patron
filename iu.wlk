@@ -1,5 +1,5 @@
 class IndicadorVida {
-  var position = game.origin()
+  var position = game.at(-1,-1)
   var imagen = "piluso2x.png"
   
   method image() = imagen
@@ -15,19 +15,9 @@ class IndicadorVida {
   }
 }
 
-class IndicadorVidaJ2 inherits IndicadorVida {
-  override method image() = "piluso2xj2_.png"
-  
-  override method position(x) {
-    position = game.at(game.width() - x, 2)
-  }
-}
-
-
-
 object selector {
   var position = game.at(opciones.position().x()-10, opciones.position().y()+18)
-  var imagen = "balboa6.png"
+  const imagen = "balboa6.png"
   var seleccion = 0
   var maxOpciones = 2
   const elegir = game.sound("lanzar.mp3")
@@ -48,8 +38,13 @@ object selector {
     position = newPos
   }
 
-  method actualizarPos(){
+  method mostrar(){
+    game.addVisual(self)
     position = game.at(opciones.position().x()-10, opciones.position().y()+18)
+  }
+
+  method ocultar() {
+    game.removeVisual(self)
   }
 
   method seleccion() = seleccion
@@ -98,25 +93,15 @@ object opciones {
   method cambiarImagen(img) {
     imagen = img
   }
-}
 
-object chiquiTapia {
-  var position = game.origin()
-  var imagen = "chiquiMafia.png"
-  
-  method image() = imagen
-  
-  method position() = position
-  
-  method spawnear(x, y) {
-    position = game.at(x, y)
+  method mostrar(img) {
+    selector.mostrar()
+    imagen = img
+    game.addVisual(self)
   }
-  
-  method position(newPos) {
-    position = newPos
-  }
-  
-  method detonar() {
-    self.position(self.position().down(4))
+
+  method ocultar() {
+    game.removeVisual(self)
+    selector.ocultar()
   }
 }

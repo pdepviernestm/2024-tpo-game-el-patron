@@ -1,4 +1,4 @@
-import entidades.*
+import entidades.base.*
 
 class Proyectil inherits Entidad {
   var imagen = "balboa0.png"
@@ -18,8 +18,10 @@ class Proyectil inherits Entidad {
     position = newPos
   }
   
-  method spawnea(x) {
-    position = x
+  method spawnea(newPos) {
+    game.addVisual(self)
+    position = newPos
+    self.reproducir()
   }
   
   method step() = step
@@ -45,10 +47,4 @@ class Proyectil inherits Entidad {
   }
   
   override method soyProyectil() = true
-}
-
-class ProyectilEnemigo inherits Proyectil {
-  override method lanzar() {
-    self.position(self.position().down(4))
-  }
 }
