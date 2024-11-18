@@ -1,6 +1,7 @@
 import config.controles.*
 import config.eventos.*
 import config.pantallas.*
+import entidades.base.default
 import entidades.enemigo.*
 import entidades.jugador.*
 import entidades.proyectil.*
@@ -14,7 +15,7 @@ object cargar {
   const proyectiles = []
   const vallas = []
   const hitboxes = []
-  const dim = [1, 1]
+  const dim = [default.filas(), default.columnas()]
   
   method dimensiones() = dim
   

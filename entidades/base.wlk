@@ -20,3 +20,17 @@ class Entidad {
     game.schedule(500, { sound.stop() })
   }
 }
+
+object default {
+  /* Valores por defecto. Se pueden cambiar para realizar pruebas */
+
+  // method filas() = 3
+  // method columnas() = 7
+  // method vidasJugador() = 3
+  // method vidasValla() = 10
+
+  method filas() = 3
+  method columnas() = 7
+  method vidasJugador() = 3
+  method vidasValla() = 10
+}

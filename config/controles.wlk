@@ -68,11 +68,11 @@ object controlesMenu {
   method setEnControles(bool) {
     enControles = bool
   }
-  
+
   method cargar() {
     self.controles()
   }
-  
+
   method controles() {
     var dir = 1
     game.onTick(
@@ -83,43 +83,49 @@ object controlesMenu {
         dir *= -1
       }
     )
-    
-    keyboard.p().onPressDo({ if (p_Juego.actual()) p_Pausa.toggle() })
-    
+
+    keyboard.p().onPressDo({
+      if(p_Juego.actual()){
+        p_Pausa.toggle()
+      }
+    })
+
     keyboard.up().onPressDo(
-      { if (!p_Juego.actual()) // selector.position(55,80)selector.arriba() }
+      { if (!p_Juego.actual()) // selector.position(55,80)
+          selector.arriba() }
     )
     keyboard.down().onPressDo(
-      { if (!p_Juego.actual()) // selector.position(55,67)selector.abajo() }
+      { if (!p_Juego.actual()) // selector.position(55,67)
+          selector.abajo() }
     )
     keyboard.enter().onPressDo(
       { if (p_Menu.actual()) {
           selector.seleccionar()
-          if (selector.seleccion() == 2) {
+          if (selector.seleccion() == 2){
             enControles = true
             selector.seleccion(0)
             selector.setMaxOpciones(0)
             opciones.cambiarImagen("controles2.png")
-          } else {
-            if (enControles) {
-              enControles = false
-              selector.seleccion(2)
-              selector.setMaxOpciones(2)
-              opciones.cambiarImagen("opciones2.png")
-            } else {
-              cargar.cargarJuego(selector.seleccion() + 1)
-            }
           }
-        } else {
-          if (p_gameOver.actual()) {
-            if (selector.seleccion() == 0) {
-              // console.println(nivel.jugadores().size())
-              // nivel.restart()
-              cargar.cargarJuego(nivel.cantJugadores())
-              p_Menu.playTema()
-            } else {
-              game.stop()
-            }
+          else if (enControles){
+            enControles = false
+            selector.seleccion(2)
+            selector.setMaxOpciones(2)
+            opciones.cambiarImagen("opciones2.png")
+          }
+          else {
+            cargar.cargarJuego(selector.seleccion()+1)
+          }
+        }
+        else if (p_gameOver.actual() || p_youWin.actual()){
+          if (selector.seleccion() == 0){
+            // console.println(nivel.jugadores().size())
+            // nivel.restart()
+            cargar.cargarJuego(nivel.cantJugadores())
+            p_Menu.playTema()
+            
+          } else {
+            game.stop()
           }
         } }
     )

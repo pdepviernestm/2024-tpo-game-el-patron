@@ -1,4 +1,5 @@
 import iu.*
+import config.cargar.*
 
 object p_Menu {
   var actual = false
@@ -42,6 +43,11 @@ object p_gameOver {
   method actual(bool) {
     actual = bool
     if(actual){
+      // Eliminar proyectiles en pantalla
+      const jugadores = cargar.jugadores()
+      jugadores.forEach({ j => cargar.proyectil(j.jugador()).destruir() })
+      cargar.proyectil(0).destruir()
+
       if(p_Pausa.actual()) p_Menu.togglePauseTema()
       p_Menu.stopTema()
       p_Pausa.actual(false)
@@ -87,6 +93,7 @@ object p_youWin {
     } else {
       if(game.hasVisual(self)) game.removeVisual(self) 
       opciones.ocultar()
+      if (tema.played()) tema.stop()
     }
   }
 
@@ -141,7 +148,7 @@ object p_Pausa {
       p_Menu.togglePauseTema()
       self.actual(!actual)
       tema.play()
-      game.schedule(3000,{
+      game.schedule(2000,{
         tema.stop()
         wait = true
         })

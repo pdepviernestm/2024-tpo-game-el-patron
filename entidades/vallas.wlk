@@ -2,7 +2,7 @@ import entidades.base.*
 
 class Valla inherits Entidad {
   var imagen = "valla192.png"
-  const totalVidas = 10
+  const totalVidas = default.vidasValla()
   var vidas = totalVidas
   
   override method hitSound() = game.sound("hit_valla.mp3")
