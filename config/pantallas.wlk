@@ -85,11 +85,17 @@ object p_youWin {
   method actual(bool) {
     actual = bool
     if(actual){
+      const jugadores = cargar.jugadores()
+      jugadores.forEach({ j => cargar.proyectil(j.jugador()).destruir() })
+      cargar.proyectil(0).destruir()
+
       p_Juego.actual(false)
       p_Menu.stopTema()
       self.playTema()
       game.addVisual(self)
       opciones.mostrar("reintentar.png")
+      selector.seleccion(0)
+      selector.setMaxOpciones(1)
     } else {
       if(game.hasVisual(self)) game.removeVisual(self) 
       opciones.ocultar()
