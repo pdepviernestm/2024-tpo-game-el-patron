@@ -29,7 +29,7 @@ object controles {
   }
   
   method _disparo(j) {
-    if ((j <= cargar.jugadores().size()) && p_Juego.actual()) {
+    if ((j <= cargar.jugadores().size()) && p_Juego.actual() && !p_Pausa.actual()) {
       const jugador = cargar.jugador(j)
       const proyectil = cargar.proyectil(j) // console.println(proyectil)
       if (proyectil.yaColisiono() && (!jugador.muerto())) {
@@ -79,7 +79,7 @@ object controlesMenu {
       1000,
       "idleSelector",
       { 
-        selector.position(selector.position().left(2 * dir))
+        selector.position(selector.position().right(dir))
         dir *= -1
       }
     )
@@ -125,7 +125,7 @@ object controlesMenu {
             p_Menu.playTema()
             
           } else {
-            game.stop()
+            p_Menu.actual(true)
           }
         } }
     )
