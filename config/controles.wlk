@@ -91,11 +91,11 @@ object controlesMenu {
     })
 
     keyboard.up().onPressDo(
-      { if (!p_Juego.actual()) // selector.position(55,80)
+      { if (!p_Juego.actual() || p_Pausa.actual()) // selector.position(55,80)
           selector.arriba() }
     )
     keyboard.down().onPressDo(
-      { if (!p_Juego.actual()) // selector.position(55,67)
+      { if (!p_Juego.actual() || p_Pausa.actual()) // selector.position(55,67)
           selector.abajo() }
     )
     keyboard.enter().onPressDo(
@@ -127,7 +127,18 @@ object controlesMenu {
           } else {
             p_Menu.actual(true)
           }
-        } }
+        }
+        else if (p_Pausa.actual()){
+          if (selector.seleccion() == 0){
+            p_Pausa.toggle()
+          } else if (selector.seleccion() == 1){
+            p_Menu.togglePauseTema()
+            cargar.cargarJuego(nivel.cantJugadores())
+          } else {
+            p_Menu.togglePauseTema()
+            p_Menu.actual(true)}
+        }
+        }
     )
   }
 }

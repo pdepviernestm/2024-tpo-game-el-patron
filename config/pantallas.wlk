@@ -33,9 +33,13 @@ object p_Menu {
   method tema() = tema
   
   method playTema() {
+    console.println(1)
     tema.shouldLoop(true)
+    console.println(2)
     tema.volume(0.5)
-    tema.play()
+    console.println(3)
+    if(!tema.played()) tema.play()
+    console.println(4)
   }
   
   method stopTema() = tema.stop()
@@ -55,9 +59,9 @@ object p_gameOver {
     actual = bool
     if (actual) {
       // Eliminar proyectiles en pantalla
-      const jugadores = cargar.jugadores()
-      jugadores.forEach({ j => cargar.proyectil(j.jugador()).destruir() })
-      cargar.proyectil(0).destruir()
+      // const jugadores = cargar.jugadores()
+      // jugadores.forEach({ j => cargar.proyectil(j.jugador()).destruir() })
+      // cargar.proyectil(0).destruir()
       
       if (p_Pausa.actual()) p_Menu.togglePauseTema()
       p_Menu.stopTema()
@@ -102,9 +106,9 @@ object p_youWin {
   method actual(bool) {
     actual = bool
     if (actual) {
-      const jugadores = cargar.jugadores()
-      jugadores.forEach({ j => cargar.proyectil(j.jugador()).destruir() })
-      cargar.proyectil(0).destruir()
+      // const jugadores = cargar.jugadores()
+      // jugadores.forEach({ j => cargar.proyectil(j.jugador()).destruir() })
+      // cargar.proyectil(0).destruir()
       
       p_Juego.actual(false)
       p_Menu.stopTema()
@@ -145,9 +149,14 @@ object p_Juego {
   method actual(bool) {
     actual = bool
     if (actual) {
+      const jugadores = cargar.jugadores()
+      jugadores.forEach({ j => cargar.proyectil(j.jugador()).destruir() })
+      cargar.proyectil(0).destruir()
+
       p_Menu.actual(false)
       p_gameOver.actual(false)
       p_youWin.actual(false)
+      p_Pausa.actual(false)
       opciones.ocultar()
     }
   }
@@ -167,6 +176,8 @@ object p_Pausa {
     if (actual) {
       game.addVisual(self)
       opciones.mostrar("o_pausa_.png", 3)
+      selector.seleccion(0)
+      selector.setMaxOpciones(2)
     } else {
       if (game.hasVisual(self)) game.removeVisual(self)
       opciones.ocultar()
