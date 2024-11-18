@@ -4,6 +4,12 @@ class Proyectil inherits Entidad {
   var imagen = "balboa0.png"
   var step = 4
   const sonido = game.sound("lanzar.mp3")
+  var yaColisiono = true
+
+  method yaColisiono() = yaColisiono
+  method yaColisiono(bool){
+    yaColisiono = bool
+  }
   
   override method hitSound() = game.sound("hit_botella.mp3")
   
@@ -19,6 +25,7 @@ class Proyectil inherits Entidad {
   }
   
   method spawnea(newPos) {
+    self.yaColisiono(false)
     game.addVisual(self)
     position = newPos
     self.reproducir()
@@ -42,6 +49,7 @@ class Proyectil inherits Entidad {
   
   // Evita que el proyectil siga actuando de manera invisible
   method destruir() {
+    self.yaColisiono(true)
     game.removeVisual(self)
     self.position(game.at(-1, game.height()))
   }

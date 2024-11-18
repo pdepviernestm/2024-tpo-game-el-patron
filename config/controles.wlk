@@ -32,8 +32,8 @@ object controles {
     if ((j <= cargar.jugadores().size()) && p_Juego.actual()) {
       const jugador = cargar.jugador(j)
       const proyectil = cargar.proyectil(j) // console.println(proyectil)
-      if (nivel.checkYaColisiono(j) && (!jugador.muerto())) {
-        nivel.setYaColisiono(j, false)
+      if (proyectil.yaColisiono() && (!jugador.muerto())) {
+        proyectil.yaColisiono(false)
         
         jugador.cambiarImagen(("j" + j) + "_tirar.png")
         game.schedule(250, { jugador.cambiarImagen(("j" + j) + ".png") })

@@ -11,13 +11,10 @@ object eventos {
   var derecha = true
   var step = 4
   var enemigosVivos = 0
-  //   var derecha = true
-  //   var step = 4
   var moverHaciaAbajo = false
   var nuevaDireccion = derecha
   
   method cargarEventos() {
-    // self._setEnemigos()
     self.chiqui()
     self.movimientoEnemigo()
     self.disparoEnemigo()
@@ -63,18 +60,13 @@ object eventos {
       elemento.morir()
       enemigosVivos -= 1
       proyectil.destruir()
-      nivel.setYaColisiono(jugador, true)
-      
       
       if (enemigos.all({ e => e.muerto() })) p_youWin.actual(true)
     } else {
       if (elemento.soyProyectil()) {
         elemento.golpe()
         elemento.destruir()
-        proyectil.destruir() // game.removeVisual(proyectil)
-        
-        // game.removeVisual(elemento)
-        nivel.setYaColisiono(0, true)
+        proyectil.destruir()
       } else {
         if (elemento.soyHitbox()) self._handleHitbox(elemento, jugador)
       }
@@ -82,13 +74,12 @@ object eventos {
   }
   
   method disparoEnemigo() {
+    const proyectil = cargar.proyectil(0)
     game.onTick(
       1,
       "disparoEnemigo",
       { if (p_Juego.actual() && (!p_Pausa.actual())) {
-          if (nivel.checkYaColisiono(0)) {
-            nivel.setYaColisiono(0, false)
-            
+          if (proyectil.yaColisiono()) {
             const e_vivos = enemigos.filter(
               { e => (!e.muerto()) && e.enFrente() }
             )
@@ -97,23 +88,14 @@ object eventos {
             
             enemigo.cambiarImagen("enemigo_tirar.png")
             game.schedule(500, { enemigo.cambiarImagen("enemigo.png") })
-            cargar.proyectil(0).spawnea(enemigo.position())
+            proyectil.spawnea(enemigo.position())
           }
         } }
     )
     game.whenCollideDo(
-      cargar.proyectil(0),
+      proyectil,
       { elemento => if (elemento.soyJugador()) {
-          cargar.proyectil(0).destruir()
-          // game.removeVisual(cargar.proyectil(0))
-          
-          
-          
-          
-          
-          
-          
-          
+          proyectil.destruir()
           elemento.vidas(elemento.vidas() - 1)
           
           if (elemento.vidas() < 1) elemento.muerto(true)
@@ -126,18 +108,12 @@ object eventos {
           
           const indicadores = elemento.indicadores()
           game.removeVisual(indicadores.get(elemento.vidas()))
-          
-          nivel.setYaColisiono(0, true)
-          
-          if (jugadores.all({ j => j.muerto() })) {
-            p_gameOver.actual(true)
-          }
+          if (jugadores.all({ j => j.muerto() })) p_gameOver.actual(true)
         } else {
           if (elemento.soyProyectil()) {
             elemento.golpe()
             cargar.proyectil(0).destruir()
             elemento.destruir()
-            nivel.setYaColisiono(0, true)
           } else {
             if (elemento.soyHitbox()) self._handleHitbox(elemento, 0)
           }
@@ -150,7 +126,6 @@ object eventos {
     if (valla.vidas() >= 1) {
       valla.sacarVida()
       cargar.proyectil(jugador).destruir()
-      nivel.setYaColisiono(jugador, true)
     }
   }
   
@@ -161,10 +136,7 @@ object eventos {
   
   method _handleProyectilMovimiento(i, criterio) {
     cargar.proyectil(i).lanzar()
-    if (criterio) {
-      cargar.proyectil(i).destruir()
-      nivel.setYaColisiono(i, true)
-    }
+    if (criterio) cargar.proyectil(i).destruir()
   }
   
   method movimientoProyectiles() {
