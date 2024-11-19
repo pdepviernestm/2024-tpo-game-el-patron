@@ -112,7 +112,7 @@ object controlesMenu {
             selector.seleccion(0)
             selector.setMaxOpciones(0)
             fondoOpciones.position(fondoOpciones.position().down(24).left(13))
-            opciones.mostrar("o_controles.png",1)
+            opciones.mostrar("o_controles_.png",1)
             selector.position(fondoOpciones.position().up(4).right(7))
           } else {
             if (enControles) {

@@ -42,7 +42,6 @@ object selector {
   
   method mostrar() {
     if(!game.hasVisual(self)) game.addVisual(self)
-    // position = game.at(fondoOpciones.position().x()+2, fondoOpciones.position().y() + 19)
     position = fondoOpciones.position().right(2).up(19)
   }
   
