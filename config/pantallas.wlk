@@ -33,13 +33,9 @@ object p_Menu {
   method tema() = tema
   
   method playTema() {
-    console.println(1)
     tema.shouldLoop(true)
-    console.println(2)
     tema.volume(0.5)
-    console.println(3)
     if(!tema.played()) tema.play()
-    console.println(4)
   }
   
   method stopTema() = tema.stop()

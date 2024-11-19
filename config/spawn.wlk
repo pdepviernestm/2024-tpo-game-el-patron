@@ -5,18 +5,33 @@ object spawn {
   var enemigos = []
   var hitboxes = []
   var vallas = []
+  var jugadores = []
   const dim = cargar.dimensiones()
   
   method cargarListas() {
     enemigos = cargar.enemigos()
     hitboxes = cargar.hitboxes()
     vallas = cargar.vallas()
+    jugadores = cargar.jugadores()
   }
   
-  method entidades() {
+  method entidades(j) {
     self.cargarListas()
     self.spawnEnemigos()
     self.spawnVallas()
+    self.spawnJugadores(j)
+  }
+
+  method spawnJugadores(j) {
+    var n = -1
+    jugadores.forEach({i => i.muerto(true)})
+    j.times({
+      i => 
+      const jugador = cargar.jugador(i)
+      jugador.spawnea((game.width() / 4)*n)
+      n *= -1
+      if(j == 1) jugador.spawnea(0)
+    })
   }
   
   method spawnEnemigos() {

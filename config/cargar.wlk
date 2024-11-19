@@ -36,7 +36,7 @@ object cargar {
   method modulos() {
     self.entidades()
     controlesMenu.cargar()
-    controles.cargarControlesJuego()
+    controlesJuego.cargar()
     eventos.cargarEventos() // controles.cargarControles()
     
     p_Menu.actual(true)
@@ -63,12 +63,11 @@ object cargar {
     dim.get(0).times(
       { i => dim.get(1).times(
           { j =>
-            // console.println((("Fila " + i) + " Col ") + j)
             const enemigo = new Enemigo(fila = i, col = j)
             return enemigos.add(enemigo)
           }
         ) }
-    ) // console.println(enemigos)
+    )
   }
   
   method cargarVallas() {

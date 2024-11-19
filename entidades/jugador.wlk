@@ -13,9 +13,10 @@ class JugadorPrincipal inherits Entidad {
   
   method muerto(bool) {
     muerto = bool
-    if (muerto){
+    if (muerto) {
       game.removeVisual(self)
       self.position(game.at(-1, -1))
+      indicadores.forEach({ i => if (game.hasVisual(i)) game.removeVisual(i) })
     }
   }
   
@@ -45,8 +46,7 @@ class JugadorPrincipal inherits Entidad {
   method spawnIndicadores() {
     var x = 1
     indicadores.forEach(
-      { i =>
-        if (!game.hasVisual(i)){
+      { i => if (!game.hasVisual(i)) {
           var archivo = "piluso2x"
           if (jugador == 1) {
             i.position((12 * x) - 9)
@@ -58,18 +58,18 @@ class JugadorPrincipal inherits Entidad {
           i.cambiarImagen(archivo + ".png")
           game.addVisual(i)
           x += 1
-        }
-      }
+        } }
     )
   }
   
   method indicadores() = indicadores
   
   method spawnea(offset) {
+    imagen = ("j" + jugador) + ".png"
     muerto = false
     position = game.at((game.width() / 2) + offset, 12)
     vidas = totalVidas
-    if(!game.hasVisual(self)) game.addVisual(self)
+    if (!game.hasVisual(self)) game.addVisual(self)
     self.spawnIndicadores()
   }
   
