@@ -83,11 +83,15 @@ object selector {
 
 object fondoOpciones {
   var imagen = "rectangulo3.png"
-  const position = game.at(52, 43)
+  var position = game.at(52, 43)
   
   method image() = imagen
   
   method position() = position
+
+  method position(newPos){
+    position = newPos
+  }
   
   method image(nueva) {
     imagen = nueva
@@ -111,8 +115,8 @@ object opciones {
   
   method position() = position
   
-  method position(x, y) {
-    position = game.at(x, y)
+  method position(newPos) {
+    position = newPos
   }
   
   method cambiarImagen(img) {
@@ -121,6 +125,7 @@ object opciones {
   
   method mostrar(img, n) {
     fondoOpciones.mostrar(n)
+    position = fondoOpciones.position().right(1)
     selector.mostrar()
     imagen = img
     if(!game.hasVisual(self)) game.addVisual(self)

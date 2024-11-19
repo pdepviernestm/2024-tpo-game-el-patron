@@ -111,13 +111,17 @@ object controlesMenu {
             enControles = true
             selector.seleccion(0)
             selector.setMaxOpciones(0)
-            opciones.cambiarImagen("controles2.png")
+            fondoOpciones.position(fondoOpciones.position().down(24).left(13))
+            opciones.mostrar("o_controles.png",1)
+            selector.position(fondoOpciones.position().up(4).right(7))
           } else {
             if (enControles) {
               enControles = false
               selector.seleccion(2)
               selector.setMaxOpciones(2)
-              opciones.cambiarImagen("opciones2.png")
+              fondoOpciones.position(fondoOpciones.position().down(-24).left(-13))
+              opciones.mostrar("o_menu__.png",3)
+              selector.position(selector.position().down(16))
             } else {
               cargar.cargarJuego(selector.seleccion() + 1)
             }
