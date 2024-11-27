@@ -1,13 +1,16 @@
 import iu.*
 import config.cargar.*
 
-object p_Menu {
-  var actual = false
-  const tema = game.sound("main_loop.mp3")
+class Pantalla {
+  var property actual = false
+  const property position = game.origin()
+}
+
+object p_Menu inherits Pantalla {
+  const property image = "menu_.png"
+  const property tema = game.sound("main_loop.mp3")
   
-  method actual() = actual
-  
-  method actual(bool) {
+  override method actual(bool) {
     actual = bool
     if (actual) {
       p_gameOver.actual(false)
@@ -18,7 +21,7 @@ object p_Menu {
       game.addVisual(self)
       
       selector.seleccion(0)
-      selector.setMaxOpciones(2)
+      selector.maxOpciones(2)
       opciones.mostrar("o_menu__.png", 3)
     } else {
       if (game.hasVisual(self)) game.removeVisual(self)
@@ -26,16 +29,10 @@ object p_Menu {
     }
   }
   
-  method image() = "menu_.png"
-  
-  method position() = game.origin()
-  
-  method tema() = tema
-  
   method playTema() {
     tema.shouldLoop(true)
     tema.volume(0.5)
-    if(!tema.played()) tema.play()
+    if (!tema.played()) tema.play()
   }
   
   method stopTema() = tema.stop()
@@ -45,20 +42,17 @@ object p_Menu {
   }
 }
 
-object p_gameOver {
-  var actual = false
-  const tema = game.sound("game_over.mp3")
-  
-  method actual() = actual
-  
-  method actual(bool) {
+object p_gameOver inherits Pantalla{
+  const property image = "gameover.png"
+  const property tema = game.sound("game_over.mp3")
+
+  override method actual(bool) {
     actual = bool
     if (actual) {
       // Eliminar proyectiles en pantalla
       // const jugadores = cargar.jugadores()
       // jugadores.forEach({ j => cargar.proyectil(j.jugador()).destruir() })
       // cargar.proyectil(0).destruir()
-      
       if (p_Pausa.actual()) p_Menu.togglePauseTema()
       p_Menu.stopTema()
       p_Pausa.actual(false)
@@ -71,18 +65,12 @@ object p_gameOver {
       selector.position(selector.position().down(8).right(0))
       
       selector.seleccion(0)
-      selector.setMaxOpciones(1)
+      selector.maxOpciones(1)
     } else {
       if (game.hasVisual(self)) game.removeVisual(self)
       opciones.ocultar()
     }
   }
-  
-  method image() = "gameover.png"
-  
-  method position() = game.origin()
-  
-  method tema() = tema
   
   method playTema() {
     tema.volume(0.5)
@@ -93,42 +81,33 @@ object p_gameOver {
   method stopTema() = tema.stop()
 }
 
-object p_youWin {
-  var actual = false
-  const tema = game.sound("victory.mp3")
+object p_youWin inherits Pantalla{
+  const property image = "youwin_.png"
+  const property tema = game.sound("victory.mp3")
   
-  method actual() = actual
-  
-  method actual(bool) {
+  override method actual(bool) {
     actual = bool
     if (actual) {
       // const jugadores = cargar.jugadores()
       // jugadores.forEach({ j => cargar.proyectil(j.jugador()).destruir() })
       // cargar.proyectil(0).destruir()
-      
       p_Juego.actual(false)
       p_Menu.stopTema()
       self.playTema()
       game.addVisual(self)
-
+      
       opciones.mostrar("o_reintentar_.png", 2)
       selector.position(selector.position().down(8).right(0))
-
+      
       selector.seleccion(0)
-      selector.setMaxOpciones(1)
+      selector.maxOpciones(1)
     } else {
       if (game.hasVisual(self)) game.removeVisual(self)
       opciones.ocultar()
       if (tema.played()) tema.stop()
     }
   }
-  
-  method image() = "youwin_.png"
-  
-  method position() = game.origin()
-  
-  method tema() = tema
-  
+
   method playTema() {
     tema.volume(0.5)
     tema.play()
@@ -137,18 +116,14 @@ object p_youWin {
   method stopTema() = tema.stop()
 }
 
-object p_Juego {
-  var actual = false
-  
-  method actual() = actual
-  
-  method actual(bool) {
+object p_Juego inherits Pantalla{
+  override method actual(bool) {
     actual = bool
     if (actual) {
       const jugadores = cargar.jugadores()
       jugadores.forEach({ j => cargar.proyectil(j.jugador()).destruir() })
       cargar.proyectil(0).destruir()
-
+      
       p_Menu.actual(false)
       p_gameOver.actual(false)
       p_youWin.actual(false)
@@ -173,7 +148,7 @@ object p_Pausa {
       game.addVisual(self)
       opciones.mostrar("o_pausa_.png", 3)
       selector.seleccion(0)
-      selector.setMaxOpciones(2)
+      selector.maxOpciones(2)
     } else {
       if (game.hasVisual(self)) game.removeVisual(self)
       opciones.ocultar()

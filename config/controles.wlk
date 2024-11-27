@@ -1,21 +1,25 @@
 import wollok.game.*
 import config.cargar.*
 import config.pantallas.*
+import entidades.chiqui.*
 import iu.*
 import nivel.*
 
-object controlesJuego {
+class Controles {
+  method cargar() {
+    self.controles()
+  }
+
+  method controles() {}
+}
+
+object controlesJuego inherits Controles{
   /* Variable para evitar que el segundo jugador dispare al elegir una opcion*/
   var wait = false
-
+  
   method handleWait() {
     wait = true
     game.schedule(1, { wait = false })
-  }
-  
-  method cargar() {
-    self.controlesj1()
-    self.controlesj2()
   }
   
   method _derecha(j) {
@@ -43,23 +47,23 @@ object controlesJuego {
       if (proyectil.yaColisiono() && (!jugador.muerto())) {
         proyectil.yaColisiono(false)
         
-        jugador.cambiarImagen(("j" + j) + "_tirar.png")
-        game.schedule(250, { jugador.cambiarImagen(("j" + j) + ".png") })
+        jugador.image(("j" + j) + "_tirar.png")
+        game.schedule(250, { jugador.image(("j" + j) + ".png") })
         
         proyectil.spawnea(jugador.position()) // proyectil.lanzar()
       }
     }
   }
   
-  method controlesj1() {
+  override method controles() {
+    // Jugador 1
     keyboard.a().onPressDo({ self._izquierda(1) })
     
     keyboard.d().onPressDo({ self._derecha(1) })
     
     keyboard.space().onPressDo({ self._disparo(1) })
-  }
-  
-  method controlesj2() {
+
+    // Jugador 2
     keyboard.left().onPressDo({ self._izquierda(2) })
     
     keyboard.right().onPressDo({ self._derecha(2) })
@@ -68,20 +72,10 @@ object controlesJuego {
   }
 }
 
-object controlesMenu {
+object controlesMenu inherits Controles{
   var enControles = false
   
-  method enControles() = enControles
-  
-  method setEnControles(bool) {
-    enControles = bool
-  }
-  
-  method cargar() {
-    self.controles()
-  }
-  
-  method controles() {
+  override method controles() {
     var dir = 1
     game.onTick(
       1000,
@@ -103,24 +97,25 @@ object controlesMenu {
           selector.abajo() }
     )
     keyboard.enter().onPressDo(
-      { 
-        if (p_Menu.actual()) {
+      { if (p_Menu.actual()) {
           controlesJuego.handleWait()
           selector.seleccionar()
           if (selector.seleccion() == 2) {
             enControles = true
             selector.seleccion(0)
-            selector.setMaxOpciones(0)
+            selector.maxOpciones(0)
             fondoOpciones.position(fondoOpciones.position().down(24).left(13))
-            opciones.mostrar("o_controles_.png",1)
+            opciones.mostrar("o_controles_.png", 1)
             selector.position(fondoOpciones.position().up(4).right(7))
           } else {
             if (enControles) {
               enControles = false
               selector.seleccion(2)
-              selector.setMaxOpciones(2)
-              fondoOpciones.position(fondoOpciones.position().down(-24).left(-13))
-              opciones.mostrar("o_menu__.png",3)
+              selector.maxOpciones(2)
+              fondoOpciones.position(
+                fondoOpciones.position().down(-24).left(-13)
+              )
+              opciones.mostrar("o_menu__.png", 3)
               selector.position(selector.position().down(16))
             } else {
               cargar.cargarJuego(selector.seleccion() + 1)
@@ -151,8 +146,15 @@ object controlesMenu {
               }
             }
           }
-        }
-      }
+        } }
+    )
+  }
+}
+
+object misterio inherits Controles {
+  override method controles() {
+    keyboard.t().onPressDo(
+      { if (p_Juego.actual() && (!p_Pausa.actual())) chiqui.incrementar() }
     )
   }
 }

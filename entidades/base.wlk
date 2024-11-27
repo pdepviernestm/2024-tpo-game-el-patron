@@ -24,10 +24,10 @@ class Entidad {
 object default {
   /* Valores por defecto. Se pueden cambiar para realizar pruebas */
 
-  method filas() = 3
-  method columnas() = 7
-  method vidasJugador() = 3
-  method vidasValla() = 10
+  const property filas = 3
+  const property columnas = 7
+  const property vidasJugador = 3
+  const property vidasValla = 10
 
   // method filas() = 1
   // method columnas() = 1

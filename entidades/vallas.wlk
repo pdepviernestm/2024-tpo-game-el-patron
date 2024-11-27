@@ -1,7 +1,7 @@
 import entidades.base.*
 
 class Valla inherits Entidad {
-  var imagen = "valla192.png"
+  var property image = "valla192.png"
   const totalVidas = default.vidasValla()
   var vidas = totalVidas
   
@@ -13,11 +13,6 @@ class Valla inherits Entidad {
     position = newPos
   }
   
-  method image() = imagen
-  
-  method cambiarImagen(img) {
-    imagen = img
-  }
   
   method vidas() = vidas
   
@@ -28,8 +23,8 @@ class Valla inherits Entidad {
   method sacarVida() {
     vidas -= 1
     self.golpe()
-    imagen = "valla_hit.png"
-    game.schedule(300, { imagen = "valla192.png" })
+    image = "valla_hit.png"
+    game.schedule(300, { image = "valla192.png" })
     if (vidas < 1) game.removeVisual(self)
   }
   
@@ -58,7 +53,7 @@ class Hitbox inherits Entidad {
   
   override method soyHitbox() = true
   
-  method cambiarImagen(img) {
+  method image(img) {
     imagen = img
   }
 }

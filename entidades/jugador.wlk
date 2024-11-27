@@ -2,14 +2,12 @@ import entidades.base.*
 import iu.IndicadorVida
 
 class JugadorPrincipal inherits Entidad {
-  var imagen = "j1.png"
+  const property jugador = 1
+  const property indicadores = []
+  var property image = "j1.png"
+  var property vidas = totalVidas
+  var property muerto = true
   const totalVidas = default.vidasJugador()
-  var vidas = totalVidas
-  var muerto = true
-  const jugador = 1
-  const indicadores = []
-  
-  method muerto() = muerto
   
   method muerto(bool) {
     muerto = bool
@@ -18,14 +16,6 @@ class JugadorPrincipal inherits Entidad {
       self.position(game.at(-1, -1))
       indicadores.forEach({ i => if (game.hasVisual(i)) game.removeVisual(i) })
     }
-  }
-  
-  method jugador() = jugador
-  
-  method image() = imagen
-  
-  method cambiarImagen(img) {
-    imagen = img
   }
   
   method position() = position
@@ -55,25 +45,21 @@ class JugadorPrincipal inherits Entidad {
             archivo += "j2_"
           }
           // indicadores.add(indicador)
-          i.cambiarImagen(archivo + ".png")
+          i.image(archivo + ".png")
           game.addVisual(i)
           x += 1
         } }
     )
   }
   
-  method indicadores() = indicadores
-  
   method spawnea(offset) {
-    imagen = ("j" + jugador) + ".png"
+    image = ("j" + jugador) + ".png"
     muerto = false
     position = game.at((game.width() / 2) + offset, 12)
     vidas = totalVidas
     if (!game.hasVisual(self)) game.addVisual(self)
     self.spawnIndicadores()
   }
-  
-  method vidas() = vidas
   
   method vidas(newVidas) {
     vidas = newVidas

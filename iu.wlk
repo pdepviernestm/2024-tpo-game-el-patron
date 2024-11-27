@@ -1,12 +1,6 @@
 class IndicadorVida {
   var position = game.at(-1, -1)
-  var imagen = "piluso2x.png"
-  
-  method image() = imagen
-  
-  method cambiarImagen(img) {
-    imagen = img
-  }
+  var property image = "piluso2x.png"
   
   method position() = position
   
@@ -16,13 +10,13 @@ class IndicadorVida {
 }
 
 object selector {
-  var position = game.at(
+  var property position = game.at(
     opciones.position().x() - 10,
     opciones.position().y() + 18
   )
-  const imagen = "balboa6.png"
-  var seleccion = 0
-  var maxOpciones = 2
+  const property image = "balboa6.png"
+  var property seleccion = 0
+  var property maxOpciones = 2
   const elegir = game.sound("lanzar.mp3")
   const entrar = game.sound("hit_valla.mp3")
   
@@ -32,31 +26,13 @@ object selector {
     game.schedule(400, { sonido.stop() }) // }
   }
   
-  method image() = imagen
-  
-  method position() = position
-  
-  method position(newPos) {
-    position = newPos
-  }
-  
   method mostrar() {
-    if(!game.hasVisual(self)) game.addVisual(self)
+    if (!game.hasVisual(self)) game.addVisual(self)
     position = fondoOpciones.position().right(2).up(19)
   }
   
   method ocultar() {
     game.removeVisual(self)
-  }
-  
-  method seleccion() = seleccion
-  
-  method seleccion(s) {
-    seleccion = s
-  }
-  
-  method setMaxOpciones(max) {
-    maxOpciones = max
   }
   
   method abajo() {
@@ -81,24 +57,12 @@ object selector {
 }
 
 object fondoOpciones {
-  var imagen = "rectangulo3.png"
-  var position = game.at(52, 43)
-  
-  method image() = imagen
-  
-  method position() = position
-
-  method position(newPos){
-    position = newPos
-  }
-  
-  method image(nueva) {
-    imagen = nueva
-  }
+  var property image = "rectangulo3.png"
+  var property position = game.at(52, 43)
   
   method mostrar(n) {
-    imagen = ("rectangulo" + n) + ".png"
-    if(!game.hasVisual(self)) game.addVisual(self)
+    image = ("rectangulo" + n) + ".png"
+    if (!game.hasVisual(self)) game.addVisual(self)
   }
   
   method ocultar() {
@@ -107,27 +71,15 @@ object fondoOpciones {
 }
 
 object opciones {
-  var position = fondoOpciones.position().right(1)
-  var imagen = "o_menu__.png"
-  
-  method image() = imagen
-  
-  method position() = position
-  
-  method position(newPos) {
-    position = newPos
-  }
-  
-  method cambiarImagen(img) {
-    imagen = img
-  }
+  var property position = fondoOpciones.position().right(1)
+  var property image = "o_menu__.png"
   
   method mostrar(img, n) {
     fondoOpciones.mostrar(n)
     position = fondoOpciones.position().right(1)
     selector.mostrar()
-    imagen = img
-    if(!game.hasVisual(self)) game.addVisual(self)
+    image = img
+    if (!game.hasVisual(self)) game.addVisual(self)
   }
   
   method ocultar() {

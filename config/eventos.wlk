@@ -1,7 +1,6 @@
 import wollok.game.*
 import config.cargar.*
 import config.pantallas.*
-import entidades.chiqui.*
 import nivel.*
 
 object eventos {
@@ -15,7 +14,6 @@ object eventos {
   var nuevaDireccion = derecha
   
   method cargarEventos() {
-    self.chiqui()
     self.movimientoEnemigo()
     self.disparoEnemigo()
     self.rotacionProyectil()
@@ -27,6 +25,7 @@ object eventos {
   method setEnemigos() {
     enemigos = cargar.enemigos()
     enemigosVivos = enemigos.count({ e => !e.muerto() })
+    self.movimientoEnemigo()
   }
   
   // Jugador 0: Enemigo
@@ -59,6 +58,7 @@ object eventos {
       
       elemento.morir()
       enemigosVivos -= 1
+      self.movimientoEnemigo()
       proyectil.destruir()
       
       if (enemigos.all({ e => e.muerto() })) p_youWin.actual(true)
@@ -86,8 +86,8 @@ object eventos {
             const indice = 0.randomUpTo(e_vivos.size()).truncate(0)
             const enemigo = e_vivos.get(indice)
             
-            enemigo.cambiarImagen("enemigo_tirar.png")
-            game.schedule(500, { enemigo.cambiarImagen("enemigo.png") })
+            enemigo.image("enemigo_tirar.png")
+            game.schedule(500, { enemigo.image("enemigo.png") })
             proyectil.spawnea(enemigo.position())
           }
         } }
@@ -100,10 +100,10 @@ object eventos {
           
           if (elemento.vidas() < 1) elemento.muerto(true)
           
-          elemento.cambiarImagen(("j" + elemento.jugador()) + "_hit.png")
+          elemento.image(("j" + elemento.jugador()) + "_hit.png")
           game.schedule(
             300,
-            { elemento.cambiarImagen(("j" + elemento.jugador()) + ".png") }
+            { elemento.image(("j" + elemento.jugador()) + ".png") }
           )
           
           const indicadores = elemento.indicadores()
@@ -159,7 +159,7 @@ object eventos {
       "rotacionProyectil",
       { if (p_Juego.actual() && (!p_Pausa.actual())) {
           cargar.proyectiles().forEach(
-            { proyectil => proyectil.cambiarImagen(i_rotacion) }
+            { proyectil => proyectil.image(i_rotacion) }
           )
           
           i_rotacion += 1
@@ -173,26 +173,31 @@ object eventos {
   method movimientoEnemigo() {
     // Por cada 7 enemigos, se van moviendo mas rápido.
     // Y cuando queda uno solo, se mueve a la velocidad máxima.
+    game.removeTickEvent("movimientoEnemigo")
     game.onTick(
-      2000,
-      "movimientoEnemigo1",
-      { if ((enemigosVivos > 14) && (enemigosVivos <= 21)) self._movimiento() }
-    )
-    game.onTick(
-      1500,
-      "movimientoEnemigo2",
-      { if ((enemigosVivos > 7) && (enemigosVivos <= 14)) self._movimiento() }
-    )
-    game.onTick(
-      1000,
-      "movimientoEnemigo3",
-      { if ((enemigosVivos > 1) && (enemigosVivos <= 7)) self._movimiento() }
-    )
-    game.onTick(
-      500,
-      "movimientoEnemigo4",
-      { if (enemigosVivos <= 1) self._movimiento() }
-    )
+      (100 * enemigosVivos) + 400,
+      "movimientoEnemigo",
+      { self._movimiento() }
+    ) // game.onTick(
+    //   2000,
+    //   "movimientoEnemigo1",
+    //   { if ((enemigosVivos > 14) && (enemigosVivos <= 21)) self._movimiento() }
+    // )
+    // game.onTick(
+    //   1500,
+    //   "movimientoEnemigo2",
+    //   { if ((enemigosVivos > 7) && (enemigosVivos <= 14)) self._movimiento() }
+    // )
+    // game.onTick(
+    //   1000,
+    //   "movimientoEnemigo3",
+    //   { if ((enemigosVivos > 1) && (enemigosVivos <= 7)) self._movimiento() }
+    // )
+    // game.onTick(
+    //   500,
+    //   "movimientoEnemigo4",
+    //   { if (enemigosVivos <= 1) self._movimiento() }
+    // )
   }
   
   method reiniciarMovimiento() {
@@ -231,27 +236,6 @@ object eventos {
         )
       }
     }
-  }
-  
-  method chiqui() {
-    const jugador = cargar.jugador(1)
-    
-    keyboard.t().onPressDo(
-      { if (p_Juego.actual() && (!p_Pausa.actual())) chiqui.incrementar() }
-    )
-    
-    game.onTick(
-      1000,
-      "chiquiMafia",
-      { if (p_Juego.actual() || p_Pausa.actual()) chiqui.spawnear(
-            jugador.position().x() - 16
-          ) }
-    )
-    game.onTick(
-      1,
-      "Detonar",
-      { if (p_Juego.actual() || p_Pausa.actual()) chiqui.detonar(jugador) }
-    )
   }
   
   method verificarPosicionEnemigos() {

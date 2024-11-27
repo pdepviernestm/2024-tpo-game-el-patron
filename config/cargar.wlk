@@ -10,33 +10,22 @@ import iu.*
 import nivel.*
 
 object cargar {
-  const jugadores = []
-  const enemigos = []
-  const proyectiles = []
-  const vallas = []
-  const hitboxes = []
-  const dim = [default.filas(), default.columnas()]
-  
-  method dimensiones() = dim
+  const property jugadores = []
+  const property enemigos = []
+  const property proyectiles = []
+  const property vallas = []
+  const property hitboxes = []
+  const property dimensiones = [default.filas(), default.columnas()]
   
   method jugador(jugador) = jugadores.get(jugador - 1)
   
-  method jugadores() = jugadores
-  
   method proyectil(jugador) = proyectiles.get(jugador)
-  
-  method proyectiles() = proyectiles
-  
-  method vallas() = vallas
-  
-  method enemigos() = enemigos
-  
-  method hitboxes() = hitboxes
   
   method modulos() {
     self.entidades()
     controlesMenu.cargar()
     controlesJuego.cargar()
+    misterio.cargar()
     eventos.cargarEventos() // controles.cargarControles()
     
     p_Menu.actual(true)
@@ -60,8 +49,8 @@ object cargar {
   }
   
   method cargarEnemigos() {
-    dim.get(0).times(
-      { i => dim.get(1).times(
+    dimensiones.get(0).times(
+      { i => dimensiones.get(1).times(
           { j =>
             const enemigo = new Enemigo(fila = i, col = j)
             return enemigos.add(enemigo)
