@@ -1,0 +1,14 @@
+// juego.wpgm
+import wollok.game.*
+import config.cargar.*
+
+program BarraInvaders {
+  game.title("BARRA INVADERS")
+  game.cellSize(8)
+  game.height(160)
+  game.width(160)
+  game.boardGround("calle__.png")
+  
+  cargar.modulos()
+  game.start()
+}
