@@ -1,6 +1,7 @@
 import iu.*
 import config.cargar.*
 import config.controles.controlesJuego
+import nivel.nivel
 
 object pantalla {
   var property actual = p_Menu
@@ -25,11 +26,21 @@ class Pantalla {
   method mostrar() {
     game.addVisual(self)
     self.playTema()
+    self.mostrarExtra()
+  }
+
+  method mostrarExtra() {
+
   }
   
   method ocultar() {
     if (game.hasVisual(self)) game.removeVisual(self)
     opciones.ocultar()
+    self.ocultarExtra()
+  }
+
+  method ocultarExtra() {
+
   }
   
   method stopTema() = tema.stop()
@@ -43,6 +54,14 @@ class Pantalla {
   method playExtra() {
     
   }
+
+  method seleccionar() {
+    controlesJuego.handleWait()
+    selector.seleccionar()
+    self.seleccionarExtra()
+  }
+
+  method seleccionarExtra() {}
 }
 
 object p_Menu inherits Pantalla (
@@ -51,8 +70,7 @@ object p_Menu inherits Pantalla (
 ) {
   var enControles = false
   
-  override method mostrar() {
-    super()
+  override method mostrarExtra() {
     p_gameOver.actual(false)
     p_youWin.actual(false)
     p_Pausa.actual(false)
@@ -67,15 +85,13 @@ object p_Menu inherits Pantalla (
     if (tema.paused()) tema.resume() else tema.pause()
   }
   
-  method seleccionar() {
-    controlesJuego.handleWait()
-    selector.seleccionar()
+  override method seleccionarExtra() {
     if (selector.seleccion() == 2) {
       enControles = true
       selector.seleccion(0)
       selector.maxOpciones(0)
-      opciones.mostrar("o_controles_.png", 1)
       fondoOpciones.position(fondoOpciones.position().down(24).left(13))
+      opciones.mostrar("o_controles_.png", 1)
       selector.position(fondoOpciones.position().up(4).right(7))
     } else {
       if (enControles) {
@@ -100,8 +116,7 @@ object p_gameOver inherits Pantalla (
   image = "gameover.png",
   tema = game.sound("game_over.mp3")
 ) {
-  override method mostrar() {
-    super()
+  override method mostrarExtra() {
     if (p_Pausa.actual()) p_Menu.togglePauseTema()
     p_Menu.stopTema()
     p_Pausa.actual(false)
@@ -117,14 +132,22 @@ object p_gameOver inherits Pantalla (
   override method playExtra() {
     game.schedule(4000, { tema.stop() })
   }
+  
+  override method seleccionarExtra() {
+    if (selector.seleccion() == 0) {
+      cargar.cargarJuego(nivel.cantJugadores())
+      p_Menu.playTema()
+    } else {
+      p_Menu.actual(true)
+    }
+  }
 }
 
 object p_youWin inherits Pantalla (
   image = "youwin_.png",
   tema = game.sound("victory.mp3")
 ) {
-  override method mostrar() {
-    super()
+  override method mostrarExtra() {
     p_Juego.actual(false)
     p_Menu.stopTema()
     
@@ -135,9 +158,17 @@ object p_youWin inherits Pantalla (
     selector.maxOpciones(1)
   }
   
-  override method ocultar() {
-    super()
+  override method ocultarExtra() {
     if (tema.played()) tema.stop()
+  }
+  
+  override method seleccionarExtra() {
+    if (selector.seleccion() == 0) {
+      cargar.cargarJuego(nivel.cantJugadores())
+      p_Menu.playTema()
+    } else {
+      p_Menu.actual(true)
+    }
   }
 }
 
@@ -156,6 +187,10 @@ object p_Juego inherits Pantalla {
   
   override method ocultar() {
     
+  }
+
+  override method seleccionar() {
+
   }
 }
 
@@ -178,7 +213,21 @@ object p_Pausa inherits Pantalla (
       p_Menu.togglePauseTema()
       self.actual(!actual)
       tema.play()
-      game.schedule(2000, {   tema.stop() wait = true})
+      game.schedule(2000, {   tema.stop()wait = true})
+    }
+  }
+  
+  override method seleccionarExtra() {
+    if (selector.seleccion() == 0) {
+      self.toggle()
+    } else {
+      if (selector.seleccion() == 1) {
+        p_Menu.togglePauseTema()
+        cargar.cargarJuego(nivel.cantJugadores())
+      } else {
+        p_Menu.togglePauseTema()
+        p_Menu.actual(true)
+      }
     }
   }
 }

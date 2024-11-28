@@ -1,9 +1,12 @@
 import entidades.base.*
 
-class Valla inherits Entidad(image = "valla192.png", hitsound = game.sound("hit_valla.mp3")) {
+class Valla inherits Entidad (
+  image = "valla192.png",
+  hitsound = game.sound("hit_valla.mp3")
+) {
   var property vidas = totalVidas
   const totalVidas = default.vidasValla()
-
+  
   method sacarVida() {
     vidas -= 1
     self.golpe()
@@ -23,5 +26,4 @@ class Hitbox inherits Entidad {
   var property valla = -1
   
   override method soyHitbox() = true
-
 }
