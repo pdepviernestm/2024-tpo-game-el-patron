@@ -1,17 +1,11 @@
 import entidades.base.*
 
-class Enemigo inherits Entidad {
-  var property image = "enemigo.png"
+class Enemigo inherits Entidad(image = "enemigo.png") {
   var property muerto = false
   var property enFrente = false
+  
   const property fila
   const property col
-
-  method position() = position
-  
-  method position(newPos) {
-    position = newPos
-  }
   
   method spawnea(x, y) {
     game.addVisual(self)

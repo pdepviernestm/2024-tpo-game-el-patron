@@ -1,10 +1,9 @@
 import config.pantallas.p_gameOver
 import config.pantallas.p_Juego
 import config.cargar.*
+import entidades.base.Entidad
 
-object chiqui {
-  var property position = game.at(-1, game.height())
-  const property image = "chiquiMafia.png"
+object chiqui inherits Entidad(position = game.at(-1, game.height()), image = "chiquiMafia.png"){
   const tema = game.sound("chiquiSong.mp3")
   var counter = 0
   const detonante = 3

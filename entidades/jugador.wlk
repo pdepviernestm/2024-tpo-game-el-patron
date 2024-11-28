@@ -1,10 +1,9 @@
 import entidades.base.*
-import iu.IndicadorVida
+import config.iu.IndicadorVida
 
-class JugadorPrincipal inherits Entidad {
+class JugadorPrincipal inherits Entidad(image = "j1.png") {
   const property jugador = 1
   const property indicadores = []
-  var property image = "j1.png"
   var property vidas = totalVidas
   var property muerto = true
   const totalVidas = default.vidasJugador()
@@ -16,12 +15,6 @@ class JugadorPrincipal inherits Entidad {
       self.position(game.at(-1, -1))
       indicadores.forEach({ i => if (game.hasVisual(i)) game.removeVisual(i) })
     }
-  }
-  
-  method position() = position
-  
-  method position(newPos) {
-    position = newPos
   }
   
   method cargarIndicadores() {

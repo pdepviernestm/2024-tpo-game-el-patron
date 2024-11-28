@@ -1,24 +1,15 @@
 import entidades.base.*
 
-class Proyectil inherits Entidad {
-  var property image = "balboa0.png"
+class Proyectil inherits Entidad(image = "balboa0.png", hitsound = game.sound("hit_botella.mp3")) {
   var property step = 4
   var property yaColisiono = true
   const sonido = game.sound("lanzar.mp3")
-  
-  override method hitSound() = game.sound("hit_botella.mp3")
-  
+
   method reproducir() {
     sonido.play()
     game.schedule(500, { sonido.stop() })
   }
-  
-  method position() = position
-  
-  method position(newPos) {
-    position = newPos
-  }
-  
+
   method spawnea(newPos) {
     yaColisiono = false
     game.addVisual(self)
@@ -30,7 +21,7 @@ class Proyectil inherits Entidad {
     self.position(self.position().up(step))
   }
 
-  method image(img) {
+  override method image(img) {
     image = "balboa".concat(img).concat(".png")
   }
   
