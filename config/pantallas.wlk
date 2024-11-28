@@ -24,7 +24,7 @@ class Pantalla {
   }
   
   method mostrar() {
-    game.addVisual(self)
+    if(!game.hasVisual(self)) game.addVisual(self)
     self.playTema()
     self.mostrarExtra()
   }

@@ -23,7 +23,7 @@ class Valla inherits Entidad (
 }
 
 class Hitbox inherits Entidad {
-  var property valla = -1
+  const property valla
   
   override method soyHitbox() = true
 }

@@ -65,8 +65,7 @@ object cargar {
         const valla = new Valla()
         5.times(
           { c =>
-            const hitbox = new Hitbox()
-            hitbox.valla(v)
+            const hitbox = new Hitbox(valla=valla)
             return hitboxes.add(hitbox)
           }
         )

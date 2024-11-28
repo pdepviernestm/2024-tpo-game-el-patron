@@ -96,7 +96,7 @@ object eventos {
       proyectil,
       { elemento => if (elemento.soyJugador()) {
           proyectil.destruir()
-          elemento.vidas(elemento.vidas() - 1)
+          elemento.sacarVida()
           
           if (elemento.vidas() < 1) elemento.muerto(true)
           
@@ -122,7 +122,7 @@ object eventos {
   }
   
   method _handleHitbox(elemento, jugador) {
-    const valla = cargar.vallas().get(elemento.valla() - 1)
+    const valla = elemento.valla()
     if (valla.vidas() >= 1) {
       valla.sacarVida()
       cargar.proyectil(jugador).destruir()
@@ -178,26 +178,7 @@ object eventos {
       (100 * enemigosVivos) + 400,
       "movimientoEnemigo",
       { self._movimiento() }
-    ) // game.onTick(
-    //   2000,
-    //   "movimientoEnemigo1",
-    //   { if ((enemigosVivos > 14) && (enemigosVivos <= 21)) self._movimiento() }
-    // )
-    // game.onTick(
-    //   1500,
-    //   "movimientoEnemigo2",
-    //   { if ((enemigosVivos > 7) && (enemigosVivos <= 14)) self._movimiento() }
-    // )
-    // game.onTick(
-    //   1000,
-    //   "movimientoEnemigo3",
-    //   { if ((enemigosVivos > 1) && (enemigosVivos <= 7)) self._movimiento() }
-    // )
-    // game.onTick(
-    //   500,
-    //   "movimientoEnemigo4",
-    //   { if (enemigosVivos <= 1) self._movimiento() }
-    // )
+    )
   }
   
   method reiniciarMovimiento() {

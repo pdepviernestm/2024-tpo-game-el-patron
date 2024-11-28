@@ -58,6 +58,11 @@ class JugadorPrincipal inherits Entidad(image = "j1.png") {
     vidas = newVidas
     self.golpe()
   }
+
+  method sacarVida(){
+    vidas -= 1
+    self.golpe()
+  }
   
   override method soyJugador() = true
 }
