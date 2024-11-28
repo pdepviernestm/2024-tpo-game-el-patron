@@ -9,12 +9,13 @@ class IndicadorVida {
   }
 }
 
-object selector {
-  var property position = game.at(
+object selector inherits Visual (
+  position = game.at(
     opciones.position().x() - 10,
     opciones.position().y() + 18
-  )
-  const property image = "balboa6.png"
+  ),
+  image = "balboa6.png"
+) {
   var property seleccion = 0
   var property maxOpciones = 2
   const elegir = game.sound("lanzar.mp3")
@@ -26,13 +27,9 @@ object selector {
     game.schedule(400, { sonido.stop() }) // }
   }
   
-  method mostrar() {
+  override method mostrar() {
     if (!game.hasVisual(self)) game.addVisual(self)
     position = fondoOpciones.position().right(2).up(19)
-  }
-  
-  method ocultar() {
-    game.removeVisual(self)
   }
   
   method abajo() {
@@ -56,24 +53,20 @@ object selector {
   }
 }
 
-object fondoOpciones {
-  var property image = "rectangulo3.png"
-  var property position = game.at(52, 43)
-  
+object fondoOpciones inherits Visual (
+  image = "rectangulo3.png",
+  position = game.at(52, 43)
+) {
   method mostrar(n) {
     image = ("rectangulo" + n) + ".png"
     if (!game.hasVisual(self)) game.addVisual(self)
   }
-  
-  method ocultar() {
-    game.removeVisual(self)
-  }
 }
 
-object opciones {
-  var property position = fondoOpciones.position().right(1)
-  var property image = "o_menu__.png"
-  
+object opciones inherits Visual (
+  position = fondoOpciones.position().right(1),
+  image = "o_menu__.png"
+) {
   method mostrar(img, n) {
     fondoOpciones.mostrar(n)
     position = fondoOpciones.position().right(1)
@@ -82,9 +75,26 @@ object opciones {
     if (!game.hasVisual(self)) game.addVisual(self)
   }
   
-  method ocultar() {
-    game.removeVisual(self)
+  override method ocultarExtra() {
     selector.ocultar()
     fondoOpciones.ocultar()
+  }
+}
+
+class Visual {
+  var property position
+  var property image
+
+  method mostrar() {
+    if (!game.hasVisual(self)) game.addVisual(self)
+  }
+  
+  method ocultar() {
+    if (game.hasVisual(self)) game.removeVisual(self)
+    self.ocultarExtra()
+  }
+  
+  method ocultarExtra() {
+    
   }
 }

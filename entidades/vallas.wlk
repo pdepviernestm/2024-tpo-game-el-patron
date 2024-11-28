@@ -19,7 +19,7 @@ class Valla inherits Entidad(image = "valla192.png", hitsound = game.sound("hit_
   }
 }
 
-class Hitbox inherits Entidad(image = void) {
+class Hitbox inherits Entidad {
   var property valla = -1
   
   override method soyHitbox() = true

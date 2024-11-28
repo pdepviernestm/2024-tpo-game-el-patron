@@ -1,158 +1,175 @@
 import iu.*
 import config.cargar.*
+import config.controles.controlesJuego
+
+object pantalla {
+  var property actual = p_Menu
+}
 
 class Pantalla {
-  var property actual = false
+  const property image = void
+  const property tema = void
   const property position = game.origin()
-}
-
-object p_Menu inherits Pantalla {
-  const property image = "menu_.png"
-  const property tema = game.sound("main_loop.mp3")
-  
-  override method actual(bool) {
-    actual = bool
-    if (actual) {
-      p_gameOver.actual(false)
-      p_youWin.actual(false)
-      p_Pausa.actual(false)
-      p_Juego.actual(false)
-      self.playTema()
-      game.addVisual(self)
-      
-      selector.seleccion(0)
-      selector.maxOpciones(2)
-      opciones.mostrar("o_menu__.png", 3)
-    } else {
-      if (game.hasVisual(self)) game.removeVisual(self)
-      opciones.ocultar()
-    }
-  }
-  
-  method playTema() {
-    tema.shouldLoop(true)
-    tema.volume(0.5)
-    if (!tema.played()) tema.play()
-  }
-  
-  method stopTema() = tema.stop()
-  
-  method togglePauseTema() {
-    if (tema.paused()) tema.resume() else tema.pause()
-  }
-}
-
-object p_gameOver inherits Pantalla{
-  const property image = "gameover.png"
-  const property tema = game.sound("game_over.mp3")
-
-  override method actual(bool) {
-    actual = bool
-    if (actual) {
-      // Eliminar proyectiles en pantalla
-      // const jugadores = cargar.jugadores()
-      // jugadores.forEach({ j => cargar.proyectil(j.jugador()).destruir() })
-      // cargar.proyectil(0).destruir()
-      if (p_Pausa.actual()) p_Menu.togglePauseTema()
-      p_Menu.stopTema()
-      p_Pausa.actual(false)
-      p_Juego.actual(false)
-      self.playTema()
-      
-      game.addVisual(self) // opciones.position(52,43)
-      
-      opciones.mostrar("o_reintentar_.png", 2)
-      selector.position(selector.position().down(8).right(0))
-      
-      selector.seleccion(0)
-      selector.maxOpciones(1)
-    } else {
-      if (game.hasVisual(self)) game.removeVisual(self)
-      opciones.ocultar()
-    }
-  }
-  
-  method playTema() {
-    tema.volume(0.5)
-    tema.play()
-    game.schedule(4000, { tema.stop() })
-  }
-  
-  method stopTema() = tema.stop()
-}
-
-object p_youWin inherits Pantalla{
-  const property image = "youwin_.png"
-  const property tema = game.sound("victory.mp3")
-  
-  override method actual(bool) {
-    actual = bool
-    if (actual) {
-      // const jugadores = cargar.jugadores()
-      // jugadores.forEach({ j => cargar.proyectil(j.jugador()).destruir() })
-      // cargar.proyectil(0).destruir()
-      p_Juego.actual(false)
-      p_Menu.stopTema()
-      self.playTema()
-      game.addVisual(self)
-      
-      opciones.mostrar("o_reintentar_.png", 2)
-      selector.position(selector.position().down(8).right(0))
-      
-      selector.seleccion(0)
-      selector.maxOpciones(1)
-    } else {
-      if (game.hasVisual(self)) game.removeVisual(self)
-      opciones.ocultar()
-      if (tema.played()) tema.stop()
-    }
-  }
-
-  method playTema() {
-    tema.volume(0.5)
-    tema.play()
-  }
-  
-  method stopTema() = tema.stop()
-}
-
-object p_Juego inherits Pantalla{
-  override method actual(bool) {
-    actual = bool
-    if (actual) {
-      const jugadores = cargar.jugadores()
-      jugadores.forEach({ j => cargar.proyectil(j.jugador()).destruir() })
-      cargar.proyectil(0).destruir()
-      
-      p_Menu.actual(false)
-      p_gameOver.actual(false)
-      p_youWin.actual(false)
-      p_Pausa.actual(false)
-      opciones.ocultar()
-    }
-  }
-}
-
-object p_Pausa {
-  var actual = false
-  const tema = game.sound("pausa.mp3")
-  var wait = true // Variable para no spamear la pausa
-  
-  method image() = "pausa.png"
-  
-  method actual() = actual
+  var property actual = false
   
   method actual(bool) {
     actual = bool
     if (actual) {
-      game.addVisual(self)
-      opciones.mostrar("o_pausa_.png", 3)
-      selector.seleccion(0)
-      selector.maxOpciones(2)
+      pantalla.actual(self)
+      self.mostrar()
     } else {
-      if (game.hasVisual(self)) game.removeVisual(self)
-      opciones.ocultar()
+      self.ocultar()
     }
+  }
+  
+  method mostrar() {
+    game.addVisual(self)
+    self.playTema()
+  }
+  
+  method ocultar() {
+    if (game.hasVisual(self)) game.removeVisual(self)
+    opciones.ocultar()
+  }
+  
+  method stopTema() = tema.stop()
+  
+  method playTema() {
+    if (!tema.played()) tema.play()
+    tema.volume(0.5)
+    self.playExtra()
+  }
+  
+  method playExtra() {
+    
+  }
+}
+
+object p_Menu inherits Pantalla (
+  image = "menu_.png",
+  tema = game.sound("main_loop.mp3")
+) {
+  var enControles = false
+  
+  override method mostrar() {
+    super()
+    p_gameOver.actual(false)
+    p_youWin.actual(false)
+    p_Pausa.actual(false)
+    p_Juego.actual(false)
+    
+    selector.seleccion(0)
+    selector.maxOpciones(2)
+    opciones.mostrar("o_menu__.png", 3)
+  }
+  
+  method togglePauseTema() {
+    if (tema.paused()) tema.resume() else tema.pause()
+  }
+  
+  method seleccionar() {
+    controlesJuego.handleWait()
+    selector.seleccionar()
+    if (selector.seleccion() == 2) {
+      enControles = true
+      selector.seleccion(0)
+      selector.maxOpciones(0)
+      opciones.mostrar("o_controles_.png", 1)
+      fondoOpciones.position(fondoOpciones.position().down(24).left(13))
+      selector.position(fondoOpciones.position().up(4).right(7))
+    } else {
+      if (enControles) {
+        enControles = false
+        selector.seleccion(2)
+        selector.maxOpciones(2)
+        fondoOpciones.position(fondoOpciones.position().down(-24).left(-13))
+        opciones.mostrar("o_menu__.png", 3)
+        selector.position(selector.position().down(16))
+      } else {
+        cargar.cargarJuego(selector.seleccion() + 1)
+      }
+    }
+  }
+  
+  override method playExtra() {
+    tema.shouldLoop(true)
+  }
+}
+
+object p_gameOver inherits Pantalla (
+  image = "gameover.png",
+  tema = game.sound("game_over.mp3")
+) {
+  override method mostrar() {
+    super()
+    if (p_Pausa.actual()) p_Menu.togglePauseTema()
+    p_Menu.stopTema()
+    p_Pausa.actual(false)
+    p_Juego.actual(false)
+    
+    opciones.mostrar("o_reintentar_.png", 2)
+    selector.position(selector.position().down(8).right(0))
+    
+    selector.seleccion(0)
+    selector.maxOpciones(1)
+  }
+  
+  override method playExtra() {
+    game.schedule(4000, { tema.stop() })
+  }
+}
+
+object p_youWin inherits Pantalla (
+  image = "youwin_.png",
+  tema = game.sound("victory.mp3")
+) {
+  override method mostrar() {
+    super()
+    p_Juego.actual(false)
+    p_Menu.stopTema()
+    
+    opciones.mostrar("o_reintentar_.png", 2)
+    selector.position(selector.position().down(8).right(0))
+    
+    selector.seleccion(0)
+    selector.maxOpciones(1)
+  }
+  
+  override method ocultar() {
+    super()
+    if (tema.played()) tema.stop()
+  }
+}
+
+object p_Juego inherits Pantalla {
+  override method mostrar() {
+    const jugadores = cargar.jugadores()
+    jugadores.forEach({ j => cargar.proyectil(j.jugador()).destruir() })
+    cargar.proyectil(0).destruir()
+    
+    p_Menu.actual(false)
+    p_gameOver.actual(false)
+    p_youWin.actual(false)
+    p_Pausa.actual(false)
+    opciones.ocultar()
+  }
+  
+  override method ocultar() {
+    
+  }
+}
+
+object p_Pausa inherits Pantalla (
+  image = "pausa.png",
+  tema = game.sound("pausa.mp3")
+) {
+  var wait = true // Variable para no spamear la pausa
+  
+  override method mostrar() {
+    game.addVisual(self)
+    opciones.mostrar("o_pausa_.png", 3)
+    selector.seleccion(0)
+    selector.maxOpciones(2)
   }
   
   method toggle() {
@@ -161,17 +178,7 @@ object p_Pausa {
       p_Menu.togglePauseTema()
       self.actual(!actual)
       tema.play()
-      game.schedule(2000, {   tema.stop()wait = true})
+      game.schedule(2000, {   tema.stop() wait = true})
     }
   }
-  
-  method position() = game.origin()
-  
-  method tema() = tema
-  
-  method playTema() {
-    tema.play()
-  }
-  
-  method stopTema() = tema.stop()
 }
